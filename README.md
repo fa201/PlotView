@@ -12,3 +12,5 @@ It is programmed in python 3 but a python 2 may be done.
 The GUI will be make with **Tkinter** (most probably tkinter.ttk) due to:
 - *portability* to Linux & Windows
 - *ease of programming* for a beginner
+
+**matplotlib** will be used to handle the plotting part in a separate window.
