@@ -15,4 +15,8 @@ The GUI will be make with **Tkinter** (most probably tkinter.ttk) due to:
 
 **matplotlib** will be used to handle the plotting part in a separate window.
 
-See *PlotView_GUI.pdf* for the GUI design.
+### infos/
+*PlotView_GUI.pdf* shows the GUI design.
+
+### test/
+This folder will contain my test and on-going stuff.
