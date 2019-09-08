@@ -13,7 +13,7 @@ The GUI will be make with **Tkinter** (most probably tkinter.ttk) due to:
 - *portability* to Linux & Windows
 - *ease of programming* for a beginner
 
-**matplotlib** will be used to handle the plotting part in a separate window.
+**matplotlib** will be used to handle the plotting part in a separate window. PlotView will only prepare the matplotlib command for the user.
 
 ### infos/
 *PlotView_GUI.pdf* shows the GUI design.
