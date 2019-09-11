@@ -14,14 +14,16 @@ root.title('PlotView v0')
 root.geometry('800x600+0+0')  # Size an location of root window
 
 # Callbacks
-def quit_root():  # Quit mainloop
+def quit_root():  # Quits mainloop
     root.quit()
 
-def dialog_about_help():  # Show the dialog for the Help/About menu
-    dial = tkinter.messagebox.showinfo('About', 'PlotView source code is available at https://github.com/fa201/PlotView/.')
+def dialog_about_help():  # Shows the dialog for the Help/About menu
+    dial = tkinter.messagebox.showinfo('About', 
+    'PlotView source code is available at https://github.com/fa201/PlotView/.')
 
-def dialog_licence_help():  # Open the licence page of Github repo from the Help/Licence menu
-    webbrowser.open_new_tab('https://github.com/fa201/PlotView/blob/master/LICENSE')
+def dialog_licence_help():  # Opens the licence page of Github repo from the Help/Licence menu
+    webbrowser.open_new_tab(
+    'https://github.com/fa201/PlotView/blob/master/LICENSE')
 
 # ------------------------------------------------------------------------------
 # Menus for root window
@@ -39,7 +41,7 @@ menu_main.add_cascade(label='Help', menu=menu_help)
 root.config(menu=menu_main)  # Link of main menu to root window
 
 # File Menu
-menu_file.add_command(label='Export image')  # Add export image command from matplotlib
+menu_file.add_command(label='Export image')
 menu_file.add_command(label='Quit', command=quit_root)
 
 # Preferences Menu
@@ -118,10 +120,10 @@ frame_plot_other = tk.Frame(frame_plot_custo)
 frame_plot_other.grid(row=1, column=0, padx=0, pady=0)
 
 check_display_grid_var = tk.IntVar()
-tk.Checkbutton(frame_plot_other, text='Grid').grid(row=0, column=0, padx=0, pady=0)
+tk.Checkbutton(frame_plot_other, text='Grid', variable=check_display_grid_var).grid(row=0, column=0, padx=0, pady=0)
 
 check_display_dark_var = tk.IntVar()
-tk.Checkbutton(frame_plot_other, text='Dark background').grid(row=0, column=1, padx=0, pady=0)
+tk.Checkbutton(frame_plot_other, text='Dark background', variable=check_display_dark_var).grid(row=0, column=1, padx=0, pady=0)
 
 
 # Curve management 
@@ -143,6 +145,8 @@ tk.Button(frame_curve_management, text='Plot the\n selected\n curves').grid(row=
 # Curve 1 widgets. This block will be repeated several times for each line of widget
 tk.Label(frame_curve_management, text='1').grid(row=1, column=0, padx=2, pady=0)
 tk.Entry(frame_curve_management, width=20).grid(row=1, column=1, padx=2, pady=0, stick='w')  # TODO: add textvariable=entry_curve1_name ?
+check_display_curve1_var = tk.IntVar()
+tk.Checkbutton(frame_curve_management, variable=check_display_curve1_var).grid(row=1, column=2, padx=2, pady=0)
 
 
 # ------------------------------------------------------------------------------

@@ -24,8 +24,10 @@ class Curve:
 
 def read_data(csv_file):
     """Read the csv file and store data in a list """
-    with open(csv_file, 'r', newline='') as datafile:       # newline='' because it is a file and not a list
-        curve_data = list(csv.reader(datafile, delimiter=' '))  # list() is needed to copy data to curve1
+    # newline='' because it is a file and not a list.
+    with open(csv_file, 'r', newline='') as datafile:       
+        # list() is needed to copy data to curve1.
+        curve_data = list(csv.reader(datafile, delimiter=' '))  
     return curve_data
 
 curve1 = read_data("curve1.csv")

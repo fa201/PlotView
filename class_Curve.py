@@ -15,10 +15,10 @@ class Curve:
         self.curve_number_points = 0  # number of points in the curve as read in the curve file
         # TODO                        # array of X and Y coordinates for plot
         self.curve_visibility = False  # visibility of curve in the plot
-        self.curve_line_color = "black"  # line color of curve -> string
+        self.curve_line_color = 'black'  # line color of curve -> string
         self.curve_line_width = 1.0  # line width of curve -> float
-        self.curve_line_width = "solid"  # line style of curve -> string
-        self.curve_line_marker = "circle"  # line marker (symbol) of curve -> string
+        self.curve_line_width = 'solid'  # line style of curve -> string
+        self.curve_line_marker = 'circle'  # line marker (symbol) of curve -> string
         self.curve_line_marker_size = 1.0  # line marker size (size of symbol) of curve -> float
 
     def set_curve_type(self, curve_id, x_type, y_type):
@@ -36,11 +36,11 @@ class Curve:
 
 # Test for Curve object
 curve_a = Curve(10, 'curve_named_toto')
-print("Curve id: {0}".format(curve_a.curve_id))
-print("Curve name: {0}".format(curve_a.curve_name))
+print('Curve id: {0}'.format(curve_a.curve_id))
+print('Curve name: {0}'.format(curve_a.curve_name))
 curve_a.set_curve_type(10, 'time', 'position')
-print("Curve x type: {0}".format(curve_a.get_curve_x_type()))
-print("Curve y type: {0}".format(curve_a.get_curve_y_type()))
+print('Curve x type: {0}'.format(curve_a.get_curve_x_type()))
+print('Curve y type: {0}'.format(curve_a.get_curve_y_type()))
 
 # Normal termination and free the stack.
 sys.exit(0)
