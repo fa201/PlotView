@@ -1,7 +1,10 @@
-# -*- coding: utf8 -*-
-# Plot View program
-# GUI with tkinter
-# Voir https://python-django.dev/page-python-modules-package-module-cours-debutants-informatique-programmation pour découper les scripts
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" PV_GUI is the GUI for PlotView using tkinter
+
+At the moment it is just an empty shell (no action can be done through GUI)
+"""
 
 import tkinter as tk
 import tkinter.messagebox
@@ -14,14 +17,17 @@ root.title('PlotView v0')
 root.geometry('800x600+0+0')  # Size an location of root window
 
 # Callbacks
-def quit_root():  # Quits mainloop
+# Quits mainloop
+def quit_root(): 
     root.quit()
 
-def dialog_about_help():  # Shows the dialog for the Help/About menu
+# Shows the dialog from the Help/About menu
+def dialog_about_help():  
     dial = tkinter.messagebox.showinfo('About', 
     'PlotView source code is available at https://github.com/fa201/PlotView/.')
 
-def dialog_licence_help():  # Opens the licence page of Github repo from the Help/Licence menu
+# Opens the licence page of Github repo from the Help/Licence menu
+def dialog_licence_help():  
     webbrowser.open_new_tab(
     'https://github.com/fa201/PlotView/blob/master/LICENSE')
 
@@ -142,7 +148,7 @@ tk.Label(frame_curve_management, text='Marker type').grid(row=0, column=6, padx=
 # Plot button
 tk.Button(frame_curve_management, text='Plot the\n selected\n curves').grid(row=0, column=7, rowspan=2)
 
-# Curve 1 widgets. This block will be repeated several times for each line of widget
+# Curve 1 widgets. This block will be repeated for each curve.
 tk.Label(frame_curve_management, text='1').grid(row=1, column=0, padx=2, pady=0)
 tk.Entry(frame_curve_management, width=20).grid(row=1, column=1, padx=2, pady=0, stick='w')  # TODO: add textvariable=entry_curve1_name ?
 check_display_curve1_var = tk.IntVar()

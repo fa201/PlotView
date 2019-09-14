@@ -1,19 +1,23 @@
-# -*- coding: utf8 -*-
-# Plot View program
-# Data reader from csv file
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""PV_read is PlotView data reader
+
+It reads curve data from text file (csv).
+The data are then plotted.
+
+Alternate import function: numpy.genfromtext ?
+tutorial at https://www.youtube.com/watch?v=QyhqzaMiFxk&list=PLQVvvaa0QuDfefDfXb9Yf0la1fPDKluPF&index=7
+https://www.youtube.com/watch?v=IbUa1tTT-7k&list=PLQVvvaa0QuDfefDfXb9Yf0la1fPDKluPF&index=8
+"""
 
 import csv
 import numpy
 import sys
 
 # Lists containing the data
-global curve1
 curve1 = []
 
-# Read the data from csv file.
-# Alternate import function: numpy.genfromtext ?
-# tutorial at https://www.youtube.com/watch?v=QyhqzaMiFxk&list=PLQVvvaa0QuDfefDfXb9Yf0la1fPDKluPF&index=7
-# https://www.youtube.com/watch?v=IbUa1tTT-7k&list=PLQVvvaa0QuDfefDfXb9Yf0la1fPDKluPF&index=8
 
 class Curve:
     """Contains all the data relative to a curve including its appearance."""

@@ -1,21 +1,29 @@
-# -*- coding: utf8 -*-
-# Plot View program
-# Class Curve definition
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 
 import sys
 
 class Curve:
-    """Contains all the data relative to a curve including its appearance."""
+    """Contains all the data relative to a curve including its appearance.
+	"""
 
     def __init__(self, curve_id, name):
+		# Curve ID used to handle curves
         self.curve_id = curve_id
-        self.curve_name = name  # name of curve given by user and shown on PV GUI
-        self.curve_x_type = ''  # x type of data and y type of data as read in the curve file
+		# Curve name entered by user in PV GUI
+        self.curve_name = name  
+		# x type of data and y type of data as read in the curve file
+        self.curve_x_type = ''  
         self.curve_y_type = ''
-        self.curve_number_points = 0  # number of points in the curve as read in the curve file
-        # TODO                        # array of X and Y coordinates for plot
-        self.curve_visibility = False  # visibility of curve in the plot
-        self.curve_line_color = 'black'  # line color of curve -> string
+		# Number of points in the curve as read in the curve file
+        self.curve_number_points = 0  
+		# array of X and Y coordinates for plot        
+		# TODO   
+		# GUI indicator to show the curve in the plot                     
+        self.curve_visibility = False
+		# Line color of curve -> string
+        self.curve_line_color = 'black'  
         self.curve_line_width = 1.0  # line width of curve -> float
         self.curve_line_width = 'solid'  # line style of curve -> string
         self.curve_line_marker = 'circle'  # line marker (symbol) of curve -> string
@@ -34,7 +42,10 @@ class Curve:
         """Get the y type of data as read in the curve file """
         return self.curve_y_type
 
-# Test for Curve object
+
+
+# ------------------------------------------------------------------------------
+# Test for Curve object. Will be removed from final script.
 curve_a = Curve(10, 'curve_named_toto')
 print('Curve id: {0}'.format(curve_a.curve_id))
 print('Curve name: {0}'.format(curve_a.curve_name))
