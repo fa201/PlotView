@@ -31,10 +31,9 @@ def dialog_licence_help():
     webbrowser.open_new_tab(
     'https://github.com/fa201/PlotView/blob/master/LICENSE')
 
-# ------------------------------------------------------------------------------
-# Menus for root window
-# ---------------------
-# Main menu
+# ==================== Menus for root window ===================================
+
+# === Main menu ===
 menu_main = tk.Menu(root)
 menu_file = tk.Menu(menu_main, tearoff='False')  # Disables tear off menu
 menu_pref = tk.Menu(menu_main, tearoff='False')
@@ -46,25 +45,24 @@ menu_main.add_cascade(label='Help', menu=menu_help)
 
 root.config(menu=menu_main)  # Link of main menu to root window
 
-# File Menu
+# === File Menu ===
 menu_file.add_command(label='Export image')
 menu_file.add_command(label='Quit', command=quit_root)
 
-# Preferences Menu
+# === Preferences Menu ===
 menu_pref.add_command(label='Type of export image')
 
-# Help Menu
+# === Help Menu ===
 menu_help.add_command(label='Help on PlotView')
 menu_help.add_command(label='Licence GPLv3', command=dialog_licence_help)
 menu_help.add_command(label='About', command=dialog_about_help)
 
-# ------------------------------------------------------------------------------
+# ==============================================================================
 
 
-# ------------------------------------------------------------------------------
-# GUI main layout
-# ---------------------
-# Graph title area with 3 Entries
+# ==================== GUI main layout =========================================
+
+# === Graph title area with 3 Entries ===
 frame_title = tk.LabelFrame(root, text='Titles for graph', labelanchor='n')
 frame_title.grid(row=0, column=0, padx=5, pady=5, stick='nesw')
 tk.Label(frame_title, text='Global title').grid(row=0, column=0, padx=5, pady=0, stick='e')
@@ -77,13 +75,13 @@ tk.Entry(frame_title, width=20).grid(row=2, column=1, padx=5, pady=0, stick='w')
 
 # TODO: créer des variables pour les padx et pady pour chaque frame ?
 
-# Plot ranges for X and Y
+# === Plot ranges for X and Y ===
 radio_plot_scale_var = tk.IntVar()  # Variable for radio set to 1
 radio_plot_scale_var.set(1)
 frame_plot_range = tk.LabelFrame(root, text='Plot ranges for X and Y axis', labelanchor='n')
 frame_plot_range.grid(row=0, column=1, padx=5, pady=5, stick='nesw')
 
-# Frame created to gather and lay the radio buttons out
+# Frame created to gather and lay out the radio buttons for plot scale
 frame_radio_plot_range = tk.Frame(frame_plot_range)
 frame_radio_plot_range.grid(row=0, column=0, padx=0, pady=0, columnspan=4, sticky='w')
 
@@ -105,7 +103,7 @@ tk.Entry(frame_plot_range, width=5).grid(row=3, column=1, padx=5, pady=0)  # TOD
 tk.Label(frame_plot_range, text='Y max').grid(row=3, column=2, padx=5, pady=0)
 tk.Entry(frame_plot_range, width=5).grid(row=3, column=3, padx=5, pady=0)  # TODO: add textvariable=.....
 
-# Frame plot customization
+# === Frame plot customization ===
 frame_plot_custo = tk.LabelFrame(root, text='Plot customization', labelanchor='n')
 frame_plot_custo.grid(row=0, column=2, padx=5, pady=5, stick='nesw')
 radio_plot_custo_legend = tk.IntVar()  # Variable for radio set to 1
@@ -172,7 +170,7 @@ tk.Entry(frame_curve_management, width=20).grid(row=4, column=1, padx=2, pady=0,
 check_display_curve1_var = tk.IntVar()
 tk.Checkbutton(frame_curve_management, variable=check_display_curve1_var).grid(row=4, column=2, padx=2, pady=0)
 
-# ------------------------------------------------------------------------------
+# ==============================================================================
 
 
 # Quit actions
