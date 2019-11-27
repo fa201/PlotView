@@ -8,6 +8,7 @@ At the moment it is just an empty shell (no action can be done through GUI)
 
 import tkinter as tk
 import tkinter.messagebox
+from tkinter import ttk
 import sys
 import webbrowser
 
@@ -164,27 +165,16 @@ tk.Label(frame_curve_management, text='1').grid(row=1, column=0, padx=2, pady=0)
 tk.Entry(frame_curve_management, width=20).grid(row=1, column=1, padx=2, pady=0, stick='w')  # TODO: add textvariable=entry_curve1_name ?
 check_display_curve1_var = tk.IntVar()
 tk.Checkbutton(frame_curve_management, variable=check_display_curve1_var).grid(row=1, column=2, padx=2, pady=0)
-color_curve_1 = tk.Combobox(frame_curve_management, listvariable=color_list_var1,  width=10)
+color_curve_1 = ttk.Combobox(frame_curve_management, values=color_list_var1,  width=10)
 color_curve_1.grid(row=1, column=3, padx=2, pady=0)
 
 
-# Curve 2 widgets. This block will be repeated for each curve.
-tk.Label(frame_curve_management, text='2').grid(row=2, column=0, padx=2, pady=0)
-tk.Entry(frame_curve_management, width=20).grid(row=2, column=1, padx=2, pady=0, stick='w')  # TODO: add textvariable=entry_curve1_name ?
-check_display_curve1_var = tk.IntVar()
-tk.Checkbutton(frame_curve_management, variable=check_display_curve1_var).grid(row=2, column=2, padx=2, pady=0)
 
-# Curve 3 widgets. This block will be repeated for each curve.
-tk.Label(frame_curve_management, text='3').grid(row=3, column=0, padx=2, pady=0)
-tk.Entry(frame_curve_management, width=20).grid(row=3, column=1, padx=2, pady=0, stick='w')  # TODO: add textvariable=entry_curve1_name ?
-check_display_curve1_var = tk.IntVar()
-tk.Checkbutton(frame_curve_management, variable=check_display_curve1_var).grid(row=3, column=2, padx=2, pady=0)
 
-# Curve 4 widgets. This block will be repeated for each curve.
-tk.Label(frame_curve_management, text='4').grid(row=4, column=0, padx=2, pady=0)
-tk.Entry(frame_curve_management, width=20).grid(row=4, column=1, padx=2, pady=0, stick='w')  # TODO: add textvariable=entry_curve1_name ?
-check_display_curve1_var = tk.IntVar()
-tk.Checkbutton(frame_curve_management, variable=check_display_curve1_var).grid(row=4, column=2, padx=2, pady=0)
+
+
+
+
 
 # ==============================================================================
 
