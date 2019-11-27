@@ -11,12 +11,19 @@ import tkinter.messagebox
 import sys
 import webbrowser
 
+
+# === Variables ===
+
+
+
+
+
 # Root window
 root = tk.Tk()
 root.title('PlotView v0')
 root.geometry('800x500+0+0')  # Size and location of root window
 
-# Callbacks
+# ==================== Callbacks ===============================================
 # Quits mainloop
 def quit_root():
     root.quit()
@@ -30,6 +37,8 @@ def dialog_about_help():
 def dialog_licence_help():
     webbrowser.open_new_tab(
     'https://github.com/fa201/PlotView/blob/master/LICENSE')
+
+# ==============================================================================
 
 # ==================== Menus for root window ===================================
 
@@ -129,8 +138,12 @@ tk.Checkbutton(frame_plot_other, text='Grid', variable=check_display_grid_var).g
 check_display_dark_var = tk.IntVar()
 tk.Checkbutton(frame_plot_other, text='Dark background', variable=check_display_dark_var).grid(row=0, column=1, padx=0, pady=0)
 
+# === Curve management ===
+color_list_var1 = tk.StringVar()
+#color_list_var1.set("black")
+color_list = ("black", "red", "yellow", "chartreuse", "lime", "cyan", "dodgerblue", "magenta",
+                   "brown", "orange", "darkgrey", "white")
 
-# Curve management
 frame_curve_management = tk.LabelFrame(root, text='Curve management', labelanchor='n')
 frame_curve_management.grid(row=1, column=0, padx=5, pady=5, stick='nesw', columnspan=3)
 
@@ -151,6 +164,9 @@ tk.Label(frame_curve_management, text='1').grid(row=1, column=0, padx=2, pady=0)
 tk.Entry(frame_curve_management, width=20).grid(row=1, column=1, padx=2, pady=0, stick='w')  # TODO: add textvariable=entry_curve1_name ?
 check_display_curve1_var = tk.IntVar()
 tk.Checkbutton(frame_curve_management, variable=check_display_curve1_var).grid(row=1, column=2, padx=2, pady=0)
+color_curve_1 = tk.Combobox(frame_curve_management, listvariable=color_list_var1,  width=10)
+color_curve_1.grid(row=1, column=3, padx=2, pady=0)
+
 
 # Curve 2 widgets. This block will be repeated for each curve.
 tk.Label(frame_curve_management, text='2').grid(row=2, column=0, padx=2, pady=0)
