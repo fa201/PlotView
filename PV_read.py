@@ -12,12 +12,12 @@ https://www.youtube.com/watch?v=IbUa1tTT-7k&list=PLQVvvaa0QuDfefDfXb9Yf0la1fPDKl
 """
 
 import csv
-import numpy
 import sys
+import pandas as pd
+
 
 # Lists containing the data
 curve1 = []
-
 
 class Curve:
     """Contains all the data relative to a curve including its appearance."""
@@ -30,11 +30,11 @@ def read_data(csv_file):
     """Read the csv file and store data in a list """
     # newline='' because it is a file and not a list.
     with open(csv_file, 'r', newline='') as datafile:       
-        # list() is needed to copy data to curve1.
-        curve_data = list(csv.reader(datafile, delimiter=' '))  
+        # delim_whitespace is used because delimiter=' ' does not work
+        curve_data = pd.read_csv(csv_file, delim_whitespace=True)
     return curve_data
 
-curve1 = read_data("curve1.csv")
+curve1 = read_data("test/curve1.csv")
 print(curve1)
 
 # Normal termination and free the stack.
