@@ -35,7 +35,13 @@ def read_data(csv_file):
     return curve_data
 
 curve1 = read_data("test/curve1.csv")
-print(curve1)
+
+# Provide some basic information about dataFrame
+print("Column titles of dataFrame :", end=" ")
+print(curve1.columns.values)
+print("Shape of dataFrame :", end=" ")
+print(curve1.shape)
+
 
 # Normal termination and free the stack.
 sys.exit(0)
