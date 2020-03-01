@@ -13,6 +13,5 @@ Additional explanation
 
 
 import internal_module
-import internal_module
 import external_module
 
