@@ -6,6 +6,8 @@ import sys
 
 class Curve:
     """Contains all the data relative to a curve including its appearance.
+
+
 	"""
 
     def __init__(self, curve_id, name):
@@ -18,7 +20,7 @@ class Curve:
         self.curve_y_type = ''
 		# Number of points in the curve as read in the curve file
         self.curve_number_points = 0  
-		# array of X and Y coordinates for plot        
+		# dataFrame of X and Y coordinates for plot        
 		# TODO   
 		# GUI indicator to show the curve in the plot                     
         self.curve_visibility = False

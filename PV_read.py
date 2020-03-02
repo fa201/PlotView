@@ -42,6 +42,5 @@ print(curve1.columns.values)
 print("Shape of dataFrame :", end=" ")
 print(curve1.shape)
 
-
 # Normal termination and free the stack.
 sys.exit(0)
