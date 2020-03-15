@@ -20,18 +20,20 @@ class Curve:
 
 	"""
 
-    def __init__(self, curve_id, name):
+    def __init__(self, curve_id, name, file):
 		# Curve ID used to handle curves
         self.curve_id = curve_id
 		# Curve name entered by user in PV GUI
         self.curve_name = name  
-		# x type of data and y type of data as read in the curve file
+        # Data file opened by user in PV GUI
+        self.curve_file = file
+        # x type of data and y type of data as read in the curve file
         self.curve_x_type = ''  
         self.curve_y_type = ''
 		# Number of points in the curve as read in the curve file
         self.curve_number_points = 0  
 		# dataFrame of X and Y coordinates for plot        
-		# TODO   
+        self.curve_data = DataFrame()
 		# GUI indicator to show the curve in the plot                     
         self.curve_visibility = False
 		# Line color of curve -> string
@@ -53,6 +55,21 @@ class Curve:
     def get_curve_y_type(self):
         """Get the y type of data as read in the curve file """
         return self.curve_y_type
+
+    def read_csv_file(self):
+        """Read the curve file
+
+        The file needs to be processed before reading:
+        - clean unused data
+        - rename column headers if necessary
+        - strip unwanted spaces
+        """
+
+        self.curve_data = pd.read_csv(file)
+        print("Taille des données (linges, colonnes) :", curve_data.shape, "\n")
+
+
+
 
 
 
