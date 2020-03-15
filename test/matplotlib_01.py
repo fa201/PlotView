@@ -10,7 +10,8 @@ https://openclassrooms.com/fr/courses/4452741-decouvrez-les-librairies-python-po
 import matplotlib.pyplot as plt
 from matplotlib import style
 
-style.use('dark_background')
+# default, dark_background, seaborn, seaborn-bright, seaborn-paper
+style.use('seaborn-paper')
 
 # Création des listes de coordonées des points
 x = []
