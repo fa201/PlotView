@@ -40,7 +40,9 @@ class Curve:
         print("Size of data read (lines, colums) :", df.shape)  # TODO: this should appear on status bar later
         return df
 
+# 0 is not a curve
 curves = []
+
 
 #TODO : créer une liste de curve pour pouvoir en rajouter une automatiquement avec append.
 
