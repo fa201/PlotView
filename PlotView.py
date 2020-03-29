@@ -2,17 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """PlotView read a data file plot the data curve using matplotlib.
-
-Use of module or script:
-	python3 template.py [argument1, argument2...]
-	argument1: blabla
-	argument2: blabla
 	
 Additional explanation
 """
 
+
 import sys
 import pandas as pd
+
 
 class Curve:
     """Contains all the data relative to a curve including its appearance."""
