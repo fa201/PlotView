@@ -15,10 +15,7 @@ import sys
 import pandas as pd
 
 class Curve:
-    """Contains all the data relative to a curve including its appearance.
-
-
-	"""
+    """Contains all the data relative to a curve including its appearance."""
 
     def __init__(self, curve_id, name, file):
 		# Curve ID used to handle curves
