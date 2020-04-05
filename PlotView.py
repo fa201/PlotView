@@ -9,6 +9,7 @@ Additional explanation
 
 import sys
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 class Curve:
@@ -39,8 +40,9 @@ class Curve:
         df = pd.read_csv(file, delimiter=',')
         print("Size of data read (lines, colums) :", df.shape)  # TODO: this should appear on status bar later
         return df
+    
 
-# 0 is not a curve
+# Curve list to manage the plots
 curves = []
 
 
