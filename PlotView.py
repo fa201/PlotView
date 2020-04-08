@@ -15,18 +15,23 @@ import matplotlib.pyplot as plt
 class Curve:
     """Contains all the data relative to a curve including its appearance."""
 
+    count = 0  # Count the number of curves created
+
     def __init__(self, name, file):
         self.c_name = name  # Curve name entered by user in PV GUI 
-        self.c_file = file  # Data file opened by user in PV GUI
+        self.c_file = file  # Path of data file given by user in PV GUI
+        self.c_data = self.read_file(file)  # X, Y dataframe defining the curve from file
         self.c_x_type = ''  # x type of data and y type of data as read in the curve file
         self.c_y_type = ''
-        self.c_data = self.read_file(file)  # X, Y data defining the curve from file
+        self.c_x_unit = ''  # Units of x data and y data as read in the curve file
+        self.c_y_unit = ''
         self.c_visibility = False  # GUI indicator to show the curve in the plot
         self.c_color = 'black'  # Line color of curve -> string
         self.c_width = 1.0  # line width of curve -> float TODO: what are the limits?
         self.c_style = 'solid'  # line style of curve -> string TODO: what are the options?
         self.c_marker = 'circle'  # line marker (symbol) of curve -> string TODO: what are the options?
         self.c_marker_size = 1.0  # line marker size (size of symbol) of curve -> float TODO: what are the limits?
+        Curve.count += 1
 
     def read_file(self, file):
         """Read the curve file containing only 2 columns.
@@ -37,16 +42,21 @@ class Curve:
         - strip unwanted spaces
         - make sure that comma is the delimiter
         """
-        df = pd.read_csv(file, delimiter=',')
-        print("Size of data read (lines, colums) :", df.shape)  # TODO: this should appear on status bar later
+        df = pd.read_csv(file, delimiter=',', header=2)
+        print("Size of data read (lines, colums):", df.shape)  # TODO: this should appear on status bar later
+        print("Header of data:")
+        print(df.head(3))
         return df
     
 
 # Curve list to manage the plots
 curves = []
 
-
-#TODO : créer une liste de curve pour pouvoir en rajouter une automatiquement avec append.
+c1 = Curve("curve 1", "/home/fabrice/Bureau/Travail/PlotView/test/curve1.csv")
+curves.append(c1.c_name)
+c2 = Curve("curve 2", "/home/fabrice/Bureau/Travail/PlotView/test/curve2.csv")
+curves.append(c2.c_name)
+print(curves)
 
 # Normal termination and free the stack.
 sys.exit(0)
