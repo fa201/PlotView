@@ -52,9 +52,9 @@ class Curve:
 # Curve list to manage the plots
 curves = []
 
-c1 = Curve("curve 1", "/home/fabrice/Bureau/Travail/PlotView/test/curve1.csv")
+c1 = Curve("curve 1", "test/curve1.csv")
 curves.append(c1.c_name)
-c2 = Curve("curve 2", "/home/fabrice/Bureau/Travail/PlotView/test/curve2.csv")
+c2 = Curve("curve 2", "test/curve2.csv")
 curves.append(c2.c_name)
 print(curves)
 
