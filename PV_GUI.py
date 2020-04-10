@@ -15,10 +15,6 @@ import webbrowser
 
 # === Variables ===
 
-
-
-
-
 # Root window
 root = tk.Tk()
 root.title('PlotView v0')
@@ -56,14 +52,16 @@ menu_main.add_cascade(label='Help', menu=menu_help)
 root.config(menu=menu_main)  # Link of main menu to root window
 
 # === File Menu ===
-menu_file.add_command(label='Export image')
+menu_file.add_command(label='Load session', state='disabled')
+menu_file.add_command(label='Save session as', state='disabled')
+menu_file.add_command(label='Export image', state='disabled')
 menu_file.add_command(label='Quit', command=quit_root)
 
 # === Preferences Menu ===
-menu_pref.add_command(label='Type of export image')
+menu_pref.add_command(label='Type of export image', state='disabled')
 
 # === Help Menu ===
-menu_help.add_command(label='Help on PlotView')
+menu_help.add_command(label='Help on PlotView', state='disabled')
 menu_help.add_command(label='Licence GPLv3', command=dialog_licence_help)
 menu_help.add_command(label='About', command=dialog_about_help)
 
@@ -167,10 +165,6 @@ check_display_curve1_var = tk.IntVar()
 tk.Checkbutton(frame_curve_management, variable=check_display_curve1_var).grid(row=1, column=2, padx=2, pady=0)
 color_curve_1 = ttk.Combobox(frame_curve_management, values=color_list_var1,  width=10)
 color_curve_1.grid(row=1, column=3, padx=2, pady=0)
-
-
-
-
 
 
 
