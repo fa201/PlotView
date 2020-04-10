@@ -2,6 +2,7 @@
 PlotView is a **curve plotter** using CSV files containing each 1 curve (X and Y coordinates for each curve point). The CSV file will be prepared using pandas library into a strict CSV format (delimiter is comma). The first 2 rows should contain:
 - the type of value for X and Y
 - the unit for X and Y
+
 It is my first program written in Python so I learn while I code. 
 
 ## My goals
