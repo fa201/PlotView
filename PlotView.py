@@ -18,6 +18,7 @@ class Curve:
     count = 0  # Count the number of curves created
 
     def __init__(self, name, file):
+        self.c_id = Curve.count  # Curve ID: must be unique
         self.c_name = name  # Curve name entered by user in PV GUI 
         self.c_file = file  # Path of data file given by user in PV GUI
         self.c_data = self.read_file(file)  # X, Y dataframe defining the curve from file
@@ -56,7 +57,6 @@ class Curve:
 curves = []
 
 ###########TODO Test of features - TO BE REMOVED LATER
-
 c1 = Curve("curve 1", "test/curve1.csv")
 curves.append(c1.c_name)
 c2 = Curve("curve 2", "test/curve2.csv")
@@ -64,6 +64,8 @@ curves.append(c2.c_name)
 print(curves)
 #print(c1.c_data)
 print(c1.c_data_type)
+#######################################################
+
 
 # Normal termination and free the stack.
 sys.exit(0)
