@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 class Curve:
     """Contains all the data relative to a curve including its appearance."""
 
-    count = 0  # Count the number of curves created
+    count = 1  # Count the number of curves created
 
     def __init__(self, name, file):
-        self.c_id = Curve.count  # Curve ID: must be unique
+        self.c_id = str(Curve.count)  # Curve ID: must be unique. Formatted to string to avoid this later on.
         self.c_name = name  # Curve name entered by user in PV GUI 
         self.c_file = file  # Path of data file given by user in PV GUI
         self.c_data = self.read_file(file)  # X, Y dataframe defining the curve from file
@@ -62,8 +62,6 @@ curves.append(c1.c_name)
 c2 = Curve("curve 2", "test/curve2.csv")
 curves.append(c2.c_name)
 print(curves)
-#print(c1.c_data)
-print(c1.c_data_type)
 #######################################################
 
 
