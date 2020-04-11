@@ -52,9 +52,20 @@ class Curve:
                 'x_unit': df.iloc[1, 0], 'y_unit': df.iloc[1, 1],})
         return d
     
+#    def plot(self):
+#        ax.plot(self.c_data.columns(0), self.c_data.columns(1))
+
 
 # Curve list to manage the plots
 curves = []
+
+# Plot creation
+global fig
+fig = plt.Figure()
+global ax
+ax = fig.add_axes()
+#TODO débugger le tracé dans matplotlib.
+
 
 ###########TODO Test of features - TO BE REMOVED LATER
 c1 = Curve("curve 1", "test/curve1.csv")
@@ -62,6 +73,7 @@ curves.append(c1.c_name)
 c2 = Curve("curve 2", "test/curve2.csv")
 curves.append(c2.c_name)
 print(curves)
+ax.plot(c1.c_data.iloc[:, 0], c1.c_data.iloc[:, 1])
 #######################################################
 
 
