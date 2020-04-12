@@ -34,7 +34,7 @@ class Curve:
         """Read the curve file containing only 2 columns.
 
         The file needs to be processed before reading:
-        - delete unused data and headers
+        - delete unused data and headers: only 1 line for header
         - rename column headers if necessary
         - strip unwanted spaces
         - make sure that comma is the delimiter
@@ -43,17 +43,18 @@ class Curve:
         print('Imported CSV file: ', file)
         print('Size of data (lines, colums):', df.shape)  # TODO: this should appear on status bar along with the file pat and name
         print(df.dtypes) # To confirm that the data type is float
-        print('Data from ', file, ' :', '\n', df)
+        #print('Data from ', file, ' :', '\n', df)
         return df
 
     def read_data_type(self, file):
+        """Read only the header line to set c_data_type list"""
         df = pd.read_csv(file, delimiter=',', header=None, nrows=1)  # Read only data types
         d = {}
         d.update({'x_type': df.iloc[0, 0], 'y_type': df.iloc[0, 1]})
         return d
 
     def plot_df(self, axes):
-        #self.c_data.plot(x=0 , y=1, ax=axes)  # 0 and 1 are indexes since the name of columns change from one file to another
+        """Plot the curve with all relevant Curve properties"""
         plt.plot(self.c_data.iloc[:, 0], self.c_data.iloc[:, 1],
                 label=self.c_name, c=self.c_color, lw=self.c_width,
                 ls=self.c_style, marker=self.c_marker,
@@ -71,7 +72,7 @@ curves.append(c2.c_name)
 print('List des éléments de \"curves\" : ', curves)
 #######################################################
 
-# Plot creation
+# Plot creation TODO: needs explanations (why it works) and rework
 fig, ax = plt.subplots(1)
 c1.plot_df(ax)
 plt.draw()
