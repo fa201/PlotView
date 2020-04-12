@@ -1,5 +1,4 @@
-Time,Force
-s,N
+Time (s),Force (N)
 0,0
 1,0.5
 2,1.0
