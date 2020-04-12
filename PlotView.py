@@ -26,7 +26,7 @@ class Curve:
         self.c_color = 'black'  # Line color of curve -> string
         self.c_width = 1.0  # line width of curve -> float TODO: what are the limits?
         self.c_style = 'solid'  # line style of curve -> string TODO: what are the options?
-        self.c_marker = 'circle'  # line marker (symbol) of curve -> string TODO: what are the options?
+        self.c_marker = 'o'  # line marker (symbol) of curve -> string TODO: what are the options?
         self.c_marker_size = 1.0  # line marker size (size of symbol) of curve -> float TODO: what are the limits?
         Curve.count += 1
 
@@ -51,10 +51,13 @@ class Curve:
         d = {}
         d.update({'x_type': df.iloc[0, 0], 'y_type': df.iloc[0, 1]})
         return d
-    
-    def plot_df(self, axes):
-        self.c_data.plot(x=0 , y=1, ax=axes)  # 0 and 1 are indexes since the name of columns change from one file to another
 
+    def plot_df(self, axes):
+        #self.c_data.plot(x=0 , y=1, ax=axes)  # 0 and 1 are indexes since the name of columns change from one file to another
+        plt.plot(self.c_data.iloc[:, 0], self.c_data.iloc[:, 1],
+                label=self.c_name, c=self.c_color, lw=self.c_width,
+                ls=self.c_style, marker=self.c_marker,
+                markersize=self.c_marker_size)
 
 
 # Curve list to manage the plots
