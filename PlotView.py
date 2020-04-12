@@ -40,10 +40,10 @@ class Curve:
         - make sure that comma is the delimiter
         """
         df = pd.read_csv(file, delimiter=',', header=0, dtype=float)  # header index=0 to skip string content. float converts data into float (necessary in order to plot)
-        print(file)
-        print("Size of data read (lines, colums):", df.shape)  # TODO: this should appear on status bar along with the file pat and name
-        #print(df.dtypes) # To confirm that the data type is float
-        print("Dataframe lu :")
+        print('Imported CSV file: ', file)
+        print('Size of data (lines, colums):', df.shape)  # TODO: this should appear on status bar along with the file pat and name
+        print(df.dtypes) # To confirm that the data type is float
+        print('Data from ', file, ' :')
         print(df)
         return df
 
@@ -58,20 +58,20 @@ class Curve:
         #self.c_data.plot(x=self.c_data.columns[0] , y=self.c_data.iloc[:,1], ax=axes)
 
 
+
 # Curve list to manage the plots
 curves = []
 
 # Plot creation
-#fig, ax = plt.subplots(1)
-
+fig, ax = plt.subplots(1)
 
 
 ###########TODO Test of features - TO BE REMOVED LATER
-c1 = Curve("curve 1", "test/curve1.csv")
+c1 = Curve('curve 1', 'test/curve1.csv')
 curves.append(c1.c_name)
-#c2 = Curve("curve 2", "test/curve2.csv")
-#curves.append(c2.c_name)
-#print(curves)
+c2 = Curve('curve 2', 'test/curve2.csv')
+curves.append(c2.c_name)
+print('List des éléments de \"curves\" : ', curves)
 
 #c1.plot_df(ax)
 #plt.draw()
