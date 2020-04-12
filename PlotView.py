@@ -43,8 +43,7 @@ class Curve:
         print('Imported CSV file: ', file)
         print('Size of data (lines, colums):', df.shape)  # TODO: this should appear on status bar along with the file pat and name
         print(df.dtypes) # To confirm that the data type is float
-        print('Data from ', file, ' :')
-        print(df)
+        print('Data from ', file, ' :', '\n', df)
         return df
 
     def read_data_type(self, file):
@@ -54,17 +53,12 @@ class Curve:
         return d
     
     def plot_df(self, axes):
-        print('plot_df')
-        #self.c_data.plot(x=self.c_data.columns[0] , y=self.c_data.iloc[:,1], ax=axes)
+        self.c_data.plot(x=0 , y=1, ax=axes)  # 0 and 1 are indexes since the name of columns change from one file to another
 
 
 
 # Curve list to manage the plots
 curves = []
-
-# Plot creation
-fig, ax = plt.subplots(1)
-
 
 ###########TODO Test of features - TO BE REMOVED LATER
 c1 = Curve('curve 1', 'test/curve1.csv')
@@ -72,13 +66,16 @@ curves.append(c1.c_name)
 c2 = Curve('curve 2', 'test/curve2.csv')
 curves.append(c2.c_name)
 print('List des éléments de \"curves\" : ', curves)
-
-#c1.plot_df(ax)
-#plt.draw()
-#plt.show()
-
 #######################################################
 
+# Plot creation
+fig, ax = plt.subplots(1)
+c1.plot_df(ax)
+plt.draw()
+plt.pause(1)
+c2.plot_df(ax)
+plt.draw()
+plt.show()
 
 # Normal termination and free the stack.
 sys.exit(0)
