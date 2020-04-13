@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plotview>
-	<!-- All curve data are stored here -->
-	<data>
-		<curve number="1">
-			<id>101</id>
-			<name>Effort X</name>
-			<x_type>Time</x_type>
-			<y_type>Load</y_type>
-			<number_points>2590</number_points>
-			<visibility>True</visibility>
-			<color>black</color>
-			<width>1.0</width>
-			<style>solid</style>
-			<marker>circle</marker>
-			<marker_size>1.5</marker_size>
-		</curve>
-	</data>
-	<!-- All plotting data are stored here -->
-	<graph>
-		<title>Global title</title>
-		<x_title>Blabla</x_title>
-		<y_title>Blabla</y_title>
-		<auto_scale>False</auto_scale>
-		<!-- User scale data are used only if autoscale is False --> 
-		<user_scale>
-				<xmin>12.4</xmin>
-				<xmax>45.8</xmax>
-				<ymin>0</ymin>
-				<ymax>1400</ymax>
-		</user_scale>
-		<legend>1</legend> <!-- 1 for NW, 2 for NE, 3 for SE, 4 for SW -->
-		<grid>False</grid>
-		<dark>True</dark> 
-	</graph>
+    <!-- All curve data are stored here -->
+    <data>
+        <curve number="1">
+            <id>101</id>
+            <name>Effort X</name>
+            <x_type>Time</x_type>
+            <y_type>Load</y_type>
+            <visibility>True</visibility>
+            <color>black</color>
+            <width>1.0</width>
+            <style>solid</style>
+            <marker>circle</marker>
+            <marker_size>1.5</marker_size>
+        </curve>
+    </data>
+    <!-- All plotting data are stored here -->
+    <graph>
+        <title>Global title</title>
+        <x_title>Blabla</x_title>
+        <y_title>Blabla</y_title>
+        <auto_scale>False</auto_scale>
+        <!-- User scale data are used only if autoscale is False -->
+        <user_scale>
+                <xmin>12.4</xmin>
+                <xmax>45.8</xmax>
+                <ymin>0</ymin>
+                <ymax>1400</ymax>
+        </user_scale>
+        <legend>1</legend> <!-- 1 for NW, 2 for NE, 3 for SE, 4 for SW -->
+        <grid>False</grid>
+        <dark>True</dark>
+    </graph>
 </plotview>
