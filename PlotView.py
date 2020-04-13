@@ -2,9 +2,9 @@
 
 """PlotView read a data file plot the data curve using matplotlib.
 	
-Additional explanation
+TODO: Additional explanation
+    Variables are created next to the place where they are used
 """
-
 
 import sys
 import pandas as pd
@@ -15,12 +15,14 @@ from tkinter import ttk
 import webbrowser
 
 
-# =====
-# CLASS 
-# =====
-
+# ====================  Class  ===================================
 class Curve:
-    """Contains all the data relative to a curve including its appearance."""
+    """Contains all the data relative to a curve:
+        - curve ID and name
+        - CSV file path
+        - dataframe for (X,Y) points
+        - curve line appearance (color, width, etc.)
+    """
 
     count = 1  # Count the number of curves created
 
@@ -39,23 +41,20 @@ class Curve:
         Curve.count += 1
 
     def read_file(self, file):
-        """Read the curve file containing only 2 columns.
-
-        The file needs to be processed before reading:
-        - delete unused data and headers: only 1 line for header
-        - rename column headers if necessary
-        - strip unwanted spaces
-        - make sure that comma is the delimiter
+        """Read the curve file (only 2 columns) as the file is processed out of PlotView:
+                - delete unused data and headers: only 1 line for header
+                - rename column headers if necessary
+                - strip unwanted spaces
+                - make sure that comma is the delimiter
         """
         df = pd.read_csv(file, delimiter=',', header=0, dtype=float)  # header index=0 to skip string content. float converts data into float (necessary in order to plot)
         print('Imported CSV file: ', file)
         print('Size of data (lines, colums):', df.shape)  # TODO: this should appear on status bar along with the file pat and name
         print(df.dtypes) # To confirm that the data type is float
-        #print('Data from ', file, ' :', '\n', df)
         return df
 
     def read_data_type(self, file):
-        """Read only the header line to set c_data_type list"""
+        """Read only the header line to set c_data_type list (X type of data, Y type of data)"""
         df = pd.read_csv(file, delimiter=',', header=None, nrows=1)  # Read only data types
         d = {}
         d.update({'x_type': df.iloc[0, 0], 'y_type': df.iloc[0, 1]})
@@ -67,21 +66,19 @@ class Curve:
                 label=self.c_name, c=self.c_color, lw=self.c_width,
                 ls=self.c_style, marker=self.c_marker,
                 markersize=self.c_marker_size)
+# ====================================================================
 
 
-# =========
-# VARIABLES
-# =========
+# ====================  Variables  ===================================
 # Root window
 root = tk.Tk()
 root.title('PlotView v0.2')
 #root.geometry(str(root.winfo_screenwidth()) + 'x' + str(root.winfo_screenheight()) + '+0+0')  # Set the size to max but it lloks like it is too big on Ubuntu. TODO: test on Windows
 root.geometry('1366x768+0+0')
+# ====================================================================
 
-# =========
-# CALLBACKS
-# =========
 
+# ====================  Callbacks  ===================================
 # Quits mainloop
 def quit_root():
     root.quit()
@@ -95,12 +92,11 @@ def dialog_about_help():
 def dialog_licence_help():
     webbrowser.open_new_tab(
     'https://github.com/fa201/PlotView/blob/master/LICENSE')
+# ====================================================================
 
 
-
-# ==================== Menus for root window ===================================
-
-# === Main menu ===
+# ====================  Menus  ===================================
+# Main menu 
 menu_main = tk.Menu(root)
 menu_file = tk.Menu(menu_main, tearoff='False')  # Disables tear off menu
 menu_pref = tk.Menu(menu_main, tearoff='False')
@@ -112,38 +108,42 @@ menu_main.add_cascade(label='Help', menu=menu_help)
 
 root.config(menu=menu_main)  # Link of main menu to root window
 
-# === File Menu ===
-menu_file.add_command(label='Load session', state='disabled')
-menu_file.add_command(label='Save session as', state='disabled')
+# File Menu
+menu_file.add_command(label='Load session', state='disabled')  # TODO: activate XML session loading
+menu_file.add_command(label='Save session as', state='disabled')  # TODO: activate XML session exporting
 menu_file.add_command(label='Export image', state='disabled')
 menu_file.add_command(label='Quit', command=quit_root)
 
-# === Preferences Menu ===
+# Preferences Menu
 menu_pref.add_command(label='Type of export image', state='disabled')
 
-# === Help Menu ===
+# Help Menu
 menu_help.add_command(label='Help on PlotView', state='disabled')
 menu_help.add_command(label='Licence GPLv3', command=dialog_licence_help)
 menu_help.add_command(label='About', command=dialog_about_help)
-
-# ==============================================================================
-
+# ====================================================================
 
 
-# ============
-# MAIN PROGRAM
-# ============
+# ====================  Matplotlib embedded   ===================================
 
+
+
+
+
+# ====================================================================
+
+
+# ====================  Main program  ===================================
 # Curve list to manage the plots
 curves = []
 
-###########TODO Test of features - TO BE REMOVED LATER
+# Test of features - TO BE REMOVED LATER
 c1 = Curve('curve 1', 'test/curve1.csv')
 curves.append(c1.c_name)
 c2 = Curve('curve 2', 'test/curve2.csv')
 curves.append(c2.c_name)
 print('List des éléments de \"curves\" : ', curves)
-#######################################################
+#
 
 # Plot creation TODO: needs explanations (why it works) and rework
 fig, ax = plt.subplots(1)
@@ -153,10 +153,6 @@ plt.pause(1)
 c2.plot_df(ax)
 plt.draw()
 plt.show()
-
-
-
-
 
 # Quit actions
 root.protocol('WM_DELETE_WINDOW', quit_root)  # Allows root window to be closed by the closing icon
