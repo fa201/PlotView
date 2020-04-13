@@ -4,6 +4,8 @@ The appearance of curves and axis scales should be customized in PlotView.
 
 It is my first program written in Python so I learn while I code. 
 
+Check the Wiki/To Do page for future steps.
+
 ## My goals
 - Application to learn the basics of Python.
 - Hopefully make a tool which will be useable to plot test data at work.
