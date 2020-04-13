@@ -9,7 +9,15 @@ Additional explanation
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
+import tkinter as tk
+import tkinter.messagebox
+from tkinter import ttk
+import webbrowser
 
+
+# =====
+# CLASS 
+# =====
 
 class Curve:
     """Contains all the data relative to a curve including its appearance."""
@@ -61,6 +69,71 @@ class Curve:
                 markersize=self.c_marker_size)
 
 
+# =========
+# VARIABLES
+# =========
+# Root window
+root = tk.Tk()
+root.title('PlotView v0.2')
+#root.geometry(str(root.winfo_screenwidth()) + 'x' + str(root.winfo_screenheight()) + '+0+0')  # Set the size to max but it lloks like it is too big on Ubuntu. TODO: test on Windows
+root.geometry('1366x768+0+0')
+
+# =========
+# CALLBACKS
+# =========
+
+# Quits mainloop
+def quit_root():
+    root.quit()
+
+# Shows the dialog from the Help/About menu
+def dialog_about_help():
+    dial = tkinter.messagebox.showinfo('About',
+    'PlotView source code is available at https://github.com/fa201/PlotView/.')
+
+# Opens the licence page of Github repo from the Help/Licence menu
+def dialog_licence_help():
+    webbrowser.open_new_tab(
+    'https://github.com/fa201/PlotView/blob/master/LICENSE')
+
+
+
+# ==================== Menus for root window ===================================
+
+# === Main menu ===
+menu_main = tk.Menu(root)
+menu_file = tk.Menu(menu_main, tearoff='False')  # Disables tear off menu
+menu_pref = tk.Menu(menu_main, tearoff='False')
+menu_help = tk.Menu(menu_main, tearoff='False')
+
+menu_main.add_cascade(label='File', menu=menu_file)  # Adds menu_file in menu_main
+menu_main.add_cascade(label='Preferences', menu=menu_pref)
+menu_main.add_cascade(label='Help', menu=menu_help)
+
+root.config(menu=menu_main)  # Link of main menu to root window
+
+# === File Menu ===
+menu_file.add_command(label='Load session', state='disabled')
+menu_file.add_command(label='Save session as', state='disabled')
+menu_file.add_command(label='Export image', state='disabled')
+menu_file.add_command(label='Quit', command=quit_root)
+
+# === Preferences Menu ===
+menu_pref.add_command(label='Type of export image', state='disabled')
+
+# === Help Menu ===
+menu_help.add_command(label='Help on PlotView', state='disabled')
+menu_help.add_command(label='Licence GPLv3', command=dialog_licence_help)
+menu_help.add_command(label='About', command=dialog_about_help)
+
+# ==============================================================================
+
+
+
+# ============
+# MAIN PROGRAM
+# ============
+
 # Curve list to manage the plots
 curves = []
 
@@ -80,6 +153,15 @@ plt.pause(1)
 c2.plot_df(ax)
 plt.draw()
 plt.show()
+
+
+
+
+
+# Quit actions
+root.protocol('WM_DELETE_WINDOW', quit_root)  # Allows root window to be closed by the closing icon
+root.mainloop()  # Event loop
+root.destroy()  # Destroy the root window
 
 # Normal termination and free the stack.
 sys.exit(0)
