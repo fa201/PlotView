@@ -9,6 +9,8 @@ TODO: Additional explanation
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
 import tkinter as tk
 import tkinter.messagebox
 from tkinter import ttk
@@ -125,8 +127,13 @@ menu_help.add_command(label='About', command=dialog_about_help)
 
 
 # ====================  Matplotlib embedded   ===================================
-
-
+fig = plt.Figure()
+ax = fig.add_subplot(111)
+canvas = FigureCanvasTkAgg(fig, master=root)  # Create a drawing area to put the Figure
+canvas.draw()
+toolbar = NavigationToolbar2Tk(canvas, root)  # Create the Matplotlib navigation tool bar for figures.
+toolbar.update()
+canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
 
 
@@ -146,13 +153,13 @@ print('List des éléments de \"curves\" : ', curves)
 #
 
 # Plot creation TODO: needs explanations (why it works) and rework
-fig, ax = plt.subplots(1)
-c1.plot_df(ax)
-plt.draw()
-plt.pause(1)
-c2.plot_df(ax)
-plt.draw()
-plt.show()
+#fig, ax = plt.subplots(1)
+#c1.plot_df(ax)
+#plt.draw()
+#plt.pause(1)
+#c2.plot_df(ax)
+#plt.draw()
+#plt.show()
 
 # Quit actions
 root.protocol('WM_DELETE_WINDOW', quit_root)  # Allows root window to be closed by the closing icon
