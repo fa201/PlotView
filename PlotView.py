@@ -72,12 +72,18 @@ class Curve:
 # ====================================================================
 
 
-# ====================  Variables  ===================================
+# ====================  Definitions  ===================================
 # Root window
 root = tk.Tk()
 root.title('PlotView v0.2')
 #root.geometry(str(root.winfo_screenwidth()) + 'x' + str(root.winfo_screenheight()) + '+0+0')  # Set the size to max but it lloks like it is too big on Ubuntu. TODO: test on Windows
 root.geometry('1366x768+0+0')
+
+def status(format, *args):
+    """Creates a Label to display status bar message."""
+    status.config(text=format % args)
+    status.update_idletasks()
+
 # ====================================================================
 
 
@@ -132,21 +138,25 @@ menu_help.add_command(label='About', command=dialog_about_help)
 # TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
 fig = plt.Figure(figsize=(10, 6))  # This size defines the size of the plot
 ax = fig.add_subplot(111)
-mat_frame = tk.Frame(root, bd=1)
+mat_frame = tk.Frame(root)
 mat_frame.grid(row=0, column=0)
-canvas = FigureCanvasTkAgg(fig, master=mat_frame)  # Create a drawing area to put the Figure
+canvas = FigureCanvasTkAgg(fig, master=mat_frame)  # Creates a drawing area to put the Figure
 canvas.draw()
-toolbar = NavigationToolbar2Tk(canvas, mat_frame)  # Create the Matplotlib navigation tool bar for figures.
+toolbar = NavigationToolbar2Tk(canvas, mat_frame)  # Creates the Matplotlib navigation tool bar for figures.
 toolbar.draw()
 canvas.get_tk_widget().pack()
 
 # === Room for other widgets on RH side of main window ===
-tool_frame = tk.Frame(root, bd=1)
+tool_frame = tk.Frame(root)
 tool_frame.grid(row=0, column=1)
 tk.Label(tool_frame, text='Room for widget').pack()
 
 # Status bar at bottom of main window
-
+status_frame = tk.Frame(root)
+status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E, pady=10)
+status_bar = tk.Label(status_frame, text='', bd=1, relief=tk.SUNKEN, anchor=tk.W)
+status_bar.pack(fill=tk.X, expand=True)  # Allows the label to expand on the width
+status_bar = status('')
 
 # ====================================================================
 
@@ -162,7 +172,9 @@ c2 = Curve('curve 2', 'test/curve2.csv')
 curves.append(c2.c_name)
 #print('List des éléments de \"curves\" : ', curves)
 c1.plot_df(ax)
+status(c1.c_id + " - " + c1.c_name + " is plotted.")
 c2.plot_df(ax)
+status(c2.c_id + " - " + c2.c_name + " is plotted.")
 #
 
 # Quit actions
