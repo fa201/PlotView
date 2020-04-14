@@ -64,7 +64,8 @@ class Curve:
 
     def plot_df(self, axes):
         """Plot the curve with all relevant Curve properties"""
-        plt.plot(self.c_data.iloc[:, 0], self.c_data.iloc[:, 1],
+        global ax  # Necessary otherwise ax is a local variable
+        ax.plot(self.c_data.iloc[:, 0], self.c_data.iloc[:, 1],
                 label=self.c_name, c=self.c_color, lw=self.c_width,
                 ls=self.c_style, marker=self.c_marker,
                 markersize=self.c_marker_size)
@@ -125,16 +126,26 @@ menu_help.add_command(label='Licence GPLv3', command=dialog_licence_help)
 menu_help.add_command(label='About', command=dialog_about_help)
 # ====================================================================
 
+# ====================  GUI Level 1  ===================================
 
-# ====================  Matplotlib embedded   ===================================
-fig = plt.Figure()
+# === Matplotlib embedment on LH side of main window ===
+# TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
+fig = plt.Figure(figsize=(10, 6))  # This size defines the size of the plot
 ax = fig.add_subplot(111)
-canvas = FigureCanvasTkAgg(fig, master=root)  # Create a drawing area to put the Figure
+mat_frame = tk.Frame(root, bd=1)
+mat_frame.grid(row=0, column=0)
+canvas = FigureCanvasTkAgg(fig, master=mat_frame)  # Create a drawing area to put the Figure
 canvas.draw()
-toolbar = NavigationToolbar2Tk(canvas, root)  # Create the Matplotlib navigation tool bar for figures.
-toolbar.update()
-canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+toolbar = NavigationToolbar2Tk(canvas, mat_frame)  # Create the Matplotlib navigation tool bar for figures.
+toolbar.draw()
+canvas.get_tk_widget().pack()
 
+# === Room for other widgets on RH side of main window ===
+tool_frame = tk.Frame(root, bd=1)
+tool_frame.grid(row=0, column=1)
+tk.Label(tool_frame, text='Room for widget').pack()
+
+# Status bar at bottom of main window
 
 
 # ====================================================================
@@ -144,22 +155,15 @@ canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 # Curve list to manage the plots
 curves = []
 
-# Test of features - TO BE REMOVED LATER
+# === Test of features - TO BE REMOVED LATER
 c1 = Curve('curve 1', 'test/curve1.csv')
 curves.append(c1.c_name)
 c2 = Curve('curve 2', 'test/curve2.csv')
 curves.append(c2.c_name)
-print('List des éléments de \"curves\" : ', curves)
+#print('List des éléments de \"curves\" : ', curves)
+c1.plot_df(ax)
+c2.plot_df(ax)
 #
-
-# Plot creation TODO: needs explanations (why it works) and rework
-#fig, ax = plt.subplots(1)
-#c1.plot_df(ax)
-#plt.draw()
-#plt.pause(1)
-#c2.plot_df(ax)
-#plt.draw()
-#plt.show()
 
 # Quit actions
 root.protocol('WM_DELETE_WINDOW', quit_root)  # Allows root window to be closed by the closing icon
