@@ -68,6 +68,8 @@ class Curve:
                 label=self.c_name, c=self.c_color, lw=self.c_width,
                 ls=self.c_style, marker=self.c_marker,
                 markersize=self.c_marker_size)
+        # Update the status bar with curve ID and curve name
+        set_status(self.c_id + " - " + self.c_name + " is plotted.")
 # ====================================================================
 
 
@@ -173,9 +175,7 @@ c2 = Curve('curve 2', 'test/curve2.csv')
 curves.append(c2.c_name)
 #print('List des éléments de \"curves\" : ', curves)
 c1.plot_df(ax)
-set_status(c1.c_id + " - " + c1.c_name + " is plotted.")
 c2.plot_df(ax)
-set_status(c2.c_id + " - " + c2.c_name + " is plotted.")
 #
 
 # Quit actions
