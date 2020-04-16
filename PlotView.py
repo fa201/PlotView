@@ -196,8 +196,8 @@ curves = [0]
 # === Test of features - TO BE REMOVED LATER
 curves.append(Curve('curve1', 'test/curve1.csv'))
 curves[1].plot_df(ax)
-curves.append(Curve('curve 2', 'test/curve2.csv'))
-curves[2].plot_df(ax)
+#curves.append(Curve('curve 2', 'test/curve2.csv'))
+#curves[2].plot_df(ax)
 #
 
 # Quit actions
