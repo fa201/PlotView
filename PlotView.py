@@ -79,6 +79,7 @@ root = tk.Tk()
 root.title('PlotView v0.2')
 #root.geometry(str(root.winfo_screenwidth()) + 'x' + str(root.winfo_screenheight()) + '+0+0')  # Set the size to max but it lloks like it is too big on Ubuntu. TODO: test on Windows
 root.geometry('1366x768+0+0')
+root.resizable(0,0)  # Root window cannot be resized. TODO: to be replaced by minsize() & maxsize() if I can handle properly the change of size in the GUI.
 
 """def set_status(format, *args):
     status.config(text=format % args)
