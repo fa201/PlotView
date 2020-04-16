@@ -190,16 +190,14 @@ set_status('Status bar is ready.')  # Show that
 
 # ====================  Main program  ===================================
 # Curve list to manage the plots
-curves = []
+# 0 is added to have curves index matching the Curve instance ID
+curves = [0]
 
 # === Test of features - TO BE REMOVED LATER
-c1 = Curve('test/curve1.csv')
-curves.append(c1.c_name)
-c2 = Curve('test/curve2.csv')
-curves.append(c2.c_name)
-#print('List des éléments de \"curves\" : ', curves)
-c1.plot_df(ax)
-c2.plot_df(ax)
+curves.append(Curve('test/curve1.csv'))
+curves[1].plot_df(ax)
+curves.append(Curve('test/curve2.csv'))
+curves[2].plot_df(ax)
 #
 
 # Quit actions
