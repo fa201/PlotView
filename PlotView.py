@@ -137,9 +137,9 @@ menu_help.add_command(label='About', command=dialog_about_help)
 # ====================================================================
 
 
-# ====================  GUI Level 1  ===================================
+# ====================  GUI  ===================================
 
-# === Matplotlib embedment on LH side of main window ===
+# === Matplotlib embedment on LH side of main window
 # TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
 fig = plt.Figure(figsize=(10, 6))  # This size defines the size of the plot
 ax = fig.add_subplot(111)
@@ -150,11 +150,27 @@ canvas.draw()
 toolbar = NavigationToolbar2Tk(canvas, mat_frame)  # Creates the Matplotlib navigation tool bar for figures.
 toolbar.draw()
 canvas.get_tk_widget().pack()
+# ====================================================================
 
-# === Tool panel on RH side of main window ===
-tool_frame = tk.Frame(root)
-tool_frame.grid(row=0, column=1)
+# ====================  GUI - RH tool panel  ===============================
 
+tool_frame = tk.Frame(root, padx=5, pady=5)
+tool_frame.grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S)
+tool_notebook = ttk.Notebook(tool_frame)
+
+# === Curve tab 
+curve_tab = ttk.Frame(tool_notebook)
+
+
+
+
+# ==== Plot tab
+plot_tab = ttk.Frame(tool_notebook)
+
+# === Display the complete notebook
+tool_notebook.add(curve_tab, text='Curve')
+tool_notebook.add(plot_tab, text='Plot')
+tool_notebook.pack(expand=True, fill=tk.BOTH)
 
 # === Status bar at bottom of main window
 status_frame = tk.Frame(root)
