@@ -28,9 +28,9 @@ class Curve:
 
     count = 1  # Count the number of curves created
 
-    def __init__(self, name, file):
+    def __init__(self, file):
         self.c_id = str(Curve.count)  # Curve ID: must be unique. Formatted to string to avoid this later on.
-        self.c_name = name  # Curve name entered by user in PV GUI 
+        self.c_name = 'essai'  # Curve name entered by user in PV GUI 
         self.c_file = file  # Path of data file given by user in PV GUI
         self.c_data = self.read_file(file)  # X, Y dataframe defining the curve from file
         self.c_data_type = self.read_data_type(file)  # Dictionnary: 'x_type', 'y_type'
@@ -193,9 +193,9 @@ set_status('Status bar is ready.')  # Show that
 curves = []
 
 # === Test of features - TO BE REMOVED LATER
-c1 = Curve('curve 1', 'test/curve1.csv')
+c1 = Curve('test/curve1.csv')
 curves.append(c1.c_name)
-c2 = Curve('curve 2', 'test/curve2.csv')
+c2 = Curve('test/curve2.csv')
 curves.append(c2.c_name)
 #print('List des éléments de \"curves\" : ', curves)
 c1.plot_df(ax)
