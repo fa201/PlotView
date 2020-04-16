@@ -78,7 +78,7 @@ class Curve:
 root = tk.Tk()
 root.title('PlotView v0.2')
 #root.geometry(str(root.winfo_screenwidth()) + 'x' + str(root.winfo_screenheight()) + '+0+0')  # Set the size to max but it lloks like it is too big on Ubuntu. TODO: test on Windows
-root.geometry('1366x768+0+0')
+#root.geometry('1366x768+0+0')
 root.resizable(0,0)  # Root window cannot be resized. TODO: to be replaced by minsize() & maxsize() if I can handle properly the change of size in the GUI.
 
 """def set_status(format, *args):
@@ -141,7 +141,7 @@ menu_help.add_command(label='About', command=dialog_about_help)
 
 # === Matplotlib embedment on LH side of main window
 # TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
-fig = plt.Figure(figsize=(10, 6))  # This size defines the size of the plot
+fig = plt.Figure(figsize=(9, 7))  # This size defines the size of the plot
 ax = fig.add_subplot(111)
 mat_frame = tk.Frame(root)
 mat_frame.grid(row=0, column=0)
@@ -160,7 +160,13 @@ tool_notebook = ttk.Notebook(tool_frame)
 
 # === Curve tab 
 curve_tab = ttk.Frame(tool_notebook)
-
+create_curve_frame = tk.LabelFrame(curve_tab, text='Create curve', labelancho='n')
+create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
+read_file_button = tk.Button(create_curve_frame, text='Read CSV file').grid(row=0, column=0, padx=2, pady=2, columnspan=2)
+tk.Label(create_curve_frame, text='Curve ID: 0').grid(row=0, column=2, padx=2, pady=2)
+tk.Label(create_curve_frame, text='Name:').grid(row=1, column=0, padx=2, pady=2)
+curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=1, column=1, padx=2, pady=2)
+create_curve_button = tk.Button(create_curve_frame, text='Create').grid(row=1, column=2, padx=2, pady=2)
 
 
 
@@ -174,7 +180,7 @@ tool_notebook.pack(expand=True, fill=tk.BOTH)
 
 # === Status bar at bottom of main window
 status_frame = tk.Frame(root)
-status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E, pady=10)
+status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E, pady=0)
 status = tk.Label(status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
 status.pack(fill=tk.X, expand=True)  # Allows the label to expand on the width
 set_status('Status bar is ready.')  # Show that
