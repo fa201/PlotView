@@ -136,6 +136,7 @@ menu_help.add_command(label='Licence GPLv3', command=dialog_licence_help)
 menu_help.add_command(label='About', command=dialog_about_help)
 # ====================================================================
 
+
 # ====================  GUI Level 1  ===================================
 
 # === Matplotlib embedment on LH side of main window ===
@@ -150,10 +151,10 @@ toolbar = NavigationToolbar2Tk(canvas, mat_frame)  # Creates the Matplotlib navi
 toolbar.draw()
 canvas.get_tk_widget().pack()
 
-# === Room for other widgets on RH side of main window ===
+# === Tool panel on RH side of main window ===
 tool_frame = tk.Frame(root)
 tool_frame.grid(row=0, column=1)
-tk.Label(tool_frame, text='Room for widget').pack()
+
 
 # === Status bar at bottom of main window
 status_frame = tk.Frame(root)
