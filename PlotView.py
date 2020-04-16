@@ -29,17 +29,17 @@ class Curve:
     count = 1  # Count the number of curves created
 
     def __init__(self, file):
-        self.c_id = str(Curve.count)  # Curve ID: must be unique. Formatted to string to avoid this later on.
-        self.c_name = 'essai'  # Curve name entered by user in PV GUI 
-        self.c_file = file  # Path of data file given by user in PV GUI
-        self.c_data = self.read_file(file)  # X, Y dataframe defining the curve from file
-        self.c_data_type = self.read_data_type(file)  # Dictionnary: 'x_type', 'y_type'
-        self.c_visibility = False  # GUI indicator to show the curve in the plot
-        self.c_color = 'black'  # Line color of curve -> string
-        self.c_width = 1.0  # line width of curve -> float TODO: what are the limits?
-        self.c_style = 'solid'  # line style of curve -> string TODO: what are the options?
-        self.c_marker = 'o'  # line marker (symbol) of curve -> string TODO: what are the options?
-        self.c_marker_size = 1.0  # line marker size (size of symbol) of curve -> float TODO: what are the limits?
+        self.id = str(Curve.count)  # Curve ID: must be unique. Formatted to string to avoid this later on.
+        self.name = 'essai'  # Curve name entered by user in PV GUI 
+        self.file = file  # Path of data file given by user in PV GUI
+        self.data = self.read_file(file)  # X, Y dataframe defining the curve from file
+        self.data_type = self.read_data_type(file)  # Dictionnary: 'x_type', 'y_type'
+        self.visibility = False  # GUI indicator to show the curve in the plot
+        self.color = 'black'  # Line color of curve -> string
+        self.width = 1.0  # line width of curve -> float TODO: what are the limits?
+        self.style = 'solid'  # line style of curve -> string TODO: what are the options?
+        self.marker = 'o'  # line marker (symbol) of curve -> string TODO: what are the options?
+        self.marker_size = 1.0  # line marker size (size of symbol) of curve -> float TODO: what are the limits?
         Curve.count += 1
 
     def read_file(self, file):
@@ -64,12 +64,12 @@ class Curve:
 
     def plot_df(self, axes):
         """Plot the curve with all relevant Curve properties"""
-        ax.plot(self.c_data.iloc[:, 0], self.c_data.iloc[:, 1],
-                label=self.c_name, c=self.c_color, lw=self.c_width,
-                ls=self.c_style, marker=self.c_marker,
-                markersize=self.c_marker_size)
+        ax.plot(self.data.iloc[:, 0], self.data.iloc[:, 1],
+                label=self.name, c=self.color, lw=self.width,
+                ls=self.style, marker=self.marker,
+                markersize=self.marker_size)
         # Update the status bar with curve ID and curve name
-        set_status(self.c_id + " - " + self.c_name + " is plotted.")
+        set_status(self.id + " - " + self.name + " is plotted.")
 # ====================================================================
 
 
