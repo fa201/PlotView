@@ -154,12 +154,12 @@ tool_frame = tk.Frame(root)
 tool_frame.grid(row=0, column=1)
 tk.Label(tool_frame, text='Room for widget').pack()
 
-# Status bar at bottom of main window
+# === Status bar at bottom of main window
 status_frame = tk.Frame(root)
 status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E, pady=10)
 status = tk.Label(status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
 status.pack(fill=tk.X, expand=True)  # Allows the label to expand on the width
-set_status('Ready')
+set_status('Status bar is ready.')  # Show that
 
 # ====================================================================
 
