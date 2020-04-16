@@ -28,9 +28,9 @@ class Curve:
 
     count = 1  # Count the number of curves created
 
-    def __init__(self, file):
+    def __init__(self, name, file):
         self.id = str(Curve.count)  # Curve ID: must be unique. Formatted to string to avoid this later on.
-        self.name = 'essai'  # Curve name entered by user in PV GUI 
+        self.name = name  # Curve name entered by user in PV GUI 
         self.file = file  # Path of data file given by user in PV GUI
         self.data = self.read_file(file)  # X, Y dataframe defining the curve from file
         self.data_type = self.read_data_type(file)  # Dictionnary: 'x_type', 'y_type'
@@ -68,6 +68,8 @@ class Curve:
                 label=self.name, c=self.color, lw=self.width,
                 ls=self.style, marker=self.marker,
                 markersize=self.marker_size)
+        # Update legend
+        ax.legend(loc='lower right')
         # Update the status bar with curve ID and curve name
         set_status(self.id + " - " + self.name + " is plotted.")
 # ====================================================================
@@ -143,6 +145,7 @@ menu_help.add_command(label='About', command=dialog_about_help)
 # TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
 fig = plt.Figure(figsize=(9, 7))  # This size defines the size of the plot
 ax = fig.add_subplot(111)
+
 mat_frame = tk.Frame(root)
 mat_frame.grid(row=0, column=0)
 canvas = FigureCanvasTkAgg(fig, master=mat_frame)  # Creates a drawing area to put the Figure
@@ -194,9 +197,9 @@ set_status('Status bar is ready.')  # Show that
 curves = [0]
 
 # === Test of features - TO BE REMOVED LATER
-curves.append(Curve('test/curve1.csv'))
+curves.append(Curve('curve1', 'test/curve1.csv'))
 curves[1].plot_df(ax)
-curves.append(Curve('test/curve2.csv'))
+curves.append(Curve('curve 2', 'test/curve2.csv'))
 curves[2].plot_df(ax)
 #
 
