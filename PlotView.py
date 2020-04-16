@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """PlotView read a data file plot the data curve using matplotlib.
-	
+
 TODO: Additional explanation
     Variables are created next to the place where they are used
 """
@@ -64,7 +64,6 @@ class Curve:
 
     def plot_df(self, axes):
         """Plot the curve with all relevant Curve properties"""
-        global ax  # Necessary otherwise ax is a local variable
         ax.plot(self.c_data.iloc[:, 0], self.c_data.iloc[:, 1],
                 label=self.c_name, c=self.c_color, lw=self.c_width,
                 ls=self.c_style, marker=self.c_marker,
@@ -79,10 +78,12 @@ root.title('PlotView v0.2')
 #root.geometry(str(root.winfo_screenwidth()) + 'x' + str(root.winfo_screenheight()) + '+0+0')  # Set the size to max but it lloks like it is too big on Ubuntu. TODO: test on Windows
 root.geometry('1366x768+0+0')
 
-def status(format, *args):
-    """Creates a Label to display status bar message."""
+"""def set_status(format, *args):
     status.config(text=format % args)
-    status.update_idletasks()
+"""
+def set_status(string):
+    """Update the status bar message."""
+    status.config(text=string)
 
 # ====================================================================
 
@@ -154,9 +155,9 @@ tk.Label(tool_frame, text='Room for widget').pack()
 # Status bar at bottom of main window
 status_frame = tk.Frame(root)
 status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E, pady=10)
-status_bar = tk.Label(status_frame, text='', bd=1, relief=tk.SUNKEN, anchor=tk.W)
-status_bar.pack(fill=tk.X, expand=True)  # Allows the label to expand on the width
-status_bar = status('')
+status = tk.Label(status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
+status.pack(fill=tk.X, expand=True)  # Allows the label to expand on the width
+set_status('Ready')
 
 # ====================================================================
 
@@ -172,9 +173,9 @@ c2 = Curve('curve 2', 'test/curve2.csv')
 curves.append(c2.c_name)
 #print('List des éléments de \"curves\" : ', curves)
 c1.plot_df(ax)
-status(c1.c_id + " - " + c1.c_name + " is plotted.")
+set_status(c1.c_id + " - " + c1.c_name + " is plotted.")
 c2.plot_df(ax)
-status(c2.c_id + " - " + c2.c_name + " is plotted.")
+set_status(c2.c_id + " - " + c2.c_name + " is plotted.")
 #
 
 # Quit actions
