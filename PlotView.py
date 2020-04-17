@@ -29,7 +29,7 @@ class Curve:
 
     count = 1  # Count the number of curves created
 
-    def __init__(self, name, file):
+    def __init__(self, file):
         self.id = str(Curve.count)  # Curve ID: must be unique. Formatted to string to avoid this later on.
         self.name = 'Curve'  # Curve name entered by user in PV GUI 
         self.file = file  # Path of data file given by user in PV GUI
@@ -150,6 +150,10 @@ def choose_file():
         work_file_txt.set(work_file)
     set_status('CSV file: {0}'.format(work_file))
 
+def create_curve():
+    curves.append(Curve(work_file))
+    print('Objet curve créés: {0}'.format(curves))
+    print(curves[Curve.count-2].id, curves[Curve.count-2].name)  # count-2 since count was incremented at __init__()
 
 # ====================================================================
 
@@ -217,15 +221,15 @@ tk.Label(create_curve_frame, textvariable=work_dir_txt).grid(row=0, column=1, pa
 # CSV file widgets
 tk.Button(create_curve_frame, text='Choose CSV file', command=choose_file).grid(row=1, column=0, padx=2, pady=2)
 tk.Label(create_curve_frame, textvariable=work_file_txt).grid(row=1, column=1, padx=2, pady=2)
-
 tk.Label(create_curve_frame, text='Curve ID - name: {0} - Curve'.format(Curve.count)).grid(row=2, column=0, padx=2, pady=2)
-
+# Create curve widget
+tk.Button(create_curve_frame, text='Create', command=create_curve).grid(row=3, column=2, padx=2, pady=2)
 
 
 #
-tk.Label(create_curve_frame, text='Name:').grid(row=3, column=0, padx=2, pady=2)
-curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=3, column=1, padx=2, pady=2)
-create_curve_button = tk.Button(create_curve_frame, text='Create').grid(row=3, column=2, padx=2, pady=2)
+#tk.Label(create_curve_frame, text='Name:').grid(row=3, column=0, padx=2, pady=2)
+#curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=3, column=1, padx=2, pady=2)
+
 
 
 
@@ -249,8 +253,7 @@ set_status('Status bar is ready.')  # Show that
 
 # ====================  Main program  ===================================
 # Curve list to manage the plots
-# 0 is added to have curves index matching the Curve instance ID
-curves = [0]
+curves = []
 
 # === Test of features - TO BE REMOVED LATER TODO: à reprogrammer en evenementiel
 #print("CSV file to be opened: {0}".format(file_path))
