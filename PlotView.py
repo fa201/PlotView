@@ -89,6 +89,9 @@ work_dir = ''  # Used to define the initial directory for the CSV filedialog
 work_dir_txt = tk.StringVar()
 work_dir_txt.set('')
 
+# Path to CSV file
+file_path = ''
+
 def set_status(string):
     """Update the status bar message."""
     status.config(text=string)
@@ -120,6 +123,19 @@ def choose_dir():
     work_dir = directory
     # Cut the beginning of displayed string so that it fits in the layout
     work_dir_txt.set("..."+work_dir[-35:])
+    set_status('Working directory: {0}'.format(work_dir))
+
+
+#def choose_file():
+    """Define the path of CSV file to be read """
+#    global work_dir, file_path
+#    file_path = filedialog.askopenfilename(
+#            initialdir=current_dir, 
+#            filetypes=[('CSV file', '*.csv')],
+ #           title='Open CSV file'            
+ #           )
+ #   print(file)
+
 
 # ====================================================================
 
@@ -178,7 +194,7 @@ tool_notebook = ttk.Notebook(tool_frame)
 # === Curve tab 
 curve_tab = ttk.Frame(tool_notebook)
 
-# = Creates curve tools
+# = 'Create curve' panel
 create_curve_frame = tk.LabelFrame(curve_tab, text='Create curve', labelancho='n')
 create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
 
