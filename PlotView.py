@@ -125,16 +125,16 @@ def choose_dir():
     work_dir_txt.set("..."+work_dir[-35:])
     set_status('Working directory: {0}'.format(work_dir))
 
-
-#def choose_file():
+def choose_file():
     """Define the path of CSV file to be read """
-#    global work_dir, file_path
-#    file_path = filedialog.askopenfilename(
-#            initialdir=current_dir, 
-#            filetypes=[('CSV file', '*.csv')],
- #           title='Open CSV file'            
- #           )
- #   print(file)
+    global work_dir, file_path
+    file_path = filedialog.askopenfilename(
+                            initialdir=work_dir,
+                            filetypes=[('CSV file', '*.csv')],
+                            title='Open CSV file'            
+                            )
+    print(file_path)
+    set_status('CSV file: {0}'.format(file_path))
 
 
 # ====================================================================
@@ -202,7 +202,7 @@ tk.Button(create_curve_frame, text='Choose working directory', command=choose_di
 work_dir_label = tk.Label(create_curve_frame, textvariable=work_dir_txt) # Displays the working dir 
 work_dir_label.grid(row=1, column=0, padx=2, pady=2, columnspan=3)
 
-read_file_button = tk.Button(create_curve_frame, text='Read CSV file').grid(row=2, column=0, padx=2, pady=2, columnspan=2)
+read_file_button = tk.Button(create_curve_frame, text='Choose CSV file', command=choose_file).grid(row=2, column=0, padx=2, pady=2, columnspan=2)
 tk.Label(create_curve_frame, text='Curve ID: {0}'.format(Curve.count)).grid(row=2, column=2, padx=2, pady=2)
 tk.Label(create_curve_frame, text='Name:').grid(row=3, column=0, padx=2, pady=2)
 curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=3, column=1, padx=2, pady=2)
@@ -233,11 +233,10 @@ set_status('Status bar is ready.')  # Show that
 # 0 is added to have curves index matching the Curve instance ID
 curves = [0]
 
-# === Test of features - TO BE REMOVED LATER
-curves.append(Curve('curve1', 'test/curve1.csv'))
-curves[1].plot_df(ax)
-#curves.append(Curve('curve 2', 'test/curve2.csv'))
-#curves[2].plot_df(ax)
+# === Test of features - TO BE REMOVED LATER TODO: à reprogrammer en evenementiel
+print("CSV file to be opened: {0}".format(file_path))
+curves.append(Curve('curve1', file_path))
+#curves[1].plot_df(ax)
 #
 
 # Quit actions
