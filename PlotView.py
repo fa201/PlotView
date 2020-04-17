@@ -31,7 +31,7 @@ class Curve:
 
     def __init__(self, name, file):
         self.id = str(Curve.count)  # Curve ID: must be unique. Formatted to string to avoid this later on.
-        self.name = name  # Curve name entered by user in PV GUI 
+        self.name = 'Curve'  # Curve name entered by user in PV GUI 
         self.file = file  # Path of data file given by user in PV GUI
         self.data = self.read_file(file)  # X, Y dataframe defining the curve from file
         self.data_type = self.read_data_type(file)  # Dictionnary: 'x_type', 'y_type'
@@ -77,6 +77,10 @@ class Curve:
 
 
 # ====================  Definitions  ===================================
+# Constants
+MAX_STR_CREATE_CURVE = 35  # Max length of string showed by 'Create curve' labels
+
+
 # Root window
 root = tk.Tk()
 root.title('PlotView v0.2')
@@ -90,7 +94,9 @@ work_dir_txt = tk.StringVar()
 work_dir_txt.set('')
 
 # Path to CSV file
-file_path = ''
+work_file = ''  # Used to define the CSV file name
+work_file_txt = tk.StringVar()
+work_dir_txt.set('')
 
 def set_status(string):
     """Update the status bar message."""
@@ -122,19 +128,27 @@ def choose_dir():
     directory = filedialog.askdirectory(title='Choose a working directory for CSV files')
     work_dir = directory
     # Cut the beginning of displayed string so that it fits in the layout
-    work_dir_txt.set("..."+work_dir[-35:])
+    if len(work_dir) > MAX_STR_CREATE_CURVE:
+        work_dir_txt.set('...' + work_dir[-MAX_STR_CREATE_CURVE:])
+    else:
+        work_dir_txt.set(work_dir)
     set_status('Working directory: {0}'.format(work_dir))
 
 def choose_file():
     """Define the path of CSV file to be read """
-    global work_dir, file_path
-    file_path = filedialog.askopenfilename(
+    global work_dir, work_file
+    file = filedialog.askopenfilename(
                             initialdir=work_dir,
                             filetypes=[('CSV file', '*.csv')],
                             title='Open CSV file'            
                             )
-    print(file_path)
-    set_status('CSV file: {0}'.format(file_path))
+    work_file = file
+    # Cut the beginning of displayed string so that it fits in the layout
+    if len(work_file) > MAX_STR_CREATE_CURVE:
+        work_file_txt.set('...' + work_file[-MAX_STR_CREATE_CURVE:])
+    else:
+        work_file_txt.set(work_file)
+    set_status('CSV file: {0}'.format(work_file))
 
 
 # ====================================================================
@@ -197,13 +211,18 @@ curve_tab = ttk.Frame(tool_notebook)
 # = 'Create curve' panel
 create_curve_frame = tk.LabelFrame(curve_tab, text='Create curve', labelancho='n')
 create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
+# Working directory widgets
+tk.Button(create_curve_frame, text='Choose directory', command=choose_dir).grid(row=0, column=0, padx=2, pady=2)
+tk.Label(create_curve_frame, textvariable=work_dir_txt).grid(row=0, column=1, padx=2, pady=2)
+# CSV file widgets
+tk.Button(create_curve_frame, text='Choose CSV file', command=choose_file).grid(row=1, column=0, padx=2, pady=2)
+tk.Label(create_curve_frame, textvariable=work_file_txt).grid(row=1, column=1, padx=2, pady=2)
 
-tk.Button(create_curve_frame, text='Choose working directory', command=choose_dir).grid(row=0, column=0, padx=2, pady=2, columnspan=3)
-work_dir_label = tk.Label(create_curve_frame, textvariable=work_dir_txt) # Displays the working dir 
-work_dir_label.grid(row=1, column=0, padx=2, pady=2, columnspan=3)
+tk.Label(create_curve_frame, text='Curve ID - name: {0} - Curve'.format(Curve.count)).grid(row=2, column=0, padx=2, pady=2)
 
-read_file_button = tk.Button(create_curve_frame, text='Choose CSV file', command=choose_file).grid(row=2, column=0, padx=2, pady=2, columnspan=2)
-tk.Label(create_curve_frame, text='Curve ID: {0}'.format(Curve.count)).grid(row=2, column=2, padx=2, pady=2)
+
+
+#
 tk.Label(create_curve_frame, text='Name:').grid(row=3, column=0, padx=2, pady=2)
 curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=3, column=1, padx=2, pady=2)
 create_curve_button = tk.Button(create_curve_frame, text='Create').grid(row=3, column=2, padx=2, pady=2)
@@ -234,8 +253,8 @@ set_status('Status bar is ready.')  # Show that
 curves = [0]
 
 # === Test of features - TO BE REMOVED LATER TODO: à reprogrammer en evenementiel
-print("CSV file to be opened: {0}".format(file_path))
-curves.append(Curve('curve1', file_path))
+#print("CSV file to be opened: {0}".format(file_path))
+#curves.append(Curve('curve1', file_path))
 #curves[1].plot_df(ax)
 #
 
