@@ -13,6 +13,7 @@ from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 import tkinter as tk
 import tkinter.messagebox
+from tkinter import filedialog
 from tkinter import ttk
 import webbrowser
 
@@ -83,6 +84,11 @@ root.title('PlotView v0.2')
 #root.geometry('1366x768+0+0') # TODO : place the root window on upper left corner
 root.resizable(0,0)  # Root window cannot be resized. TODO: to be replaced by minsize() & maxsize() if I can handle properly the change of size in the GUI.
 
+# Current working directory to look for CSV file
+current_dir = ''
+current_dir_txt = tk.StringVar()
+current_dir_txt.set('')
+
 def set_status(string):
     """Update the status bar message."""
     status.config(text=string)
@@ -91,6 +97,7 @@ def set_status(string):
 
 
 # ====================  Callbacks  ===================================
+# === Callbacks for MENU
 # Quits mainloop
 def quit_root():
     root.quit()
@@ -104,6 +111,14 @@ def dialog_about_help():
 def dialog_licence_help():
     webbrowser.open_new_tab(
     'https://github.com/fa201/PlotView/blob/master/LICENSE')
+
+# === Callbacks for BUTTONS
+def choose_dir():
+    global current_dir
+    directory = filedialog.askdirectory(title='Choose a working directory for CSV files')
+    current_dir = directory
+    current_dir_txt.set("..."+current_dir[-40:])
+
 # ====================================================================
 
 
@@ -160,13 +175,19 @@ tool_notebook = ttk.Notebook(tool_frame)
 
 # === Curve tab 
 curve_tab = ttk.Frame(tool_notebook)
+
 create_curve_frame = tk.LabelFrame(curve_tab, text='Create curve', labelancho='n')
 create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
-read_file_button = tk.Button(create_curve_frame, text='Read CSV file').grid(row=0, column=0, padx=2, pady=2, columnspan=2)
-tk.Label(create_curve_frame, text='Curve ID: {0}'.format(Curve.count)).grid(row=0, column=2, padx=2, pady=2)
-tk.Label(create_curve_frame, text='Name:').grid(row=1, column=0, padx=2, pady=2)
-curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=1, column=1, padx=2, pady=2)
-create_curve_button = tk.Button(create_curve_frame, text='Create').grid(row=1, column=2, padx=2, pady=2)
+
+tk.Button(create_curve_frame, text='Choose working directory', command=choose_dir).grid(row=0, column=0, padx=2, pady=2, columnspan=3)
+current_dir_label = tk.Label(create_curve_frame, textvariable=current_dir_txt)
+current_dir_label.grid(row=1, column=0, padx=2, pady=2, columnspan=3)
+
+read_file_button = tk.Button(create_curve_frame, text='Read CSV file').grid(row=2, column=0, padx=2, pady=2, columnspan=2)
+tk.Label(create_curve_frame, text='Curve ID: {0}'.format(Curve.count)).grid(row=2, column=2, padx=2, pady=2)
+tk.Label(create_curve_frame, text='Name:').grid(row=3, column=0, padx=2, pady=2)
+curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=3, column=1, padx=2, pady=2)
+create_curve_button = tk.Button(create_curve_frame, text='Create').grid(row=3, column=2, padx=2, pady=2)
 
 
 
