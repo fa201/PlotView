@@ -52,7 +52,9 @@ class Curve:
         """
         df = pd.read_csv(file, delimiter=',', header=0, dtype=float)  # header index=0 to skip string content. float converts data into float (necessary in order to plot)
         # ONLY FOR DEBUG print('Imported CSV file: ', file)
-        # ONLY FOR DEBUG print('Size of data (lines, colums):', df.shape)  # TODO: this should appear on status bar along with the file pat and name
+        # ONLY FOR DEBUG print()
+        set_status('Curve ID {0} - size of data (lines, colums): {1}'.format(self.id, df.shape))
+        # TODO: this should appear on status bar along with the file pat and name
         return df
 
     def read_data_type(self, file):
@@ -72,7 +74,7 @@ class Curve:
         # Update legend
         ax.legend(loc='lower right')
         # Update the status bar with curve ID and curve name
-        set_status(self.id + " - " + self.name + " is plotted.")
+        set_status('Curve ' + self.id + " - " + self.name + " is plotted.")
         # Updates the plot. plt.show() is not necessary to keep the plot persistent
         canvas.draw()
 
@@ -90,7 +92,7 @@ curves = []
 root = tk.Tk()
 root.title('PlotView v0.2')
 #root.geometry(str(root.winfo_screenwidth()) + 'x' + str(root.winfo_screenheight()) + '+0+0')  # Set the size to max but it looks like it is too big on Ubuntu. TODO: test on Windows
-root.geometry('1120x560+0+0') # TODO : place the root window on upper left corner 
+root.geometry('1120x560+0+0')
 root.resizable(0,0)  # Root window cannot be resized. TODO: to be replaced by minsize() & maxsize() if I can handle properly the change of size in the GUI.
 
 # Working directory to look for CSV file
@@ -140,7 +142,7 @@ def choose_dir():
         work_dir_txt.set('...' + work_dir[-MAX_STR_CREATE_CURVE:])
     else:
         work_dir_txt.set(work_dir)
-    set_status('Working directory: {0}'.format(work_dir))
+    set_status('Working directory: {0}.'.format(work_dir))
 
 def choose_file():
     """Define the path of CSV file to be read """
@@ -156,13 +158,14 @@ def choose_file():
         work_file_txt.set('...' + work_file[-MAX_STR_CREATE_CURVE:])
     else:
         work_file_txt.set(work_file)
-    set_status('CSV file: {0}'.format(work_file))
+    set_status('Selected CSV file: {0}.'.format(work_file))
 
 def create_curve():
     global curves
-    curves.append(Curve(work_file))  # Creates Curve instance and adds it to the list
+    # Creates Curve instance and adds it to the list
+    curves.append(Curve(work_file))
     # Index = Curve.count-2 since Curve.count starts at 1 (and 0 for the 'curves' list) and it was incremented at __init__()
-    set_status('Curve ID: {0} is created.'.format(curves[Curve.count-2]))
+    set_status('Curve {0} is created.'.format(curves[Curve.count-2].id)) 
     curves[Curve.count-2].plot_df()
     
 
@@ -257,7 +260,7 @@ status_frame = tk.Frame(root)
 status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E, pady=0)
 status = tk.Label(status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
 status.pack(fill=tk.X, expand=True)  # Allows the label to expand on the width
-set_status('Status bar is ready.')  # Show that
+set_status('Ready.')  # Show that
 # ====================================================================
 
 
