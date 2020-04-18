@@ -63,8 +63,9 @@ class Curve:
         d.update({'x_type': df.iloc[0, 0], 'y_type': df.iloc[0, 1]})
         return d
 
-    def plot_df(self, axes):
+    def plot_df(self):
         """Plot the curve with all relevant Curve properties"""
+        global ax
         ax.plot(self.data.iloc[:, 0], self.data.iloc[:, 1],
                 label=self.name, c=self.color, lw=self.width,
                 ls=self.style, marker=self.marker,
@@ -73,6 +74,7 @@ class Curve:
         ax.legend(loc='lower right')
         # Update the status bar with curve ID and curve name
         set_status(self.id + " - " + self.name + " is plotted.")
+        print('Enter plot_df')
 # ====================================================================
 
 
@@ -80,6 +82,8 @@ class Curve:
 # Constants
 MAX_STR_CREATE_CURVE = 35  # Max length of string showed by 'Create curve' labels
 
+# Curve list to manage the plots
+curves = []
 
 # Root window
 root = tk.Tk()
@@ -98,6 +102,7 @@ work_file = ''  # Used to define the CSV file name
 work_file_txt = tk.StringVar()
 work_dir_txt.set('')
 
+# Status bar message
 def set_status(string):
     """Update the status bar message."""
     status.config(text=string)
@@ -151,9 +156,12 @@ def choose_file():
     set_status('CSV file: {0}'.format(work_file))
 
 def create_curve():
-    curves.append(Curve(work_file))
-    print('Objet curve créés: {0}'.format(curves))
+    global curves, ax, canvas
+    curves.append(Curve(work_file))  # Creates Curve instance and adds it to the list
     print(curves[Curve.count-2].id, curves[Curve.count-2].name)  # count-2 since count was incremented at __init__()
+    curves[Curve.count-2].plot_df()
+    # Updates the plot. plt.show() is not necessary to keep the plot persistent
+    canvas.draw()
 
 # ====================================================================
 
@@ -221,10 +229,9 @@ tk.Label(create_curve_frame, textvariable=work_dir_txt).grid(row=0, column=1, pa
 # CSV file widgets
 tk.Button(create_curve_frame, text='Choose CSV file', command=choose_file).grid(row=1, column=0, padx=2, pady=2)
 tk.Label(create_curve_frame, textvariable=work_file_txt).grid(row=1, column=1, padx=2, pady=2)
-tk.Label(create_curve_frame, text='Curve ID - name: {0} - Curve'.format(Curve.count)).grid(row=2, column=0, padx=2, pady=2)
+tk.Label(create_curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=0, padx=2, pady=2)
 # Create curve widget
 tk.Button(create_curve_frame, text='Create', command=create_curve).grid(row=3, column=2, padx=2, pady=2)
-
 
 #
 #tk.Label(create_curve_frame, text='Name:').grid(row=3, column=0, padx=2, pady=2)
@@ -252,14 +259,6 @@ set_status('Status bar is ready.')  # Show that
 
 
 # ====================  Main program  ===================================
-# Curve list to manage the plots
-curves = []
-
-# === Test of features - TO BE REMOVED LATER TODO: à reprogrammer en evenementiel
-#print("CSV file to be opened: {0}".format(file_path))
-#curves.append(Curve('curve1', file_path))
-#curves[1].plot_df(ax)
-#
 
 # Quit actions
 root.protocol('WM_DELETE_WINDOW', quit_root)  # Allows root window to be closed by the closing icon
