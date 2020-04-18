@@ -31,7 +31,7 @@ class Curve:
 
     def __init__(self, file):
         self.id = str(Curve.count)  # Curve ID: must be unique. Formatted to string to avoid this later on.
-        self.name = 'Curve'  # Curve name entered by user in PV GUI 
+        self.name = 'Curve'  # Default name 
         self.file = file  # Path of data file given by user in PV GUI
         self.data = self.read_file(file)  # X, Y dataframe defining the curve from file
         self.data_type = self.read_data_type(file)  # Dictionnary: 'x_type', 'y_type'
@@ -51,9 +51,8 @@ class Curve:
                 - make sure that comma is the delimiter
         """
         df = pd.read_csv(file, delimiter=',', header=0, dtype=float)  # header index=0 to skip string content. float converts data into float (necessary in order to plot)
-        print('Imported CSV file: ', file)
-        print('Size of data (lines, colums):', df.shape)  # TODO: this should appear on status bar along with the file pat and name
-        print(df.dtypes) # To confirm that the data type is float
+        # ONLY FOR DEBUG print('Imported CSV file: ', file)
+        # ONLY FOR DEBUG print('Size of data (lines, colums):', df.shape)  # TODO: this should appear on status bar along with the file pat and name
         return df
 
     def read_data_type(self, file):
@@ -74,7 +73,9 @@ class Curve:
         ax.legend(loc='lower right')
         # Update the status bar with curve ID and curve name
         set_status(self.id + " - " + self.name + " is plotted.")
-        print('Enter plot_df')
+        # Updates the plot. plt.show() is not necessary to keep the plot persistent
+        canvas.draw()
+
 # ====================================================================
 
 
@@ -88,19 +89,21 @@ curves = []
 # Root window
 root = tk.Tk()
 root.title('PlotView v0.2')
-#root.geometry(str(root.winfo_screenwidth()) + 'x' + str(root.winfo_screenheight()) + '+0+0')  # Set the size to max but it lloks like it is too big on Ubuntu. TODO: test on Windows
-#root.geometry('1366x768+0+0') # TODO : place the root window on upper left corner
+#root.geometry(str(root.winfo_screenwidth()) + 'x' + str(root.winfo_screenheight()) + '+0+0')  # Set the size to max but it looks like it is too big on Ubuntu. TODO: test on Windows
+root.geometry('1120x560+0+0') # TODO : place the root window on upper left corner 
 root.resizable(0,0)  # Root window cannot be resized. TODO: to be replaced by minsize() & maxsize() if I can handle properly the change of size in the GUI.
 
 # Working directory to look for CSV file
-work_dir = ''  # Used to define the initial directory for the CSV filedialog
+# work_dir defines the directory for the CSV filedialog
+work_dir = '___________________________________'  
 work_dir_txt = tk.StringVar()
-work_dir_txt.set('')
+work_dir_txt.set(work_dir)  # Displayed working dir path
 
 # Path to CSV file
-work_file = ''  # Used to define the CSV file name
+# work_file define the CSV file path
+work_file = '___________________________________' 
 work_file_txt = tk.StringVar()
-work_dir_txt.set('')
+work_file_txt.set(work_file) # Displayed working file path
 
 # Status bar message
 def set_status(string):
@@ -156,12 +159,12 @@ def choose_file():
     set_status('CSV file: {0}'.format(work_file))
 
 def create_curve():
-    global curves, ax, canvas
+    global curves
     curves.append(Curve(work_file))  # Creates Curve instance and adds it to the list
-    print(curves[Curve.count-2].id, curves[Curve.count-2].name)  # count-2 since count was incremented at __init__()
+    # Index = Curve.count-2 since Curve.count starts at 1 (and 0 for the 'curves' list) and it was incremented at __init__()
+    set_status('Curve ID: {0} is created.'.format(curves[Curve.count-2]))
     curves[Curve.count-2].plot_df()
-    # Updates the plot. plt.show() is not necessary to keep the plot persistent
-    canvas.draw()
+    
 
 # ====================================================================
 
@@ -213,7 +216,7 @@ canvas.get_tk_widget().pack()
 
 # ====================  GUI - RH tool panel  ===============================
 
-tool_frame = tk.Frame(root, padx=5, pady=5)
+tool_frame = tk.Frame(root, padx=5, pady=5)  # TODO: adjust frame size when the layout is finished
 tool_frame.grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S)
 tool_notebook = ttk.Notebook(tool_frame)
 
@@ -221,23 +224,24 @@ tool_notebook = ttk.Notebook(tool_frame)
 curve_tab = ttk.Frame(tool_notebook)
 
 # = 'Create curve' panel
-create_curve_frame = tk.LabelFrame(curve_tab, text='Create curve', labelancho='n')
+create_curve_frame = tk.LabelFrame(curve_tab, text='Create curve')
 create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
 # Working directory widgets
 tk.Button(create_curve_frame, text='Choose directory', command=choose_dir).grid(row=0, column=0, padx=2, pady=2)
 tk.Label(create_curve_frame, textvariable=work_dir_txt).grid(row=0, column=1, padx=2, pady=2)
 # CSV file widgets
-tk.Button(create_curve_frame, text='Choose CSV file', command=choose_file).grid(row=1, column=0, padx=2, pady=2)
+tk.Button(create_curve_frame, text='Choose CSV file ', command=choose_file).grid(row=1, column=0, padx=2, pady=2)  # Space at the end of label to have the same size as 'Choose'directory
 tk.Label(create_curve_frame, textvariable=work_file_txt).grid(row=1, column=1, padx=2, pady=2)
-tk.Label(create_curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=0, padx=2, pady=2)
 # Create curve widget
-tk.Button(create_curve_frame, text='Create', command=create_curve).grid(row=3, column=2, padx=2, pady=2)
+tk.Button(create_curve_frame, text='Create', command=create_curve).grid(row=2, column=0, padx=2, pady=2)
+tk.Label(create_curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=1, padx=2, pady=2)  # TODO: StringVar() for label (needs update after curve creation)
 
-#
+
 #tk.Label(create_curve_frame, text='Name:').grid(row=3, column=0, padx=2, pady=2)
 #curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=3, column=1, padx=2, pady=2)
 
 
+# print("Hauteur de root: ", root.winfo_height(), 'Largeur de root:', root.winfo_width())
 
 
 # ==== Plot tab
@@ -254,7 +258,6 @@ status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E, pady=0)
 status = tk.Label(status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
 status.pack(fill=tk.X, expand=True)  # Allows the label to expand on the width
 set_status('Status bar is ready.')  # Show that
-
 # ====================================================================
 
 
