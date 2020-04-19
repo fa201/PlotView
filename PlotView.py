@@ -91,7 +91,7 @@ curves = []
 # Root window
 root = tk.Tk()
 root.title('PlotView v0.2')
-root.geometry('1120x560+0+0')
+root.geometry('1280x720+0+0')
 root.resizable(0,0)  # Root window cannot be resized. 
 #TODO: to be replaced by minsize() & maxsize() if I can handle properly the change of size in the GUI.
 
