@@ -50,16 +50,16 @@ class Curve:
                 - strip unwanted spaces
                 - make sure that comma is the delimiter
         """
-        df = pd.read_csv(file, delimiter=',', header=0, dtype=float)  # header index=0 to skip string content. float converts data into float (necessary in order to plot)
+        # header index=0 to skip string content. Data converted into float (necessary in order to plot)
+        df = pd.read_csv(file, delimiter=',', header=0, dtype=float)
         # ONLY FOR DEBUG print('Imported CSV file: ', file)
         # ONLY FOR DEBUG print()
         set_status('Curve ID {0} - size of data (lines, colums): {1}'.format(self.id, df.shape))
-        # TODO: this should appear on status bar along with the file pat and name
         return df
 
     def read_data_type(self, file):
         """Read only the header line to set c_data_type list (X type of data, Y type of data)"""
-        df = pd.read_csv(file, delimiter=',', header=None, nrows=1)  # Read only data types
+        df = pd.read_csv(file, delimiter=',', header=None, nrows=1)  
         d = {}
         d.update({'x_type': df.iloc[0, 0], 'y_type': df.iloc[0, 1]})
         return d
@@ -91,9 +91,9 @@ curves = []
 # Root window
 root = tk.Tk()
 root.title('PlotView v0.2')
-#root.geometry(str(root.winfo_screenwidth()) + 'x' + str(root.winfo_screenheight()) + '+0+0')  # Set the size to max but it looks like it is too big on Ubuntu. TODO: test on Windows
 root.geometry('1120x560+0+0')
-root.resizable(0,0)  # Root window cannot be resized. TODO: to be replaced by minsize() & maxsize() if I can handle properly the change of size in the GUI.
+root.resizable(0,0)  # Root window cannot be resized. 
+#TODO: to be replaced by minsize() & maxsize() if I can handle properly the change of size in the GUI.
 
 # Working directory to look for CSV file
 # work_dir defines the directory for the CSV filedialog
@@ -145,7 +145,7 @@ def choose_dir():
     set_status('Working directory: {0}.'.format(work_dir))
 
 def choose_file():
-    """Define the path of CSV file to be read """
+    """Define the path of CSV file to be read starting from work_dir"""
     global work_dir, work_file
     file = filedialog.askopenfilename(
                             initialdir=work_dir,
@@ -161,14 +161,16 @@ def choose_file():
     set_status('Selected CSV file: {0}.'.format(work_file))
 
 def create_curve():
+    """Create a Curve instance in the 'curves' list and plot it"""
     global curves
     # Creates Curve instance and adds it to the list
     curves.append(Curve(work_file))
-    # Index = Curve.count-2 since Curve.count starts at 1 (and 0 for the 'curves' list) and it was incremented at __init__()
+    # Index = Curve.count-2 since:
+    #   - Curve.count starts at 1
+    #   - index for the 'curves' list starts at 0
+    #   - Curve.count was incremented when  instance was created
     set_status('Curve {0} is created.'.format(curves[Curve.count-2].id)) 
     curves[Curve.count-2].plot_df()
-    
-
 # ====================================================================
 
 
@@ -210,15 +212,16 @@ ax = fig.add_subplot(111)
 
 mat_frame = tk.Frame(root)
 mat_frame.grid(row=0, column=0)
-canvas = FigureCanvasTkAgg(fig, master=mat_frame)  # Creates a drawing area to put the Figure
+# Creates a drawing area to put the Figure
+canvas = FigureCanvasTkAgg(fig, master=mat_frame)  
 canvas.draw()
-toolbar = NavigationToolbar2Tk(canvas, mat_frame)  # Creates the Matplotlib navigation tool bar for figures.
+# Creates the Matplotlib navigation tool bar for figures.
+toolbar = NavigationToolbar2Tk(canvas, mat_frame)  
 toolbar.draw()
 canvas.get_tk_widget().pack()
 # ====================================================================
 
 # ====================  GUI - RH tool panel  ===============================
-
 tool_frame = tk.Frame(root, padx=5, pady=5)  # TODO: adjust frame size when the layout is finished
 tool_frame.grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S)
 tool_notebook = ttk.Notebook(tool_frame)
@@ -233,7 +236,8 @@ create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
 tk.Button(create_curve_frame, text='Choose directory', command=choose_dir).grid(row=0, column=0, padx=2, pady=2)
 tk.Label(create_curve_frame, textvariable=work_dir_txt).grid(row=0, column=1, padx=2, pady=2)
 # CSV file widgets
-tk.Button(create_curve_frame, text='Choose CSV file ', command=choose_file).grid(row=1, column=0, padx=2, pady=2)  # Space at the end of label to have the same size as 'Choose'directory
+# Space at the end of 'Choose CSV file ' to have the same size as 'Choose directory'
+tk.Button(create_curve_frame, text='Choose CSV file ', command=choose_file).grid(row=1, column=0, padx=2, pady=2)  
 tk.Label(create_curve_frame, textvariable=work_file_txt).grid(row=1, column=1, padx=2, pady=2)
 # Create curve widget
 tk.Button(create_curve_frame, text='Create', command=create_curve).grid(row=2, column=0, padx=2, pady=2)
