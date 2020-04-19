@@ -113,7 +113,7 @@ work_file_txt.set(work_file) # Displayed working file path
 # Status bar message
 def set_status(string):
     """Update the status bar message."""
-    status.config(text=string)
+    status.config(text=' '+string)  # Space necessary to give more room to the left border
 
 # ====================================================================
 
@@ -215,7 +215,7 @@ fig = plt.Figure(figsize=(PLOT_WIDTH, PLOT_HEIGHT))
 ax = fig.add_subplot(111)
 
 mat_frame = tk.Frame(root)
-mat_frame.grid(row=0, column=0)
+mat_frame.grid(row=0, column=0, sticky=tk.W+tk.E+tk.N+tk.S)
 # Creates a drawing area to put the Figure
 canvas = FigureCanvasTkAgg(fig, master=mat_frame)  
 canvas.draw()
