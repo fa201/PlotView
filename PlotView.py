@@ -15,6 +15,7 @@ import tkinter as tk
 import tkinter.messagebox
 from tkinter import filedialog
 from tkinter import ttk
+from tkinter import font
 import webbrowser
 
 
@@ -83,9 +84,10 @@ class Curve:
 
 # ====================  Definitions  ===================================
 # Constants
-MAX_STR_CREATE_CURVE = 35  # Max length of string showed by 'Create curve' labels
+MAX_STR_CREATE_CURVE = 32  # Max length of string showed by 'Create curve' labels
 PLOT_WIDTH = 11  # Width of Matplotlib Figure (in)
 PLOT_HEIGHT = 9.24  # Height of Matplotlib Figure (in)
+FONT_SIZE = 9 
 
 
 # Curve list to manage the plots
@@ -97,6 +99,12 @@ root.title('PlotView v0.2')
 root.geometry('1280x720+0+0')
 root.resizable(0,0)  # Root window cannot be resized. 
 #TODO: to be replaced by minsize() & maxsize() if I can handle properly the change of size in the GUI.
+
+# Customized font based on TkDefaultFont
+my_font = font.nametofont("TkDefaultFont")
+my_font.config(size=FONT_SIZE)  # Font size reduced to have a tighter layout
+# Make my_font applicable for all widgets including menus.
+root.option_add("*Font", my_font)
 
 # Working directory to look for CSV file
 # work_dir defines the directory for the CSV filedialog
@@ -141,9 +149,11 @@ def choose_dir():
     directory = filedialog.askdirectory(title='Choose a working directory for CSV files')
     work_dir = directory
     # Cut the beginning of displayed string so that it fits in the layout
-    if len(work_dir) > MAX_STR_CREATE_CURVE:
-        work_dir_txt.set('...' + work_dir[-MAX_STR_CREATE_CURVE:])
-    else:
+    # Considering the 3 dots to be added at the beginning of the cut string
+    if len(work_dir) > (MAX_STR_CREATE_CURVE+3):
+        temp = '...' + work_dir[-MAX_STR_CREATE_CURVE:]
+        work_dir_txt.set(temp)
+    else:                 
         work_dir_txt.set(work_dir)
     set_status('Working directory: {0}.'.format(work_dir))
 
@@ -157,8 +167,10 @@ def choose_file():
                             )
     work_file = file
     # Cut the beginning of displayed string so that it fits in the layout
-    if len(work_file) > MAX_STR_CREATE_CURVE:
-        work_file_txt.set('...' + work_file[-MAX_STR_CREATE_CURVE:])
+    # Considering the 3 dots to be added at the beginning of the cut string
+    if len(work_file) > (MAX_STR_CREATE_CURVE+3):
+        temp = '...' + work_file[-MAX_STR_CREATE_CURVE:]
+        work_file_txt.set(temp)
     else:
         work_file_txt.set(work_file)
     set_status('Selected CSV file: {0}.'.format(work_file))
