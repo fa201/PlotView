@@ -226,7 +226,7 @@ canvas.get_tk_widget().pack()
 # ====================================================================
 
 # ====================  GUI - RH tool panel  ===============================
-tool_frame = tk.Frame(root, padx=5, pady=5)  # TODO: adjust frame size when the layout is finished
+tool_frame = tk.Frame(root)  # TODO: adjust frame width when the layout is finished
 tool_frame.grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S)
 tool_notebook = ttk.Notebook(tool_frame)
 
