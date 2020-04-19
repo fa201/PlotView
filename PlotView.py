@@ -84,6 +84,9 @@ class Curve:
 # ====================  Definitions  ===================================
 # Constants
 MAX_STR_CREATE_CURVE = 35  # Max length of string showed by 'Create curve' labels
+PLOT_WIDTH = 11  # Width of Matplotlib Figure (in)
+PLOT_HEIGHT = 9.24  # Height of Matplotlib Figure (in)
+
 
 # Curve list to manage the plots
 curves = []
@@ -207,7 +210,8 @@ menu_help.add_command(label='About', command=dialog_about_help)
 
 # === Matplotlib embedment on LH side of main window
 # TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
-fig = plt.Figure(figsize=(9, 7))  # This size defines the size of the plot
+# Plot with a defined size
+fig = plt.Figure(figsize=(PLOT_WIDTH, PLOT_HEIGHT))  
 ax = fig.add_subplot(111)
 
 mat_frame = tk.Frame(root)
@@ -261,9 +265,9 @@ tool_notebook.pack(expand=True, fill=tk.BOTH)
 
 # === Status bar at bottom of main window
 status_frame = tk.Frame(root)
-status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E, pady=0)
+status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E+tk.N+tk.S)
 status = tk.Label(status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
-status.pack(fill=tk.X, expand=True)  # Allows the label to expand on the width
+status.pack(fill=tk.BOTH, expand=True)  # Allows the label to expand on the width
 set_status('Ready.')  # Show that
 # ====================================================================
 
