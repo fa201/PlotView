@@ -163,8 +163,7 @@ def choose_file():
     file = filedialog.askopenfilename(
                             initialdir=work_dir,
                             filetypes=[('CSV file', '*.csv')],
-                            title='Open CSV file'            
-                            )
+                            title='Open CSV file')
     work_file = file
     # Cut the beginning of displayed string so that it fits in the layout
     # Considering the 3 dots to be added at the beginning of the cut string
@@ -190,7 +189,7 @@ def create_curve():
 
 
 # ====================  Menus  ===================================
-# Main menu 
+# Main menu
 menu_main = tk.Menu(root)
 menu_file = tk.Menu(menu_main, tearoff='False')  # Disables tear off menu
 menu_pref = tk.Menu(menu_main, tearoff='False')
@@ -259,13 +258,16 @@ tk.Label(create_curve_frame, textvariable=work_file_txt).grid(row=1, column=1, p
 tk.Button(create_curve_frame, text='Create', command=create_curve).grid(row=2, column=0, padx=2, pady=2)
 tk.Label(create_curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=1, padx=2, pady=2)  # TODO: StringVar() for label (needs update after curve creation)
 
+# = 'Select curve' panel
+select_curve_frame = tk.LabelFrame(curve_tab, text='Select curve')
+select_curve_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
+tk.Label(select_curve_frame, text='Selected curve:').grid(row=0, column=0, padx=2, pady=2)
 
-#tk.Label(create_curve_frame, text='Name:').grid(row=3, column=0, padx=2, pady=2)
+
 #curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=3, column=1, padx=2, pady=2)
 
 
 # print("Hauteur de root: ", root.winfo_height(), 'Largeur de root:', root.winfo_width())
-
 
 # ==== Plot tab
 plot_tab = ttk.Frame(tool_notebook)
