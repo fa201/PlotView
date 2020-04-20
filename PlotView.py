@@ -85,9 +85,9 @@ class Curve:
 # ====================  Definitions  ===================================
 # Constants
 MAX_STR_CREATE_CURVE = 32  # Max length of string showed by 'Create curve' labels
-PLOT_WIDTH = 11  # Width of Matplotlib Figure (in)
-PLOT_HEIGHT = 9.24  # Height of Matplotlib Figure (in)
-FONT_SIZE = 9 
+PLOT_WIDTH = 9  # Width of Matplotlib Figure (in)
+PLOT_HEIGHT = 6.68  # Height of Matplotlib Figure (in)
+FONT_SIZE = 9  # Applicable for all GUI texts
 
 
 # Curve list to manage the plots
