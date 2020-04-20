@@ -174,6 +174,12 @@ def choose_file():
         work_file_txt.set(work_file)
     set_status('Selected CSV file: {0}.'.format(work_file))
 
+def list_curve_names():
+    l = []
+    for i in range(len(curves)):
+        l.append(curves[i].name)
+    return l
+
 def create_curve():
     """Create a Curve instance in the 'curves' list and plot it"""
     global curves
@@ -185,6 +191,8 @@ def create_curve():
     #   - Curve.count was incremented when  instance was created
     set_status('Curve {0} is created.'.format(curves[Curve.count-2].id)) 
     curves[Curve.count-2].plot_df()
+    # Update curve list
+    curve_name_list.set(list_curve_names())
 # ====================================================================
 
 
@@ -262,6 +270,29 @@ tk.Label(create_curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve
 select_curve_frame = tk.LabelFrame(curve_tab, text='Select curve')
 select_curve_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
 tk.Label(select_curve_frame, text='Selected curve:').grid(row=0, column=0, padx=2, pady=2)
+
+# TODO: replace call-back affiche by real callback
+def affiche(*args):
+    sel = sel_curve_listbox.curselection()
+    print('Valeur sélectionnée : {0}'.format(sel))
+# Selection listbox with horizontal and vertical scrollbars
+curve_name_list = tk.StringVar()
+select_curve_y_scroll = tk.Scrollbar(select_curve_frame, orient=tk.VERTICAL)
+select_curve_y_scroll.grid(row=0, column=2, sticky=tk.N+tk.S)
+select_curve_x_scroll = tk.Scrollbar(select_curve_frame, orient=tk.HORIZONTAL)
+select_curve_x_scroll.grid(row=1, column=1, columnspan=2, sticky=tk.E+tk.W)
+sel_curve_listbox = tk.Listbox(select_curve_frame, listvariable=curve_name_list,
+    xscrollcommand=select_curve_x_scroll.set,
+    yscrollcommand=select_curve_y_scroll.set,
+    height=5, 
+    width=30)
+sel_curve_listbox.grid(row=0, column=1, sticky=tk.N+tk.S+tk.E+tk.W)
+select_curve_x_scroll['command'] = sel_curve_listbox.xview
+select_curve_y_scroll['command'] = sel_curve_listbox.yview
+# Binding to double left-click, Return key and num pad Return
+sel_curve_listbox.bind('<Double-Button-1>', affiche)
+sel_curve_listbox.bind('<Return>', affiche)
+sel_curve_listbox.bind('<KP_Enter>', affiche)
 
 
 #curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=3, column=1, padx=2, pady=2)
