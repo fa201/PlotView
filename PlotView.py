@@ -254,22 +254,21 @@ curve_tab = ttk.Frame(tool_notebook)
 
 # = 'Create curve' panel
 create_curve_frame = tk.LabelFrame(curve_tab, text='Create curve')
-create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
+create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S, padx=5, pady=5) # TODO: create variables for padx & pady for label frames
 # Working directory widgets
-tk.Button(create_curve_frame, text='Choose directory', command=choose_dir).grid(row=0, column=0, padx=2, pady=2)
-tk.Label(create_curve_frame, textvariable=work_dir_txt).grid(row=0, column=1, padx=2, pady=2)
+tk.Button(create_curve_frame, text='Choose directory', command=choose_dir, width=12).grid(row=0, column=0, padx=2, pady=2)
+tk.Label(create_curve_frame, textvariable=work_dir_txt).grid(row=0, column=1, padx=2, pady=2) # TODO: create variables for padx & pady for base widgets
 # CSV file widgets
-# Space at the end of 'Choose CSV file ' to have the same size as 'Choose directory'
-tk.Button(create_curve_frame, text='Choose CSV file ', command=choose_file).grid(row=1, column=0, padx=2, pady=2)  
+tk.Button(create_curve_frame, text='Choose CSV file', command=choose_file, width=12).grid(row=1, column=0, padx=2, pady=2)  
 tk.Label(create_curve_frame, textvariable=work_file_txt).grid(row=1, column=1, padx=2, pady=2)
 # Create curve widget
-tk.Button(create_curve_frame, text='Create', command=create_curve).grid(row=2, column=0, padx=2, pady=2)
+tk.Button(create_curve_frame, text='Create', command=create_curve, width=12).grid(row=2, column=0, padx=2, pady=2)
 tk.Label(create_curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=1, padx=2, pady=2)  # TODO: StringVar() for label (needs update after curve creation)
 
 # = 'Select curve' panel
 select_curve_frame = tk.LabelFrame(curve_tab, text='Select curve')
-select_curve_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
-tk.Label(select_curve_frame, text='Selected curve:').grid(row=0, column=0, padx=2, pady=2)
+select_curve_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S, padx=5, pady=5)
+tk.Label(select_curve_frame, text='Selected curve: ').grid(row=0, column=0, padx=2, pady=2)
 
 # TODO: replace call-back affiche by real callback
 def affiche(*args):
@@ -285,7 +284,7 @@ sel_curve_listbox = tk.Listbox(select_curve_frame, listvariable=curve_name_list,
     xscrollcommand=select_curve_x_scroll.set,
     yscrollcommand=select_curve_y_scroll.set,
     height=5, 
-    width=30)
+    width=28)
 sel_curve_listbox.grid(row=0, column=1, sticky=tk.N+tk.S+tk.E+tk.W)
 select_curve_x_scroll['command'] = sel_curve_listbox.xview
 select_curve_y_scroll['command'] = sel_curve_listbox.yview
