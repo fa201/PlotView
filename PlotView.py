@@ -36,7 +36,7 @@ class Curve:
         self.file = file  # Path of data file given by user in PV GUI
         self.data = self.read_file(file)  # X, Y dataframe defining the curve from file
         self.data_type = self.read_data_type(file)  # Dictionnary: 'x_type', 'y_type'
-        self.visibility = False  # GUI indicator to show the curve in the plot
+        self.visibility = True  # GUI indicator to show the curve in the plot
         self.color = 'black'  # Line color of curve -> string
         self.width = 1.0  # line width of curve -> float TODO: what are the limits?
         self.style = 'solid'  # line style of curve -> string TODO: what are the options?
@@ -314,7 +314,7 @@ tk.Label(curve_appearance_frame, text='Show').grid(row=0, column=0, padx=WIDGET_
 show_bool = tk.BooleanVar()
 show_bool.set(True)
 tk.Checkbutton(curve_appearance_frame, variable=show_bool).grid(row=0, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)
-
+# TODO: lier le widget et la curve à curves[i].visibility
 
 
 
