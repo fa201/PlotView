@@ -226,6 +226,13 @@ menu_help.add_command(label='About', command=dialog_about_help)
 
 
 # ====================  GUI  ===================================
+# === Status bar at bottom of main window
+status_frame = tk.Frame(root)
+#status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E+tk.N+tk.S)
+status_frame.pack(expand=True, fill=tk.X, side=tk.BOTTOM)
+status = tk.Label(status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
+status.pack(fill=tk.BOTH, expand=True)  # Allows the label to expand on the width
+set_status('Ready.')
 
 # === Matplotlib embedment on LH side of main window
 # TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
@@ -234,7 +241,8 @@ fig = plt.Figure(figsize=(PLOT_WIDTH, PLOT_HEIGHT))
 ax = fig.add_subplot(111)
 
 mat_frame = tk.Frame(root)
-mat_frame.grid(row=0, column=0, sticky=tk.W+tk.E+tk.N+tk.S)
+#mat_frame.grid(row=0, column=0, sticky=tk.W+tk.E+tk.N+tk.S)
+mat_frame.pack(expand=False, side=tk.LEFT)
 # Creates a drawing area to put the Figure
 canvas = FigureCanvasTkAgg(fig, master=mat_frame)  
 canvas.draw()
@@ -242,14 +250,14 @@ canvas.draw()
 toolbar = NavigationToolbar2Tk(canvas, mat_frame)  
 toolbar.draw()
 canvas.get_tk_widget().pack()
-# ====================================================================
 
-# ====================  GUI - RH tool panel  ===============================
+# ==== GUI - RH tool panel  
 tool_frame = tk.Frame(root)  # TODO: adjust frame width when the layout is finished
-tool_frame.grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S)
+#tool_frame.grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S)
+tool_frame.pack(expand=True, fill=tk.BOTH)
 tool_notebook = ttk.Notebook(tool_frame)
 
-# === Curve tab 
+# == Curve tab 
 curve_tab = ttk.Frame(tool_notebook)
 
 # = 'Create curve' panel
@@ -296,28 +304,17 @@ sel_curve_listbox.bind('<KP_Enter>', affiche)
 
 #curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=3, column=1, padx=2, pady=2)
 
-
-# print("Hauteur de root: ", root.winfo_height(), 'Largeur de root:', root.winfo_width())
-
-# ==== Plot tab
+# == Plot tab
 plot_tab = ttk.Frame(tool_notebook)
 
-# === Display the complete notebook
+# = Display the complete notebook
 tool_notebook.add(curve_tab, text='Curve')
 tool_notebook.add(plot_tab, text='Plot')
-tool_notebook.pack(expand=True, fill=tk.BOTH)
-
-# === Status bar at bottom of main window
-status_frame = tk.Frame(root)
-status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E+tk.N+tk.S)
-status = tk.Label(status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
-status.pack(fill=tk.BOTH, expand=True)  # Allows the label to expand on the width
-set_status('Ready.')  # Show that
+tool_notebook.pack(expand=False, fill=tk.BOTH)
 # ====================================================================
 
 
 # ====================  Main program  ===================================
-
 # Quit actions
 root.protocol('WM_DELETE_WINDOW', quit_root)  # Allows root window to be closed by the closing icon
 root.mainloop()  # Event loop
