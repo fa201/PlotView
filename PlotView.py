@@ -84,6 +84,7 @@ class Curve:
 
 # ====================  Definitions  ===================================
 # Constants
+VERSION = 'v0.5'  # Version of PlotView
 MAX_STR_CREATE_CURVE = 32  # Max length of string showed by 'Create curve' labels
 PLOT_WIDTH = 9  # Width of Matplotlib Figure (in)
 PLOT_HEIGHT = 6.68  # Height of Matplotlib Figure (in)
@@ -99,7 +100,7 @@ curves = []
 
 # Root window
 root = tk.Tk()
-root.title('PlotView v0.2')
+root.title('PlotView '+ VERSION)
 root.geometry('1280x720+0+0')
 root.resizable(0,0)  # Root window cannot be resized. 
 #TODO: to be replaced by minsize() & maxsize() if I can handle properly the change of size in the GUI.
