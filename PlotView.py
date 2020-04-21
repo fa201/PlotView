@@ -287,6 +287,7 @@ tk.Label(select_curve_frame, text='Selected curve: ').grid(row=0, column=0, padx
 def affiche(*args):
     sel = sel_curve_listbox.curselection()
     print('Valeur sélectionnée : {0}'.format(sel))
+
 # Selection listbox with horizontal and vertical scrollbars
 curve_name_list = tk.StringVar()
 select_curve_y_scroll = tk.Scrollbar(select_curve_frame, orient=tk.VERTICAL)
@@ -306,8 +307,16 @@ sel_curve_listbox.bind('<Double-Button-1>', affiche)
 sel_curve_listbox.bind('<Return>', affiche)
 sel_curve_listbox.bind('<KP_Enter>', affiche)
 
+# = 'Curve appearance' panel
+curve_appearance_frame = tk.LabelFrame(curve_tab, text='Curve appearance')
+curve_appearance_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S, padx=CONTAINER_PADX, pady=CONTAINER_PADY)
+tk.Label(curve_appearance_frame, text='Show').grid(row=0, column=0, padx=WIDGET_PADX, pady=WIDGET_PADY)
+show_bool = tk.BooleanVar()
+show_bool.set(True)
+tk.Checkbutton(curve_appearance_frame, variable=show_bool).grid(row=0, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)
 
-#curve_name_entry = tk.Entry(create_curve_frame, width=20).grid(row=3, column=1, padx=2, pady=2)
+
+
 
 # == Plot tab
 plot_tab = ttk.Frame(tool_notebook)
@@ -315,7 +324,7 @@ plot_tab = ttk.Frame(tool_notebook)
 # = Display the complete notebook
 tool_notebook.add(curve_tab, text='Curve')
 tool_notebook.add(plot_tab, text='Plot')
-tool_notebook.pack(expand=False, fill=tk.BOTH)
+tool_notebook.pack(expand=True, fill=tk.BOTH)
 # ====================================================================
 
 
