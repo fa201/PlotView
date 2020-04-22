@@ -68,17 +68,19 @@ class Curve:
     def plot_df(self):
         """Plot the curve with all relevant Curve properties"""
         global ax
-        ax.plot(self.data.iloc[:, 0], self.data.iloc[:, 1],
+        if self.visibility:
+            ax.plot(self.data.iloc[:, 0], self.data.iloc[:, 1],
                 label=self.name, c=self.color, lw=self.width,
                 ls=self.style, marker=self.marker,
                 markersize=self.marker_size)
+            # Update the status bar with curve ID and curve name
+            set_status('Curve ' + self.id + " - " + self.name + " is plotted.")
+
         # Update legend
         ax.legend(loc='lower right')
-        # Update the status bar with curve ID and curve name
-        set_status('Curve ' + self.id + " - " + self.name + " is plotted.")
+
         # Updates the plot. plt.show() is not necessary to keep the plot persistent
         canvas.draw()
-
 # ====================================================================
 
 
@@ -93,7 +95,6 @@ CONTAINER_PADX = 7  # Padding for all containers to uniformize the look
 CONTAINER_PADY = 7
 WIDGET_PADX = 2  # Padding for all widgets inside a container
 WIDGET_PADY = 2
-
 
 # List of Curve class instances to manage the plots
 curves = []
@@ -127,7 +128,6 @@ work_file_txt.set(work_file) # Displayed working file path
 def set_status(string):
     """Update the status bar message."""
     status.config(text=' '+string)  # Space necessary to give more room to the left border
-
 # ====================================================================
 
 
@@ -198,6 +198,14 @@ def create_curve():
     curves[Curve.count-2].plot_df()
     # Update curve list
     curve_name_list.set(list_curve_names())
+
+def update_curves():
+    """Update curve plots based on appearance parameters:
+        visibility, color, width, line style, marker symbol and marker size"""
+    pass
+    # TODO: to be done
+
+
 # ====================================================================
 
 
@@ -315,8 +323,6 @@ show_bool = tk.BooleanVar()
 show_bool.set(True)
 tk.Checkbutton(curve_appearance_frame, variable=show_bool).grid(row=0, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)
 # TODO: lier le widget et la curve à curves[i].visibility
-
-
 
 # == Plot tab
 plot_tab = ttk.Frame(tool_notebook)
