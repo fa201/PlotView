@@ -202,9 +202,24 @@ def create_curve():
 def update_curves():
     """Update curve plots based on appearance parameters:
         visibility, color, width, line style, marker symbol and marker size"""
-    pass
-    # TODO: to be done
+    global curves
+    # Clear current Axes
+    plt.gcf()
+    plt.clf()
+    #TODO: clear is not working. Check https://stackoverflow.com/questions/11002338/how-do-i-re-draw-only-one-set-of-axes-on-a-figure-in-python
+    # Replot all curves
+    #for item in curves:
+    #    item.plot_df()
 
+def set_curve_prop(*args):
+    """Set the Curve attributes based on GUI input"""
+    # *args in case several events are passed
+    sel = sel_curve_listbox.curselection()
+    print('Selected curve. ID: {0} - Name: {1}'.format(curves[sel[0]].id, curves[sel[0]].name))
+    # Gets the visibility value from 'Show' Checkbutton
+    curves[sel[0]].visibility = show_bool.get()
+    # TODO: update status bar
+    update_curves()
 
 # ====================================================================
 
@@ -291,11 +306,6 @@ select_curve_frame = tk.LabelFrame(curve_tab, text='Select curve')
 select_curve_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S, padx=CONTAINER_PADX, pady=CONTAINER_PADY)
 tk.Label(select_curve_frame, text='Selected curve: ').grid(row=0, column=0, padx=WIDGET_PADX, pady=WIDGET_PADY)
 
-# TODO: replace call-back affiche by real callback
-def affiche(*args):
-    sel = sel_curve_listbox.curselection()
-    print('Valeur sélectionnée : {0}'.format(sel))
-
 # Selection listbox with horizontal and vertical scrollbars
 curve_name_list = tk.StringVar()
 select_curve_y_scroll = tk.Scrollbar(select_curve_frame, orient=tk.VERTICAL)
@@ -311,9 +321,10 @@ sel_curve_listbox.grid(row=0, column=1, sticky=tk.N+tk.S+tk.E+tk.W)
 select_curve_x_scroll['command'] = sel_curve_listbox.xview
 select_curve_y_scroll['command'] = sel_curve_listbox.yview
 # Binding to double left-click, Return key and num pad Return
-sel_curve_listbox.bind('<Double-Button-1>', affiche)
-sel_curve_listbox.bind('<Return>', affiche)
-sel_curve_listbox.bind('<KP_Enter>', affiche)
+# TODO: needs to update GUI based on Curve attributes values
+#sel_curve_listbox.bind('<Double-Button-1>', set_curve_prop)
+#sel_curve_listbox.bind('<Return>', set_curve_prop)
+#sel_curve_listbox.bind('<KP_Enter>', set_curve_prop)
 
 # = 'Curve appearance' panel
 curve_appearance_frame = tk.LabelFrame(curve_tab, text='Curve appearance')
@@ -322,7 +333,9 @@ tk.Label(curve_appearance_frame, text='Show').grid(row=0, column=0, padx=WIDGET_
 show_bool = tk.BooleanVar()
 show_bool.set(True)
 tk.Checkbutton(curve_appearance_frame, variable=show_bool).grid(row=0, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)
-# TODO: lier le widget et la curve à curves[i].visibility
+# 'Apply' button launch the update of Curve attributes
+tk.Button(curve_tab, text='Apply', command=set_curve_prop, width=6).grid(row=3, column=0, sticky=tk.E, padx=WIDGET_PADX, pady=WIDGET_PADY)
+
 
 # == Plot tab
 plot_tab = ttk.Frame(tool_notebook)
