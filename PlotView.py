@@ -8,6 +8,8 @@
 
 import tkinter as tk
 from tkinter import font
+import sys
+
 
 # Constants
 # PV version as shown by git tag.
@@ -19,6 +21,7 @@ ROOT_SIZE_POS = '1280x720+0+0'
 # Font size applicable for all GUI texts
 FONT_SIZE = 9
 
+
 class App(tk.Tk):
     """"It defines the main window (root) of GUI."""
     def __init__(self):
@@ -26,6 +29,8 @@ class App(tk.Tk):
         super().__init__()
         self.root_setup()
         self.font_setup()
+        # Allows root window to be closed by the closing icon
+        self.protocol('WM_DELETE_WINDOW', self.root_quit)
 
     def root_setup(self):
         self.title('PlotView ' + PV_VERSION)
@@ -45,6 +50,12 @@ class App(tk.Tk):
         my_font.config(size=FONT_SIZE)
         # Make my_font applicable for all widgets including menus.
         self.option_add("*Font", my_font)
+
+    def root_quit(self):
+        print('Enter root_quit()')
+        self.destroy()
+        # Normal termination and free the stack.
+        sys.exit(0)
 
 
 if __name__ == '__main__':
