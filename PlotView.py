@@ -29,8 +29,9 @@ class App(tk.Tk):
         super().__init__()
         self.root_setup()
         self.font_setup()
+        self.create_menus()
         # Allows root window to be closed by the closing icon
-        self.protocol('WM_DELETE_WINDOW', self.root_quit)
+        self.protocol('WM_DELETE_WINDOW', self.app_quit)
 
     def root_setup(self):
         self.title('PlotView ' + PV_VERSION)
@@ -51,8 +52,30 @@ class App(tk.Tk):
         # Make my_font applicable for all widgets including menus.
         self.option_add("*Font", my_font)
 
-    def root_quit(self):
-        print('Enter root_quit()')
+    def create_menus(self):
+        # Main menu
+        menu_main = tk.Menu(self)
+        menu_file = tk.Menu(menu_main, tearoff='False')  # Disable tear off menu.
+        menu_pref = tk.Menu(menu_main, tearoff='False')
+        menu_help = tk.Menu(menu_main, tearoff='False')
+        menu_main.add_cascade(label='File', menu=menu_file)  # Add menu_file in menu_main
+        menu_main.add_cascade(label='Preferences', menu=menu_pref)
+        menu_main.add_cascade(label='Help', menu=menu_help)
+        self.config(menu=menu_main)  # Link of main menu to root window
+        # File Menu
+        menu_file.add_command(label='Load session', state='disabled')
+        menu_file.add_command(label='Save session as', state='disabled')
+        menu_file.add_command(label='Export image', state='disabled')
+        menu_file.add_command(label='Quit', command=self.app_quit)
+        # Preferences Menu
+        menu_pref.add_command(label='Type of export image', state='disabled')
+        # Help Menu
+        menu_help.add_command(label='Help on PlotView', state='disabled')
+        #menu_help.add_command(label='Licence GPLv3', command=dialog_licence_help)
+        #menu_help.add_command(label='About', command=dialog_about_help)
+
+    def app_quit(self):
+        # print('Enter app_quit()')  # Only for debug.
         self.destroy()
         # Normal termination and free the stack.
         sys.exit(0)
