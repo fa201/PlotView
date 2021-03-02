@@ -8,7 +8,9 @@
 
 import tkinter as tk
 from tkinter import font
+import tkinter.messagebox
 import sys
+import webbrowser
 
 
 # Constants
@@ -53,6 +55,7 @@ class App(tk.Tk):
         self.option_add("*Font", my_font)
 
     def create_menus(self):
+        """Create the menus and sub-menus of the main GUI"""
         # Main menu
         menu_main = tk.Menu(self)
         menu_file = tk.Menu(menu_main, tearoff='False')  # Disable tear off menu.
@@ -71,8 +74,20 @@ class App(tk.Tk):
         menu_pref.add_command(label='Type of export image', state='disabled')
         # Help Menu
         menu_help.add_command(label='Help on PlotView', state='disabled')
-        #menu_help.add_command(label='Licence GPLv3', command=dialog_licence_help)
-        #menu_help.add_command(label='About', command=dialog_about_help)
+        menu_help.add_command(label='Licence GPLv3', command=self.licence_redirect)
+        menu_help.add_command(label='About', command=self.about_redirect)
+
+    def licence_redirect(self):
+        """PlotView licence is shown in the web browser."""
+        print('The PlotView licence is shown in your web browser.')
+        # TODO: convert this message to status bar message
+        webbrowser.open_new_tab('https://github.com/fa201/PlotView/blob/master/LICENSE')
+
+    def about_redirect(self):
+        """PlotView repository is shown in the web browser."""
+        print('The PlotView repository on github was opened in your web browser.')
+        # TODO: convert this message to status bar message
+        webbrowser.open_new_tab('https://github.com/fa201/PlotView/')
 
     def app_quit(self):
         # print('Enter app_quit()')  # Only for debug.
