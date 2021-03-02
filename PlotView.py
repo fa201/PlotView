@@ -13,54 +13,67 @@ import sys
 import webbrowser
 
 
-# Constants
-# PV version as shown by git tag.
-PV_VERSION = '0.1'
-# Prevent the user from resizing the root window.
-ROOT_RESIZABLE = False
-# Root size (width x height) and posiiton relative to top left corner).
-ROOT_SIZE_POS = '1280x720+0+0'
-# Font size applicable for all GUI texts
-FONT_SIZE = 9
-
-
 class App(tk.Tk):
     """"It defines the main window (root) of GUI."""
     def __init__(self):
-        """Initialize the main window."""
+        """Initialize the main window.
+
+        The following actions are done:
+            1/ Set some constants
+            2/ Set the main GUI up
+            3/ Set the font up for all texts in widgets
+            4/ Create the GUI menus at the top
+            5/ Create the status bar at the bottom
+            6/ Set the status bar to 'Ready'
+        """
         super().__init__()
+        # PV version as shown by git tag.
+        self.PV_VERSION = '0.1'
+        # Prevent the user from resizing the root window.
+        self.ROOT_RESIZABLE = False
+        # Root size (width x height) and posiiton relative to top left corner.
+        self.ROOT_SIZE_POS = '1280x720+0+0'
+        # Font size applicable for all widget texts
+        self.FONT_SIZE = 9
         self.root_setup()
         self.font_setup()
         self.create_menus()
         self.create_status_bar()
         # After launching App the status should be Ready.
         self.set_status('Ready.')
-
-
         # Allows root window to be closed by the closing icon
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
 
     def root_setup(self):
-        self.title('PlotView ' + PV_VERSION)
-        self.geometry(ROOT_SIZE_POS)
+        """Some basic setup is done on the GUI.
+
+        Title is set.
+        The size and location of the windows is set. The size cannot be changed at the moment as it is simpler to manage the GUI layout with a fixed size.
+        """
+        self.title('PlotView ' + self.PV_VERSION)
+        self.geometry(self.ROOT_SIZE_POS)
         # Manage the size and position of root window.
-        if ROOT_RESIZABLE:
-            print('Warning: main window cannot be properly resized.')
+        if self.ROOT_RESIZABLE:
+            print('Warning: the main window cannot be resized.')
         else:
             self.resizable(0, 0)
             # TODO: to be replaced by minsize() & maxsize() if I can handle
             # properly the change of size in the GUI.
 
     def font_setup(self):
+        """The default tkinter font is used and set to a lower size to pack more widget in the given window size."""
         # Customized font based on TkDefaultFont
         my_font = font.nametofont("TkDefaultFont")
         # Font size reduced to have a tighter layout
-        my_font.config(size=FONT_SIZE)
+        my_font.config(size=self.FONT_SIZE)
         # Make my_font applicable for all widgets including menus.
         self.option_add("*Font", my_font)
 
     def create_menus(self):
-        """Create the menus and sub-menus of the main GUI"""
+        """Create the menus and sub-menus of the main GUI.
+
+        Non-functional sub-menus are disabled.
+        """
         # Main menu
         menu_main = tk.Menu(self)
         menu_file = tk.Menu(menu_main, tearoff='False')  # Disable tear off menu.
@@ -95,13 +108,15 @@ class App(tk.Tk):
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/')
 
     def app_quit(self):
-        # print('Enter app_quit()')  # Only for debug.
+        """Quit the App and free the stack."""
         self.destroy()
         # Normal termination and free the stack.
         sys.exit(0)
 
     def create_status_bar(self):
-        """A status bar is created à the bottom. It shows text message."""
+        """A status bar is created à the bottom.
+
+        It shows text message through 'set_status' ."""
         self.status_frame = tk.Frame(self)
         # self.status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E+tk.N+tk.S) A garder ?
         # The status frame should extend on all width of the App window
