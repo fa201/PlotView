@@ -32,6 +32,11 @@ class App(tk.Tk):
         self.root_setup()
         self.font_setup()
         self.create_menus()
+        self.create_status_bar()
+        # After launching App the status should be Ready.
+        self.set_status('Ready.')
+
+
         # Allows root window to be closed by the closing icon
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
 
@@ -94,6 +99,22 @@ class App(tk.Tk):
         self.destroy()
         # Normal termination and free the stack.
         sys.exit(0)
+
+    def create_status_bar(self):
+        """A status bar is created à the bottom. It shows text message."""
+        self.status_frame = tk.Frame(self)
+        # self.status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E+tk.N+tk.S) A garder ?
+        # The status frame should extend on all width of the App window
+        self.status_frame.pack(expand=True, fill=tk.X, side=tk.BOTTOM)
+        # The status is initialised with empty message left aligned.
+        self.status = tk.Label(self.status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        # The label shoul expand on the total width
+        self.status.pack(fill=tk.BOTH, expand=True)
+
+    def set_status(self, string):
+        """Update the status bar message."""
+        # Add 1 space on the left to give more room relative to the window left border
+        self.status.config(text=' '+string)
 
 
 if __name__ == '__main__':
