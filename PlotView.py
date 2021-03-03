@@ -27,7 +27,7 @@ class App(tk.Tk):
         """
         super().__init__()
         # PV version as shown by git tag.
-        self.PV_VERSION = '0.1'
+        self.PV_VERSION = '0.2'
         # Prevent the user from resizing the root window.
         self.ROOT_RESIZABLE = False
         # Root size (width x height) and posiiton relative to top left corner.
@@ -47,7 +47,9 @@ class App(tk.Tk):
         """Some basic setup is done on the GUI.
 
         Title is set.
-        The size and location of the windows is set. The size cannot be changed at the moment as it is simpler to manage the GUI layout with a fixed size.
+        The size and location of the windows is set.
+        The size cannot be changed at the moment.
+        It is simpler to manage the GUI layout with a fixed size.
         """
         self.title('PlotView ' + self.PV_VERSION)
         self.geometry(self.ROOT_SIZE_POS)
@@ -132,6 +134,46 @@ class App(tk.Tk):
         """Update the status bar message."""
         # Add 1 space on the left to give more room relative to the window left border
         self.status.config(text=' '+string)
+
+
+class Curve:
+    """Contains all the data relative to a curve:
+        - curve ID and name
+        - CSV file path
+        - dataframe for (X,Y) points
+        - curve line appearance (color, width, etc.)
+    """
+    # Count the number of curves created
+    count = 1
+
+    def __init__(self, file):
+        # Curve ID: must be unique. '0' is added from 1 to 9 to keep the order when sorted as text.
+        if Curve.count < 10:
+            # Formatted to string to avoid this later on.
+            self.id = '0' + str(Curve.count)
+        else:
+            self.id = str(Curve.count)
+        # Curve ID is shown to avoid confusion until the relevant name is defined.
+        self.name = 'Curve_' + self.id
+        # Path to CSV file
+        self.file = file
+        # X, Y dataframe defining the curve from file
+        self.data = self.read_file(file)
+        # Dictionnary: 'x_type', 'y_type'
+        self.data_type = self.read_data_type(file)
+        # GUI indicator to show the curve in the plot
+        self.visibility = False
+        # Line color of curve -> string
+        self.color = 'black'
+        # Line width of curve -> float TODO: what are the limits?
+        self.width = 1.0
+        # Line style of curve -> string TODO: what are the options?
+        self.style = 'solid'
+        # Line marker (symbol) of curve -> string TODO: what are the options?
+        self.marker = 'o'
+        # Line marker size (size of symbol) of curve -> float TODO: what are the limits?
+        self.marker_size = 1.0
+        Curve.count += 1
 
 
 if __name__ == '__main__':
