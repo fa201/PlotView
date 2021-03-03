@@ -91,9 +91,15 @@ class App(tk.Tk):
         # Preferences Menu
         menu_pref.add_command(label='Type of export image', state='disabled')
         # Help Menu
-        menu_help.add_command(label='Help on PlotView', state='disabled')
+        menu_help.add_command(label='Help on PlotView', command=self.help_redirect)
         menu_help.add_command(label='Licence GPLv3', command=self.licence_redirect)
         menu_help.add_command(label='About', command=self.about_redirect)
+
+    def help_redirect(self):
+        """Plotview wiki is shown in web browser."""
+        print('The PlotView help is shown in your web browser.')
+        # TODO: convert this message to status bar message
+        webbrowser.open_new_tab('https://github.com/fa201/PlotView/wiki/Help')
 
     def licence_redirect(self):
         """PlotView licence is shown in the web browser."""
