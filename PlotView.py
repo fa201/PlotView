@@ -8,7 +8,6 @@
 
 import tkinter as tk
 from tkinter import font
-import tkinter.messagebox
 import sys
 import webbrowser
 
@@ -97,20 +96,17 @@ class App(tk.Tk):
 
     def help_redirect(self):
         """Plotview wiki is shown in web browser."""
-        print('The PlotView help is shown in your web browser.')
-        # TODO: convert this message to status bar message
+        self.set_status('The PlotView wiki page is shown in your web browser.')
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/wiki/Help')
 
     def licence_redirect(self):
         """PlotView licence is shown in the web browser."""
-        print('The PlotView licence is shown in your web browser.')
-        # TODO: convert this message to status bar message
+        self.set_status('The page of GPL3 licence is shown in your web browser.')
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/blob/master/LICENSE')
 
     def about_redirect(self):
         """PlotView repository is shown in the web browser."""
-        print('The PlotView repository on github was opened in your web browser.')
-        # TODO: convert this message to status bar message
+        self.set_status('The PlotView repository on github was opened in your web browser.')
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/')
 
     def app_quit(self):
@@ -139,5 +135,6 @@ class App(tk.Tk):
 
 
 if __name__ == '__main__':
+    # Create the main GUI
     app = App()
     app.mainloop()
