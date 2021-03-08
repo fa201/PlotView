@@ -6,9 +6,10 @@
 """
 
 
+import pandas as pd
+import sys
 import tkinter as tk
 from tkinter import font
-import sys
 import webbrowser
 
 
@@ -142,6 +143,8 @@ class Curve:
         - CSV file path
         - dataframe for (X,Y) points
         - curve line appearance (color, width, etc.)
+        - method to read the CSV file
+        - method plot the curve
     """
     # Count the number of curves created
     count = 1
@@ -162,7 +165,7 @@ class Curve:
         # Dictionnary: 'x_type', 'y_type'
         self.data_type = self.read_data_type(file)
         # GUI indicator to show the curve in the plot
-        self.visibility = False
+        self.visibility = True
         # Line color of curve -> string
         self.color = 'black'
         # Line width of curve -> float TODO: what are the limits?
@@ -174,6 +177,18 @@ class Curve:
         # Line marker size (size of symbol) of curve -> float TODO: what are the limits?
         self.marker_size = 1.0
         Curve.count += 1
+
+    def read_file(self, ):
+        """Read the curve file (only 2 columns) as the file is processed out of PlotView:
+                - delete unused data and headers: only 1 line for header
+                - rename column headers if necessary
+                - strip unwanted spaces
+                - make sure that comma is the delimiter
+        """
+        # header index=0 to skip string content. Data converted into float (necessary in order to plot)
+        df = pd.read_csv(self.file, delimiter=',', header=0, dtype=float)
+        set_status('Curve ID {0} - size of data (lines, colums): {1}'.format(self.id, df.shape))
+        return df
 
 
 if __name__ == '__main__':
