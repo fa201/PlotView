@@ -159,9 +159,9 @@ class App(tk.Tk):
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
         self.canvas.draw()
         # Creates the Matplotlib navigation tool bar for figures.
-        """"toolbar = NavigationToolbar2Tk(canvas, mat_frame)
-        toolbar.draw()
-        canvas.get_tk_widget().pack()"""
+        self.toolbar = NavigationToolbar2Tk(self.canvas, self.mat_frame)
+        self.toolbar.draw()
+        self.canvas.get_tk_widget().pack()
 
     def create_curve_widgets(self):
         # Working directory to look for CSV file
@@ -169,7 +169,6 @@ class App(tk.Tk):
         self.work_dir = '___________________________________'
         self.work_dir_txt = tk.StringVar(self)
         self.work_dir_txt.set(self.work_dir)  # Displayed working dir path
-
         # Path to CSV file
         # work_file define the CSV file path
         self.work_file = '___________________________________'
