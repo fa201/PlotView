@@ -14,7 +14,7 @@ import webbrowser
 
 
 class App(tk.Tk):
-    """"It defines the main window (root) of GUI."""
+    """"It defines the main window of GUI."""
     def __init__(self):
         """Initialize the main window.
 
@@ -27,31 +27,34 @@ class App(tk.Tk):
             6/ Set the status bar to 'Ready'
         """
         super().__init__()
-        # PV version as shown by git tag.
-        self.PV_VERSION = '0.2'
-        # Prevent the user from resizing the root window.
-        self.ROOT_RESIZABLE = False
-        # Root size (width x height) and posiiton relative to top left corner.
-        self.ROOT_SIZE_POS = '1280x720+0+0'
-        # Font size applicable for all widget texts
-        self.FONT_SIZE = 9
+        self.constant_setup()
         self.root_setup()
-        self.font_setup()
         self.create_menus()
         self.create_status_bar()
         # After launching App the status should be Ready.
         self.set_status('Ready.')
-        # Allows root window to be closed by the closing icon
+        # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
+
+    def constant_setup(self):
+        # PV version as shown by git tag.
+        self.PV_VERSION = '0.2'
+        # Prevent the user from resizing the root window.
+        self.ROOT_RESIZABLE = False
+        # Root size (width x height) and position relative to top left corner.
+        self.ROOT_SIZE_POS = '1280x720+0+0'
+        # Font size applicable for all widget texts
+        self.FONT_SIZE = 9
 
     def root_setup(self):
         """Some basic setup is done on the GUI.
 
         Title is set.
         The size and location of the windows is set.
-        The size cannot be changed at the moment.
-        It is simpler to manage the GUI layout with a fixed size.
+        The size cannot be changed at the moment beacause it is simpler.
+        The default tkinter font is used and set to a lower size to pack more widget in the given window size.
         """
+        # WINDOW
         self.title('PlotView ' + self.PV_VERSION)
         self.geometry(self.ROOT_SIZE_POS)
         # Manage the size and position of root window.
@@ -61,10 +64,7 @@ class App(tk.Tk):
             self.resizable(0, 0)
             # TODO: to be replaced by minsize() & maxsize() if I can handle
             # properly the change of size in the GUI.
-
-    def font_setup(self):
-        """The default tkinter font is used and set to a lower size to pack more widget in the given window size."""
-        # Customized font based on TkDefaultFont
+        # FONT
         my_font = font.nametofont("TkDefaultFont")
         # Font size reduced to have a tighter layout
         my_font.config(size=self.FONT_SIZE)
