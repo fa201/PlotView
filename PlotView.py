@@ -12,6 +12,9 @@ import sys
 import tkinter as tk
 from tkinter import font
 import webbrowser
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 
 class App(tk.Tk):
@@ -36,6 +39,8 @@ class App(tk.Tk):
         self.set_status('Ready.')
         # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
+        self.create_plot_area()
+        self.create_curve_widgets()
 
     def constant_setup(self):
         """Define constants used in PV
@@ -45,12 +50,15 @@ class App(tk.Tk):
         - ROOT_RESIZABLE: boolean -> prevents the user from resizing the root window.
         - ROOT_SIZE_POS: string -> Root size (width x height) and position relative to top left corner.
         - FONT_SIZE: integer -> size of font to be used for all widget texts.
+        - PLOT_WIDTH: float -> width (in) of matplotlib figure.
+        - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
         """
         self.PV_VERSION = '0.2'
         self.ROOT_RESIZABLE = False
         self.ROOT_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
-
+        self.PLOT_WIDTH = 9.0
+        self.PLOT_HEIGHT = 6.68
 
     def root_setup(self):
         """Some basic setup is done on the GUI.
@@ -140,6 +148,33 @@ class App(tk.Tk):
         """Update the status bar message."""
         # Add 1 space on the left to give more room relative to the window left border
         self.status.config(text=' '+string)
+
+    def create_plot_area(self):
+        self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
+        self.ax = self.fig.add_subplot(111)
+        self.mat_frame = tk.Frame(self)
+        #mat_frame.grid(row=0, column=0, sticky=tk.W+tk.E+tk.N+tk.S)
+        self.mat_frame.pack(expand=False, side=tk.LEFT)
+        # Creates a drawing area to put the Figure
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
+        self.canvas.draw()
+        # Creates the Matplotlib navigation tool bar for figures.
+        """"toolbar = NavigationToolbar2Tk(canvas, mat_frame)
+        toolbar.draw()
+        canvas.get_tk_widget().pack()"""
+
+    def create_curve_widgets(self):
+        # Working directory to look for CSV file
+        # work_dir defines the directory for the CSV filedialog
+        self.work_dir = '___________________________________'
+        self.work_dir_txt = tk.StringVar(self)
+        self.work_dir_txt.set(self.work_dir)  # Displayed working dir path
+
+        # Path to CSV file
+        # work_file define the CSV file path
+        self.work_file = '___________________________________'
+        self.work_file_txt = tk.StringVar(self)
+        self.work_file_txt.set(self.work_file) # Displayed working file path
 
 
 class Curve:
