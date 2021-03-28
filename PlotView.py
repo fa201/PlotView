@@ -38,14 +38,19 @@ class App(tk.Tk):
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
 
     def constant_setup(self):
-        # PV version as shown by git tag.
+        """Define constants used in PV
+
+        Constants:
+        - PV_VERSION: float -> PV version as shown by git tag.
+        - ROOT_RESIZABLE: boolean -> prevents the user from resizing the root window.
+        - ROOT_SIZE_POS: string -> Root size (width x height) and position relative to top left corner.
+        - FONT_SIZE: integer -> size of font to be used for all widget texts.
+        """
         self.PV_VERSION = '0.2'
-        # Prevent the user from resizing the root window.
         self.ROOT_RESIZABLE = False
-        # Root size (width x height) and position relative to top left corner.
         self.ROOT_SIZE_POS = '1280x720+0+0'
-        # Font size applicable for all widget texts
         self.FONT_SIZE = 9
+
 
     def root_setup(self):
         """Some basic setup is done on the GUI.
@@ -53,7 +58,7 @@ class App(tk.Tk):
         Title is set.
         The size and location of the windows is set.
         The size cannot be changed at the moment beacause it is simpler.
-        The default tkinter font is used and set to a lower size to pack more widget in the given window size.
+        The default tkinter font is used with a lower size to pack more widgets.
         """
         # WINDOW
         self.title('PlotView ' + self.PV_VERSION)
@@ -67,7 +72,6 @@ class App(tk.Tk):
             # properly the change of size in the GUI.
         # FONT
         my_font = font.nametofont("TkDefaultFont")
-        # Font size reduced to have a tighter layout
         my_font.config(size=self.FONT_SIZE)
         # Make my_font applicable for all widgets including menus.
         self.option_add("*Font", my_font)
@@ -203,7 +207,8 @@ class Curve:
         """
         df = pd.read_csv(self.file, delimiter=',', dtype=float)
         message = 'Curve ID {0} - size of data (lines, colums): {1}'
-        set_status(message.format(self.id, df.shape))
+        # TODO: check that the status bar is updated.
+        app.set_status(message.format(self.id, df.shape))
         return df
 
 
