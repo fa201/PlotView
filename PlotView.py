@@ -166,8 +166,8 @@ class Curve:
         # Curve ID: must be unique.
         # '0' is added from 1 to 9 to keep the order when sorted as text.
         if Curve.count < 10:
-            # Formatted to string to avoid this later on.
-            self.id = '0' + str(Curve.count))
+            # Format integrer to string to avoid this later on.
+            self.id = '0' + str(Curve.count)
         else:
             self.id = str(Curve.count)
         # Curve ID is shown to avoid confusion until the relevant name is defined.
@@ -190,9 +190,10 @@ class Curve:
         Curve.count += 1
 
     def read_file(self, ):
-        """Read the curve file as the file is processed out of PlotView.
+        """Read the curve CSV file.
 
-        Requirements:
+        It is necessary to convert data to float in 'read_csv' in order to plot.
+        Requirements on the file format:
                 - delete unused data and headers: header should be on the first line
                 - rename column headers if necessary
                 - only 2 columns of data
@@ -200,9 +201,9 @@ class Curve:
                 - make sure that comma is the delimiter
                 - decimal character is the point '.'
         """
-        # header index=0 to skip string content. Data converted into float (necessary in order to plot)
-        df = pd.read_csv(self.file, delimiter=',', header=0, dtype=float)
-        set_status('Curve ID {0} - size of data (lines, colums): {1}'.format(self.id, df.shape))
+        df = pd.read_csv(self.file, delimiter=',', dtype=float)
+        message = 'Curve ID {0} - size of data (lines, colums): {1}'
+        set_status(message.format(self.id, df.shape))
         return df
 
 
