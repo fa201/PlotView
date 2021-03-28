@@ -150,10 +150,11 @@ class Curve:
     count = 1
 
     def __init__(self, file):
-        # Curve ID: must be unique. '0' is added from 1 to 9 to keep the order when sorted as text.
+        # Curve ID: must be unique.
+        # '0' is added from 1 to 9 to keep the order when sorted as text.
         if Curve.count < 10:
             # Formatted to string to avoid this later on.
-            self.id = '0' + str(Curve.count)
+            self.id = '0' + str(Curve.count))
         else:
             self.id = str(Curve.count)
         # Curve ID is shown to avoid confusion until the relevant name is defined.
