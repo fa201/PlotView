@@ -2,6 +2,7 @@
 
 """PlotView reads a data file and plots the data curve using matplotlib.
 
+    Code hosted at: https://github.com/fa201/PlotView
     PlotView is summarized as PV in variable names.
 """
 
@@ -141,14 +142,20 @@ class Curve:
     """Contains all the data relative to a curve.
 
     Class attribute 'count' is used to describe the curve ID.
-
     The default plotting parameters are those below (user can change them).
-    Parameters:
-        - id: integer - curve ID (cannot be changed by the user)
-        - name: string - curve name as shown in the plot legend
-        - file: string - path to CSV file
-        - data: dataframe - contains (X,Y) points to be plotted
-        - curve line appearance (color, width, etc.)
+    Attributes:
+        - id: integer -> curve ID (cannot be changed by the user)
+        - name: string -> curve name as shown in the plot legend
+        - file: string -> path to CSV file
+        - data: dataframe -> contains (X,Y) points to be plotted
+        - data_type: dictionary -> contains X header and Y header
+        - visibility: boolean -> flag to show the curve in the plot or not
+        - color: string -> color of the curve line
+        - width: float -> width of the curve line
+        - style: string -> style of the curve line
+        - marker: string -> line marker (symbol) for the curve
+        - marker_size: float -> size of line marker for the curve
+    Methods:
         - method to read the CSV file
         - method plot the curve
     """
@@ -165,23 +172,20 @@ class Curve:
             self.id = str(Curve.count)
         # Curve ID is shown to avoid confusion until the relevant name is defined.
         self.name = 'Curve_' + self.id
-        # Path to CSV file
         self.file = file
-        # X, Y dataframe defining the curve from file
         self.data = self.read_file(file)
-        # Dictionnary: 'x_type', 'y_type'
-        self.data_type = self.read_data_type(file)
-        # GUI indicator to show the curve in the plot
+        # TODO: handle this with a function and exceptions if no column or 1 column
+        self.data_type = {'x_type': self.data.columns[0], 'y_type': self.data.columns[1]}
+        #
         self.visibility = True
-        # Line color of curve -> string
         self.color = 'black'
-        # Line width of curve -> float TODO: what are the limits?
+        # TODO: what are the limits of width?
         self.width = 1.0
-        # Line style of curve -> string TODO: what are the options?
+        # TODO: what are the options?
         self.style = 'solid'
-        # Line marker (symbol) of curve -> string TODO: what are the options?
+        # TODO: what are the options?
         self.marker = 'o'
-        # Line marker size (size of symbol) of curve -> float TODO: what are the limits?
+        # TODO: what are the limits?
         self.marker_size = 1.0
         Curve.count += 1
 
