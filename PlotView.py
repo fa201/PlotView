@@ -138,10 +138,16 @@ class App(tk.Tk):
 
 
 class Curve:
-    """Contains all the data relative to a curve:
-        - curve ID and name
-        - CSV file path
-        - dataframe for (X,Y) points
+    """Contains all the data relative to a curve.
+
+    Class attribute 'count' is used to describe the curve ID.
+
+    The default plotting parameters are those below (user can change them).
+    Parameters:
+        - id: integer - curve ID (cannot be changed by the user)
+        - name: string - curve name as shown in the plot legend
+        - file: string - path to CSV file
+        - data: dataframe - contains (X,Y) points to be plotted
         - curve line appearance (color, width, etc.)
         - method to read the CSV file
         - method plot the curve
@@ -180,11 +186,15 @@ class Curve:
         Curve.count += 1
 
     def read_file(self, ):
-        """Read the curve file (only 2 columns) as the file is processed out of PlotView:
-                - delete unused data and headers: only 1 line for header
+        """Read the curve file as the file is processed out of PlotView.
+
+        Requirements:
+                - delete unused data and headers: header should be on the first line
                 - rename column headers if necessary
+                - only 2 columns of data
                 - strip unwanted spaces
                 - make sure that comma is the delimiter
+                - decimal character is the point '.'
         """
         # header index=0 to skip string content. Data converted into float (necessary in order to plot)
         df = pd.read_csv(self.file, delimiter=',', header=0, dtype=float)
