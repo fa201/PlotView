@@ -2,18 +2,23 @@
 
 """PlotView reads a data file and plots the data curve using matplotlib.
 
+    Code hosted at: https://github.com/fa201/PlotView
     PlotView is summarized as PV in variable names.
 """
 
 
+import pandas as pd
+import sys
 import tkinter as tk
 from tkinter import font
-import sys
 import webbrowser
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 
 class App(tk.Tk):
-    """"It defines the main window (root) of GUI."""
+    """"It defines the main window of GUI."""
     def __init__(self):
         """Initialize the main window.
 
@@ -26,29 +31,44 @@ class App(tk.Tk):
             6/ Set the status bar to 'Ready'
         """
         super().__init__()
-        # PV version as shown by git tag.
-        self.PV_VERSION = '0.1'
-        # Prevent the user from resizing the root window.
-        self.ROOT_RESIZABLE = False
-        # Root size (width x height) and posiiton relative to top left corner.
-        self.ROOT_SIZE_POS = '1280x720+0+0'
-        # Font size applicable for all widget texts
-        self.FONT_SIZE = 9
+        self.constant_setup()
         self.root_setup()
-        self.font_setup()
         self.create_menus()
         self.create_status_bar()
         # After launching App the status should be Ready.
         self.set_status('Ready.')
-        # Allows root window to be closed by the closing icon
+        # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
+        self.create_plot_area()
+        self.create_curve_widgets()
+
+    def constant_setup(self):
+        """Define constants used in PV
+
+        Constants:
+        - PV_VERSION: float -> PV version as shown by git tag.
+        - ROOT_RESIZABLE: boolean -> prevents the user from resizing the root window.
+        - ROOT_SIZE_POS: string -> Root size (width x height) and position relative to top left corner.
+        - FONT_SIZE: integer -> size of font to be used for all widget texts.
+        - PLOT_WIDTH: float -> width (in) of matplotlib figure.
+        - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
+        """
+        self.PV_VERSION = '0.2'
+        self.ROOT_RESIZABLE = False
+        self.ROOT_SIZE_POS = '1280x720+0+0'
+        self.FONT_SIZE = 9
+        self.PLOT_WIDTH = 9.0
+        self.PLOT_HEIGHT = 6.68
 
     def root_setup(self):
         """Some basic setup is done on the GUI.
 
         Title is set.
-        The size and location of the windows is set. The size cannot be changed at the moment as it is simpler to manage the GUI layout with a fixed size.
+        The size and location of the windows is set.
+        The size cannot be changed at the moment beacause it is simpler.
+        The default tkinter font is used with a lower size to pack more widgets.
         """
+        # WINDOW
         self.title('PlotView ' + self.PV_VERSION)
         self.geometry(self.ROOT_SIZE_POS)
         # Manage the size and position of root window.
@@ -58,12 +78,8 @@ class App(tk.Tk):
             self.resizable(0, 0)
             # TODO: to be replaced by minsize() & maxsize() if I can handle
             # properly the change of size in the GUI.
-
-    def font_setup(self):
-        """The default tkinter font is used and set to a lower size to pack more widget in the given window size."""
-        # Customized font based on TkDefaultFont
+        # FONT
         my_font = font.nametofont("TkDefaultFont")
-        # Font size reduced to have a tighter layout
         my_font.config(size=self.FONT_SIZE)
         # Make my_font applicable for all widgets including menus.
         self.option_add("*Font", my_font)
@@ -132,6 +148,102 @@ class App(tk.Tk):
         """Update the status bar message."""
         # Add 1 space on the left to give more room relative to the window left border
         self.status.config(text=' '+string)
+
+    def create_plot_area(self):
+        self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
+        self.ax = self.fig.add_subplot(111)
+        self.mat_frame = tk.Frame(self)
+        #mat_frame.grid(row=0, column=0, sticky=tk.W+tk.E+tk.N+tk.S)
+        self.mat_frame.pack(expand=False, side=tk.LEFT)
+        # Creates a drawing area to put the Figure
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
+        self.canvas.draw()
+        # Creates the Matplotlib navigation tool bar for figures.
+        self.toolbar = NavigationToolbar2Tk(self.canvas, self.mat_frame)
+        self.toolbar.draw()
+        self.canvas.get_tk_widget().pack()
+
+    def create_curve_widgets(self):
+        # Working directory to look for CSV file
+        # work_dir defines the directory for the CSV filedialog
+        self.work_dir = '___________________________________'
+        self.work_dir_txt = tk.StringVar(self)
+        self.work_dir_txt.set(self.work_dir)  # Displayed working dir path
+        # Path to CSV file
+        # work_file define the CSV file path
+        self.work_file = '___________________________________'
+        self.work_file_txt = tk.StringVar(self)
+        self.work_file_txt.set(self.work_file) # Displayed working file path
+
+
+class Curve:
+    """Contains all the data relative to a curve.
+
+    Class attribute 'count' is used to describe the curve ID.
+    The default plotting parameters are those below (user can change them).
+    Attributes:
+        - id: integer -> curve ID (cannot be changed by the user)
+        - name: string -> curve name as shown in the plot legend
+        - file: string -> path to CSV file
+        - data: dataframe -> contains (X,Y) points to be plotted
+        - data_type: dictionary -> contains X header and Y header
+        - visibility: boolean -> flag to show the curve in the plot or not
+        - color: string -> color of the curve line
+        - width: float -> width of the curve line
+        - style: string -> style of the curve line
+        - marker: string -> line marker (symbol) for the curve
+        - marker_size: float -> size of line marker for the curve
+    Methods:
+        - method to read the CSV file
+        - method plot the curve
+    """
+    # Count the number of curves created
+    count = 1
+
+    def __init__(self, file):
+        # Curve ID: must be unique.
+        # '0' is added from 1 to 9 to keep the order when sorted as text.
+        if Curve.count < 10:
+            # Format integrer to string to avoid this later on.
+            self.id = '0' + str(Curve.count)
+        else:
+            self.id = str(Curve.count)
+        # Curve ID is shown to avoid confusion until the relevant name is defined.
+        self.name = 'Curve_' + self.id
+        self.file = file
+        self.data = self.read_file(file)
+        # TODO: handle this with a function and exceptions if no column or 1 column
+        self.data_type = {'x_type': self.data.columns[0], 'y_type': self.data.columns[1]}
+        #
+        self.visibility = True
+        self.color = 'black'
+        # TODO: what are the limits of width?
+        self.width = 1.0
+        # TODO: what are the options?
+        self.style = 'solid'
+        # TODO: what are the options?
+        self.marker = 'o'
+        # TODO: what are the limits?
+        self.marker_size = 1.0
+        Curve.count += 1
+
+    def read_file(self, ):
+        """Read the curve CSV file.
+
+        It is necessary to convert data to float in 'read_csv' in order to plot.
+        Requirements on the file format:
+                - delete unused data and headers: header should be on the first line
+                - rename column headers if necessary
+                - only 2 columns of data
+                - strip unwanted spaces
+                - make sure that comma is the delimiter
+                - decimal character is the point '.'
+        """
+        df = pd.read_csv(self.file, delimiter=',', dtype=float)
+        message = 'Curve ID {0} - size of data (lines, colums): {1}'
+        # TODO: check that the status bar is updated.
+        app.set_status(message.format(self.id, df.shape))
+        return df
 
 
 if __name__ == '__main__':
