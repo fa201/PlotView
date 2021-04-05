@@ -20,5 +20,13 @@ matplotlib will be used to handle the plotting part. The Figure will be embedded
 ### test/
 This folder will contain my test data: CSV files.
 
+# Required Python package.
+PlotView needs the following packages to run.
+* Python 3
+* pandas 1.0.1
+* matplotlib 3.2.0
+* tkinter 8.6
+Note that the version are those used for the development. If you have a lower version for a package, it may work but, in case of trouble, please update the packages to these versions at least.
+
 # Limitations of PlotView
 The size of the window is 1280 x 720 pixels so you screen has to be bigger than this.
