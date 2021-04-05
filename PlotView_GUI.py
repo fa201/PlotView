@@ -9,6 +9,9 @@ import sys
 import tkinter as tk
 from tkinter import font
 import webbrowser
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 
 class Gui(tk.Tk):
@@ -17,12 +20,22 @@ class Gui(tk.Tk):
         """Initialize the main window.
         """
         super().__init__()
+        # Attributes
         self.app = application
+        # Working directory to look for CSV file
+        # work_dir defines the directory for the CSV filedialog
+        self.work_dir = '___________________________________'
+        self.work_dir_txt = tk.StringVar(self)
+        # Displayed working dir path
+        self.work_dir_txt.set(self.work_dir)
+
+        # Methods
         # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
         self.window_setup()
         self.create_menus()
         self.create_status_bar()
+        self.create_plot_area()
 
     def window_setup(self):
         """Some basic setup is done on the GUI.
@@ -129,3 +142,17 @@ class Gui(tk.Tk):
         """Update the status bar message."""
         # Add 1 space on the left to give more room relative to the window left border
         self.status.config(text=' '+string)
+
+    def create_plot_area(self):
+        self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
+        self.ax = self.fig.add_subplot(111)
+        self.mat_frame = tk.Frame(self)
+        #mat_frame.grid(row=0, column=0, sticky=tk.W+tk.E+tk.N+tk.S)
+        self.mat_frame.pack(expand=False, side=tk.LEFT)
+        # Creates a drawing area to put the Figure
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
+        self.canvas.draw()
+        # Creates the Matplotlib navigation tool bar for figures.
+        self.toolbar = NavigationToolbar2Tk(self.canvas, self.mat_frame)
+        self.toolbar.draw()
+        self.canvas.get_tk_widget().pack()
