@@ -8,6 +8,7 @@
 import sys
 import tkinter as tk
 from tkinter import font
+import webbrowser
 
 
 class Gui(tk.Tk):
@@ -20,6 +21,7 @@ class Gui(tk.Tk):
         # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
         self.window_setup()
+        self.create_menus()
 
     def window_setup(self):
         """Some basic setup is done on the GUI.
@@ -66,3 +68,43 @@ class Gui(tk.Tk):
         self.destroy()
         # Normal termination and free the stack.
         sys.exit(0)
+
+    def create_menus(self):
+        """Create the menus and sub-menus of the main GUI.
+        Non-functional sub-menus are disabled.
+        """
+        # Main menu
+        menu_main = tk.Menu(self)
+        # Menu tear off is disabled.
+        menu_file = tk.Menu(menu_main, tearoff='False')
+        menu_pref = tk.Menu(menu_main, tearoff='False')
+        menu_help = tk.Menu(menu_main, tearoff='False')
+        # Add menu_file in menu_main
+        menu_main.add_cascade(label='File', menu=menu_file)
+        # TODO: customize picture format and size for export
+        # menu_main.add_cascade(label='Preferences', menu=menu_pref)
+        menu_main.add_cascade(label='Help', menu=menu_help)
+        self.config(menu=menu_main)  # Link of main menu to root window
+        # File Menu
+        menu_file.add_command(label='Load session', state='disabled')
+        menu_file.add_command(label='Save session as', state='disabled')
+        menu_file.add_command(label='Export image', state='disabled')
+        menu_file.add_command(label='Quit', command=self.app_quit)
+        # Preferences Menu
+        # menu_pref.add_command(label='Type of export image', state='disabled')
+        # Help Menu
+        menu_help.add_command(label='Help on PlotView', command=self.help_redirect)
+        menu_help.add_command(label='Licence GPLv3', command=self.licence_redirect)
+        menu_help.add_command(label='About', command=self.about_redirect)
+
+    def help_redirect(self):
+        """Plotview wiki is shown in web browser."""
+        webbrowser.open_new_tab('https://github.com/fa201/PlotView/wiki/Help')
+
+    def licence_redirect(self):
+        """PlotView licence is shown in the web browser."""
+        webbrowser.open_new_tab('https://github.com/fa201/PlotView/blob/master/LICENSE')
+
+    def about_redirect(self):
+        """PlotView repository is shown in the web browser."""
+        webbrowser.open_new_tab('https://github.com/fa201/PlotView/')
