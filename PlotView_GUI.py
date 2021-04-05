@@ -45,7 +45,6 @@ class Gui(tk.Tk):
         # WINDOW
         self.title('PlotView ' + self.PV_VERSION)
         # TODO: Exception if size > size of screen and quit.
-        # TODO: add minimum screen size in the limitation of program in readme.
         self.geometry(self.ROOT_SIZE_POS)
         # Manage the size and position of root window.
         if self.ROOT_RESIZABLE:
