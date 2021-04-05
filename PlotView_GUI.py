@@ -62,6 +62,13 @@ class Gui(tk.Tk):
         # Displayed working dir path
         self.work_dir_txt.set(self.work_dir[-35:-1])
 
+        # Path to CSV file
+        # TODO: a changer et à utiliser Curve
+        # work_file define the CSV file path
+        self.work_file = '___________________________________'
+        self.work_file_txt = tk.StringVar(self)
+        self.work_file_txt.set(self.work_file[-35:-1]) # Displayed working file path
+
         # METHODS
         # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
@@ -122,7 +129,7 @@ class Gui(tk.Tk):
         menu_main = tk.Menu(self)
         # Menu tear off is disabled.
         menu_file = tk.Menu(menu_main, tearoff='False')
-        menu_pref = tk.Menu(menu_main, tearoff='False')
+        # menu_pref = tk.Menu(menu_main, tearoff='False')
         menu_help = tk.Menu(menu_main, tearoff='False')
         # Add menu_file in menu_main
         menu_main.add_cascade(label='File', menu=menu_file)
@@ -194,20 +201,36 @@ class Gui(tk.Tk):
         # Create curve panel
         self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve', bg='green')
         self.curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-            padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+
         # Working directory widgets
-        tk.Button(self.curve_frame, text='Choose directory', command=self.curve_tab_choose_dir, width=12).grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_frame, textvariable=self.work_dir_txt).grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        """"
+        tk.Button(self.curve_frame, text='Choose directory', 
+                command=self.curve_tab_choose_dir, width=12).grid(
+                row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(self.curve_frame, textvariable=self.work_dir_txt).grid(
+                row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+
         # CSV file widgets
-        tk.Button(create_curve_frame, text='Choose CSV file', command=choose_file, width=12).grid(row=1, column=0, padx=WIDGET_PADX, pady=WIDGET_PADY)
-        tk.Label(create_curve_frame, textvariable=work_file_txt).grid(row=1, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)
+        tk.Button(self.curve_frame, text='Choose CSV file', 
+                command=self.choose_file, width=12).grid(
+                row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(self.curve_frame, textvariable=self.work_file_txt).grid(
+                row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+
         # Create curve widget
-        tk.Button(create_curve_frame, text='Create', command=create_curve, width=12).grid(row=2, column=0, padx=WIDGET_PADX, pady=WIDGET_PADY)
-        tk.Label(create_curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)  # TODO: StringVar() for label (needs update after curve creation)
-        """
+        tk.Button(self.curve_frame, text='Create', 
+                command=self.create_curve, width=12).grid(
+                row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        # tk.Label(self.curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)  # TODO: StringVar() for label (needs update after curve creation)
+
         self.tool_notebook.add(self.curve_tab, text='Curve')
 
 
     def curve_tab_choose_dir(self):
+        pass
+
+    def create_curve(self):
+        pass
+
+    def choose_file(self):
         pass
