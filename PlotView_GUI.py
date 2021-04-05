@@ -20,21 +20,20 @@ class Gui(tk.Tk):
         """Initialize the main window.
         """
         super().__init__()
-        # Attributes
+        # ATTRIBUTES
         self.app = application
-        # Working directory to look for CSV file
+        # WORKING DIRECTORY TO LOOK FOR CSV FILES
         # work_dir defines the directory for the CSV filedialog
         self.work_dir = '___________________________________'
         self.work_dir_txt = tk.StringVar(self)
         # Displayed working dir path
         self.work_dir_txt.set(self.work_dir)
 
-        # Methods
+        # METHODS
         # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
         self.window_setup()
         self.create_menus()
-        self.create_status_bar()
         self.create_plot_area()
 
     def window_setup(self):
@@ -44,6 +43,8 @@ class Gui(tk.Tk):
         The size and location of the windows is set.
         The size cannot be changed at the moment because it is simpler.
         The default tkinter font is used with a lower size to pack more widgets.
+        A status bar is created at the bottom. It shows text message through 'set_status'.
+
         Constants:
         - PV_VERSION: string -> plot view version as shown by git tag.
         - WIN_RESIZABLE: boolean -> prevents the user from resizing the root window.
@@ -63,18 +64,28 @@ class Gui(tk.Tk):
         self.title('PlotView ' + self.PV_VERSION)
         # TODO: Exception if size > size of screen and quit.
         self.geometry(self.WIN_SIZE_POS)
-        # Manage the size and position of main window.
         if self.WIN_RESIZABLE:
             print('Warning: the main window cannot be resized.')
         else:
             self.resizable(0, 0)
             # TODO: to be replaced by minsize() & maxsize() if I can handle
             # properly the change of size in the GUI.
+
         # FONT
         my_font = font.nametofont("TkDefaultFont")
         my_font.config(size=self.FONT_SIZE)
         # Make my_font applicable for all widgets including menus.
         self.option_add("*Font", my_font)
+
+        # STATUS BAR
+        self.status_frame = tk.Frame(self)
+        # self.status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E+tk.N+tk.S) A garder ?
+        # The status frame should extend on all width of the main window.
+        self.status_frame.pack(expand=True, fill=tk.X, side=tk.BOTTOM)
+        # The status is initialized with empty message left aligned.
+        self.status = tk.Label(self.status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        # The label shoul expand on the total window width.
+        self.status.pack(fill=tk.BOTH, expand=True)
 
     def app_quit(self):
         """Quit the application"""
@@ -125,18 +136,6 @@ class Gui(tk.Tk):
         """PlotView repository is shown in the web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/')
         self.set_status('The PlotView repository on github was opened in your web browser.')
-
-    def create_status_bar(self):
-        """A status bar is created à the bottom.
-        It shows text message through 'set_status' ."""
-        self.status_frame = tk.Frame(self)
-        # self.status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E+tk.N+tk.S) A garder ?
-        # The status frame should extend on all width of the App window
-        self.status_frame.pack(expand=True, fill=tk.X, side=tk.BOTTOM)
-        # The status is initialised with empty message left aligned.
-        self.status = tk.Label(self.status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
-        # The label shoul expand on the total width
-        self.status.pack(fill=tk.BOTH, expand=True)
 
     def set_status(self, string):
         """Update the status bar message."""
