@@ -9,13 +9,14 @@ try:
     import tkinter as tk
     from tkinter import font
     from tkinter import messagebox as msg
+    from tkinter import filedialog
+    from tkinter import ttk
     import webbrowser
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_tkagg import (
         FigureCanvasTkAgg, NavigationToolbar2Tk)
-    import toto
 except ModuleNotFoundError as e:
-        print('The necessary Python packages are not installed.\n'+str(e))
+        print('The necessary Python packages are not installed.\n' + str(e))
         print('Please check the required packages and their versions at https://github.com/fa201/PlotView.')
 
 
@@ -33,15 +34,26 @@ class Gui(tk.Tk):
         - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
         """
         super().__init__()
+
         # ATTRIBUTES
         # Link to Application instance (Controller)
         self.app = application
+        # Main window parameters.
         self.PV_VERSION = '0.2'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
+        # Matplotlib parameters.
         self.PLOT_WIDTH = 9.0
         self.PLOT_HEIGHT = 6.68
+        # Parameters for widgets on RH tool panel.
+        # Padding for all containers to uniformize the look
+        self.CONTAINER_PADX = 7
+        self.CONTAINER_PADY = 7
+        # Padding for all widgets inside a container
+        self.WIDGET_PADX = 2
+        self.WIDGET_PADY = 2
+
         # Working directory variables.
         # 'work_dir' defines the directory for the CSV filedialog.
         self.work_dir = '___________________________________'
@@ -56,6 +68,8 @@ class Gui(tk.Tk):
         self.window_setup()
         self.create_menus()
         self.create_plot_area()
+        self.create_notebook()
+        self.tab_curve()
 
     def window_setup(self):
         """Some basic setup is done on the GUI.
@@ -161,3 +175,32 @@ class Gui(tk.Tk):
         self.toolbar = NavigationToolbar2Tk(self.canvas, self.mat_frame)
         self.toolbar.draw()
         self.canvas.get_tk_widget().pack()
+
+    def create_notebook(self):
+        """Notebook on RH panel"""
+        # Frame for RH panel. It contains the ttk.notebook.
+        self.tool_frame = tk.Frame(self, bg='blue')
+        self.tool_frame.pack(expand=True, side=tk.RIGHT) # , fill=tk.BOTH
+        # Notebook
+        self.tool_notebook = ttk.Notebook(self.tool_frame)
+
+    def tab_curve(self):
+        """First tab managing curve creattion."""
+        self.curve_tab = ttk.Frame(self.tool_notebook)
+        # = 'Create curve' panel
+        self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
+        self.curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+            padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        """"
+        # Working directory widgets
+        tk.Button(self.curve_frame, text='Choose directory', command=self.curve_tab_choose_dir, width=12).grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(create_curve_frame, textvariable=work_dir_txt).grid(row=0, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)
+        # CSV file widgets
+        tk.Button(create_curve_frame, text='Choose CSV file', command=choose_file, width=12).grid(row=1, column=0, padx=WIDGET_PADX, pady=WIDGET_PADY)
+        tk.Label(create_curve_frame, textvariable=work_file_txt).grid(row=1, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)
+        # Create curve widget
+        tk.Button(create_curve_frame, text='Create', command=create_curve, width=12).grid(row=2, column=0, padx=WIDGET_PADX, pady=WIDGET_PADY)
+        tk.Label(create_curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)  # TODO: StringVar() for label (needs update after curve creation)
+        """
+    def curve_tab_choose_dir(self):
+        pass
