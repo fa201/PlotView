@@ -163,6 +163,7 @@ class Gui(tk.Tk):
         self.status.config(text=' '+string)
 
     def create_plot_area(self):
+        # TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
         self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
         self.ax = self.fig.add_subplot(111)
         self.mat_frame = tk.Frame(self)
@@ -179,22 +180,25 @@ class Gui(tk.Tk):
     def create_notebook(self):
         """Notebook on RH panel"""
         # Frame for RH panel. It contains the ttk.notebook.
-        self.tool_frame = tk.Frame(self, bg='blue')
-        self.tool_frame.pack(expand=True, side=tk.RIGHT) # , fill=tk.BOTH
+        self.tool_frame = tk.Frame(self)
+        self.tool_frame.pack(expand=False, fill=tk.BOTH)
         # Notebook
         self.tool_notebook = ttk.Notebook(self.tool_frame)
+        self.tool_notebook.pack(expand=False, fill=tk.BOTH)
 
     def tab_curve(self):
-        """First tab managing curve creattion."""
+        """First tab managing curve creation."""
+        # Create curve tab
         self.curve_tab = ttk.Frame(self.tool_notebook)
-        # = 'Create curve' panel
-        self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
+
+        # Create curve panel
+        self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve', bg='green')
         self.curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
             padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-        """"
         # Working directory widgets
         tk.Button(self.curve_frame, text='Choose directory', command=self.curve_tab_choose_dir, width=12).grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(create_curve_frame, textvariable=work_dir_txt).grid(row=0, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)
+        tk.Label(self.curve_frame, textvariable=self.work_dir_txt).grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        """"
         # CSV file widgets
         tk.Button(create_curve_frame, text='Choose CSV file', command=choose_file, width=12).grid(row=1, column=0, padx=WIDGET_PADX, pady=WIDGET_PADY)
         tk.Label(create_curve_frame, textvariable=work_file_txt).grid(row=1, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)
@@ -202,5 +206,8 @@ class Gui(tk.Tk):
         tk.Button(create_curve_frame, text='Create', command=create_curve, width=12).grid(row=2, column=0, padx=WIDGET_PADX, pady=WIDGET_PADY)
         tk.Label(create_curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=1, padx=WIDGET_PADX, pady=WIDGET_PADY)  # TODO: StringVar() for label (needs update after curve creation)
         """
+        self.tool_notebook.add(self.curve_tab, text='Curve')
+
+
     def curve_tab_choose_dir(self):
         pass
