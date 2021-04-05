@@ -33,4 +33,4 @@ if __name__ == '__main__':
     # Create the main GUI
     app = Application()
     # Launch the GUI mainloop which should always be the last instruction!
-    app.main()
+    app.gui.mainloop()
