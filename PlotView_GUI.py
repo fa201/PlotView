@@ -58,7 +58,7 @@ class Gui(tk.Tk):
         self.WIDGET_PADX = 2
         self.WIDGET_PADY = 2
         # Max length of string showed by 'Create curve' labels
-        self.MAX_STR_CREATE_CURVE = 35
+        self.MAX_STR_CREATE_CURVE = 32
 
         # Working directory variables.
         # 'work_dir_set' defines the directory for the CSV filedialog.
@@ -68,10 +68,10 @@ class Gui(tk.Tk):
         # Path to CSV file
         # TODO: a changer et à utiliser Curve ?
         # work_file define the CSV file path
-        self.work_file = '___________________________________'
         self.work_file_txt = tk.StringVar(self)
+        self.work_file_txt.set('___________________________________')
         # Displayed working file path (only last characters.)
-        self.work_file_txt.set(self.work_file[-35:-1])
+        #self.work_file_txt.set(self.work_file[-35:-1])
 
         # METHODS
         # Allows root window to be closed by the closing icon.
@@ -88,7 +88,7 @@ class Gui(tk.Tk):
         Title is set.
         The size and location of the windows is set.
         The size cannot be changed at the moment because it is simpler.
-        The default tkinter font is used with a lower size to pack more widgets.
+        A font is used with a lower size to pack more widgets and fixed sapcing.
         A status bar is created at the bottom. It shows text message through 'set_status'.
         """
         # WINDOW
@@ -103,9 +103,8 @@ class Gui(tk.Tk):
             # properly the change of size in the GUI.
 
         # FONT
-        my_font = font.nametofont("TkDefaultFont")
-        my_font.config(size=self.FONT_SIZE)
-        # Make my_font applicable for all widgets including menus.
+        # https://stackoverflow.com/questions/31918073/tkinter-how-to-set-font-for-text
+        my_font = font.Font(family='TkFixedFont', size=self.FONT_SIZE)
         self.option_add("*Font", my_font)
 
         # STATUS BAR
@@ -212,14 +211,14 @@ class Gui(tk.Tk):
                 command=self.choose_dir, width=12).grid(
                 row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.curve_frame, textvariable=self.work_dir_txt).grid(
-                row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
 
         # CSV file widgets
         tk.Button(self.curve_frame, text='Choose CSV file',
                 command=self.choose_file, width=12).grid(
                 row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.curve_frame, textvariable=self.work_file_txt).grid(
-                row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
 
         # Create curve widget
         tk.Button(self.curve_frame, text='Create',
@@ -234,7 +233,8 @@ class Gui(tk.Tk):
         """Get the working directory path with file dialog
 
             Process the string of working directory to have no more than
-            'MAX_STR_CREATE_CURVE' characters.
+            'MAX_STR_CREATE_CURVE' characters. So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label widget is the same.
+            This gives no change in layout.
         """
         self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
         print('Direcory selected: ', self.work_dir)  # Only for debug.
