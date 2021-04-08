@@ -21,7 +21,7 @@ class Application:
             - model: Model -> 1 instance to link to the PlotView_model file.
             - gui: GUI -> 1 instance to link to the PlotView_GUI file.
         """
-        self.model = Model()
+        self.model = Model(self)
         # The App instance is passed to the GUI instance to link both for call-backs.
         self.gui = Gui(self)
 

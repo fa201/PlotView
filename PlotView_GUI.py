@@ -57,17 +57,17 @@ class Gui(tk.Tk):
         # Working directory variables.
         # 'work_dir' defines the directory for the CSV filedialog.
         self.work_dir = '___________________________________'
-        # Cut the last 35 characters of 'work_dir' so that it displays a constant width portion.
         self.work_dir_txt = tk.StringVar(self)
-        # Displayed working dir path
+        # Displayed working dir path (only last characters.)
         self.work_dir_txt.set(self.work_dir[-35:-1])
 
         # Path to CSV file
-        # TODO: a changer et à utiliser Curve
+        # TODO: a changer et à utiliser Curve ?
         # work_file define the CSV file path
         self.work_file = '___________________________________'
         self.work_file_txt = tk.StringVar(self)
-        self.work_file_txt.set(self.work_file[-35:-1]) # Displayed working file path
+        # Displayed working file path (only last characters.)
+        self.work_file_txt.set(self.work_file[-35:-1])
 
         # METHODS
         # Allows root window to be closed by the closing icon.
@@ -185,13 +185,13 @@ class Gui(tk.Tk):
         self.canvas.get_tk_widget().pack()
 
     def create_notebook(self):
-        """Notebook on RH panel"""
+        """Notebook on RH panel containing all the tool tabs."""
         # Frame for RH panel. It contains the ttk.notebook.
         self.tool_frame = tk.Frame(self)
-        self.tool_frame.pack(expand=False, fill=tk.BOTH)
+        self.tool_frame.pack(expand=True, fill=tk.BOTH)
         # Notebook
         self.tool_notebook = ttk.Notebook(self.tool_frame)
-        self.tool_notebook.pack(expand=False, fill=tk.BOTH)
+        self.tool_notebook.pack(expand=True, fill=tk.BOTH)
 
     def tab_curve(self):
         """First tab managing curve creation."""
@@ -204,21 +204,21 @@ class Gui(tk.Tk):
                 padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
 
         # Working directory widgets
-        tk.Button(self.curve_frame, text='Choose directory', 
-                command=self.curve_tab_choose_dir, width=12).grid(
+        tk.Button(self.curve_frame, text='Choose directory',
+                command=self.choose_dir, width=12).grid(
                 row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.curve_frame, textvariable=self.work_dir_txt).grid(
                 row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
         # CSV file widgets
-        tk.Button(self.curve_frame, text='Choose CSV file', 
+        tk.Button(self.curve_frame, text='Choose CSV file',
                 command=self.choose_file, width=12).grid(
                 row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.curve_frame, textvariable=self.work_file_txt).grid(
                 row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
         # Create curve widget
-        tk.Button(self.curve_frame, text='Create', 
+        tk.Button(self.curve_frame, text='Create',
                 command=self.create_curve, width=12).grid(
                 row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # tk.Label(self.curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)  # TODO: StringVar() for label (needs update after curve creation)
@@ -226,8 +226,10 @@ class Gui(tk.Tk):
         self.tool_notebook.add(self.curve_tab, text='Curve')
 
 
-    def curve_tab_choose_dir(self):
-        pass
+    def choose_dir(self):
+        self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
+        print('Direcory selected: ', self.work_dir)  # Only for debug.
+
 
     def create_curve(self):
         pass
