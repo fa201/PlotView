@@ -32,6 +32,10 @@ class Gui(tk.Tk):
         - FONT_SIZE: integer -> size of font to be used for all widget texts.
         - PLOT_WIDTH: float -> width (in) of matplotlib figure.
         - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
+        - MAX_STR_CREATE_CURVE: int -> number of caracters to be displayed to show the working directory.
+
+        Variables:
+        - work_dir_txt: string -> end of directory path showing working directory.
         """
         super().__init__()
 
@@ -53,13 +57,13 @@ class Gui(tk.Tk):
         # Padding for all widgets inside a container
         self.WIDGET_PADX = 2
         self.WIDGET_PADY = 2
+        # Max length of string showed by 'Create curve' labels
+        self.MAX_STR_CREATE_CURVE = 35
 
         # Working directory variables.
-        # 'work_dir' defines the directory for the CSV filedialog.
-        self.work_dir = '___________________________________'
+        # 'work_dir_set' defines the directory for the CSV filedialog.
         self.work_dir_txt = tk.StringVar(self)
-        # Displayed working dir path (only last characters.)
-        self.work_dir_txt.set(self.work_dir[-35:-1])
+        self.work_dir_txt.set('___________________________________')
 
         # Path to CSV file
         # TODO: a changer et à utiliser Curve ?
@@ -227,8 +231,19 @@ class Gui(tk.Tk):
 
 
     def choose_dir(self):
+        """Get the working directory path with file dialog
+
+            Process the string of working directory to have no more than
+            'MAX_STR_CREATE_CURVE' characters.
+        """
         self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
         print('Direcory selected: ', self.work_dir)  # Only for debug.
+        # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
+        if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
+            temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE:]
+            self.work_dir_txt.set(temp)
+        else:
+            self.work_dir_txt.set(self.work_dir)
 
 
     def create_curve(self):
