@@ -207,14 +207,14 @@ class Gui(tk.Tk):
                 padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
 
         # Working directory widgets
-        tk.Button(self.curve_frame, text='Choose directory',
+        tk.Button(self.curve_frame, text='Select directory',
                 command=self.choose_dir, width=12).grid(
                 row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.curve_frame, textvariable=self.work_dir_txt).grid(
                 row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
 
         # CSV file widgets
-        tk.Button(self.curve_frame, text='Choose CSV file',
+        tk.Button(self.curve_frame, text='Select CSV file',
                 command=self.choose_file, width=12).grid(
                 row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.curve_frame, textvariable=self.work_file_txt).grid(
@@ -245,9 +245,24 @@ class Gui(tk.Tk):
         else:
             self.work_dir_txt.set(self.work_dir)
 
+    def choose_file(self):
+        """ Get the path to the CSV file to open.
+
+            Process the string of file path to have no more than
+            'MAX_STR_CREATE_CURVE' characters. So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label widget is the same.
+            This gives no change in layout.
+        """
+        self.work_file = filedialog.askopenfilename(
+            initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
+        print('Path of file selected: ', self.work_file)  # Only for debug.
+        if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
+            temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE:]
+            self.work_file_txt.set(temp)
+        else:
+            self.work_file_txt.set(self.work_file)
+
 
     def create_curve(self):
         pass
 
-    def choose_file(self):
-        pass
+
