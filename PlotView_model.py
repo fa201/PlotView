@@ -25,24 +25,24 @@ class Model:
 
 
 class Curve:
-    """Contains all the data relative to a curve.
-    Class attribute 'count' is used to describe the curve ID.
-    The default plotting parameters are those below (user can change them).
-    Attributes:
-        - id: integer -> curve ID (cannot be changed by the user)
-        - name: string -> curve name as shown in the plot legend
-        - file: string -> path to CSV file
-        - data: dataframe -> contains (X,Y) points to be plotted
-        - data_type: dictionary -> contains X header and Y header
-        - visibility: boolean -> flag to show the curve in the plot or not
-        - color: string -> color of the curve line
-        - width: float -> width of the curve line
-        - style: string -> style of the curve line
-        - marker: string -> line marker (symbol) for the curve
-        - marker_size: float -> size of line marker for the curve
-    Methods:
-        - method to read the CSV file
-        - method plot the curve
+    """ Contains all the data relative to a curve.
+        Class attribute 'count' is used to describe the curve ID.
+        The default plotting parameters are those below (user can change them).
+        Attributes:
+            - id: integer -> curve ID (cannot be changed by the user)
+            - name: string -> curve name as shown in the plot legend
+            - file: string -> path to CSV file
+            - data: dataframe -> contains (X,Y) points to be plotted
+            - data_type: dictionary -> contains X header and Y header
+            - visibility: boolean -> flag to show the curve in the plot or not
+            - color: string -> color of the curve line
+            - width: float -> width of the curve line
+            - style: string -> style of the curve line
+            - marker: string -> line marker (symbol) for the curve
+            - marker_size: float -> size of line marker for the curve
+        Methods:
+            - method to read the CSV file
+            - method plot the curve
     """
     # Count the number of curves created
     count = 1
@@ -75,9 +75,9 @@ class Curve:
         Curve.count += 1
 
     def read_file(self):
-        """Read the curve CSV file.
-        It is necessary to convert data to float in 'read_csv' in order to plot.
-        Requirements on the file format:
+        """ Read the curve CSV file.
+            It is necessary to convert data to float in 'read_csv' in order to plot.
+            Requirements on the file format:
                 - delete unused data and headers: header should be on the first line
                 - rename column headers if necessary
                 - only 2 columns of data

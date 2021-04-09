@@ -23,19 +23,19 @@ except ModuleNotFoundError as e:
 class Gui(tk.Tk):
     """"It defines the main window of GUI."""
     def __init__(self, application):
-        """Initialize the main window.
+        """ Initialize the main window.
 
-        Constants:
-        - PV_VERSION: string -> plot view version as shown by git tag.
-        - WIN_RESIZABLE: boolean -> prevents the user from resizing the root window.
-        - WIN_SIZE_POS: string -> window size (width x height) and position relative to top left corner.
-        - FONT_SIZE: integer -> size of font to be used for all widget texts.
-        - PLOT_WIDTH: float -> width (in) of matplotlib figure.
-        - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
-        - MAX_STR_CREATE_CURVE: int -> number of caracters to be displayed to show the working directory.
+            Constants:
+            - PV_VERSION: string -> plot view version as shown by git tag.
+            - WIN_RESIZABLE: boolean -> prevents the user from resizing the root window.
+            - WIN_SIZE_POS: string -> window size (width x height) and position relative to top left corner.
+            - FONT_SIZE: integer -> size of font to be used for all widget texts.
+            - PLOT_WIDTH: float -> width (in) of matplotlib figure.
+            - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
+            - MAX_STR_CREATE_CURVE: int -> number of caracters to be displayed to show the working directory.
 
-        Variables:
-        - work_dir_txt: string -> end of directory path showing working directory.
+            Variables:
+            - work_dir_txt: string -> end of directory path showing working directory.
         """
         super().__init__()
 
@@ -83,13 +83,13 @@ class Gui(tk.Tk):
         self.tab_curve()
 
     def window_setup(self):
-        """Some basic setup is done on the GUI.
+        """ Some basic setup is done on the GUI.
 
-        Title is set.
-        The size and location of the windows is set.
-        The size cannot be changed at the moment because it is simpler.
-        A font is used with a lower size to pack more widgets and fixed sapcing.
-        A status bar is created at the bottom. It shows text message through 'set_status'.
+            Title is set.
+            The size and location of the windows is set.
+            The size cannot be changed at the moment because it is simpler.
+            A font is used with a lower size to pack more widgets and fixed sapcing.
+            A status bar is created at the bottom. It shows text message through 'set_status'.
         """
         # WINDOW
         self.title('PlotView ' + self.PV_VERSION)
@@ -118,15 +118,15 @@ class Gui(tk.Tk):
         self.status.pack(fill=tk.BOTH, expand=True)
 
     def app_quit(self):
-        """Quit the application"""
+        """ Quit the application."""
         # Destroy the main window.
         self.destroy()
         # Normal termination and free the stack.
         sys.exit(0)
 
     def create_menus(self):
-        """Create the menus and sub-menus of the main GUI.
-        Non-functional sub-menus are disabled.
+        """ Create the menus and sub-menus of the main GUI.
+            Non-functional sub-menus are disabled.
         """
         # Main menu
         menu_main = tk.Menu(self)
@@ -153,22 +153,22 @@ class Gui(tk.Tk):
         menu_help.add_command(label='About', command=self.about_redirect)
 
     def help_redirect(self):
-        """Plotview wiki is shown in web browser."""
+        """ Plotview wiki is shown in web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/wiki/Help')
         self.set_status('The PlotView wiki page is shown in your web browser.')
 
     def licence_redirect(self):
-        """PlotView licence is shown in the web browser."""
+        """ PlotView licence is shown in the web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/blob/master/LICENSE')
         self.set_status('The page of GPL3 licence is shown in your web browser.')
 
     def about_redirect(self):
-        """PlotView repository is shown in the web browser."""
+        """ PlotView repository is shown in the web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/')
         self.set_status('The PlotView repository on github was opened in your web browser.')
 
     def set_status(self, string):
-        """Update the status bar message."""
+        """ Update the status bar message."""
         # Add 1 space on the left to give more room relative to the window left border
         self.status.config(text=' '+string)
 
@@ -188,7 +188,7 @@ class Gui(tk.Tk):
         self.canvas.get_tk_widget().pack()
 
     def create_notebook(self):
-        """Notebook on RH panel containing all the tool tabs."""
+        """ Notebook on RH panel containing all the tool tabs."""
         # Frame for RH panel. It contains the ttk.notebook.
         self.tool_frame = tk.Frame(self)
         self.tool_frame.pack(expand=True, fill=tk.BOTH)
@@ -197,7 +197,7 @@ class Gui(tk.Tk):
         self.tool_notebook.pack(expand=True, fill=tk.BOTH)
 
     def tab_curve(self):
-        """First tab managing curve creation."""
+        """ First tab managing curve creation."""
         # Create curve tab
         self.curve_tab = ttk.Frame(self.tool_notebook)
 
@@ -230,7 +230,7 @@ class Gui(tk.Tk):
 
 
     def choose_dir(self):
-        """Get the working directory path with file dialog
+        """ Get the working directory path with file dialog
 
             Process the string of working directory to have no more than
             'MAX_STR_CREATE_CURVE' characters. So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label widget is the same.
