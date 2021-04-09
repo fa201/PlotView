@@ -220,12 +220,13 @@ class Gui(tk.Tk):
         tk.Label(self.curve_frame, textvariable=self.work_file_txt).grid(
                 row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
 
-        # Create curve widget
+        # Create curve widgets
         tk.Button(self.curve_frame, text='Create',
-                command=self.create_curve, width=12).grid(
+                command=self.get_CSV_file_path, width=12).grid(
                 row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # tk.Label(self.curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)  # TODO: StringVar() for label (needs update after curve creation)
 
+        # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
 
 
@@ -237,7 +238,7 @@ class Gui(tk.Tk):
             This gives no change in layout.
         """
         self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
-        print('Direcory selected: ', self.work_dir)  # Only for debug.
+        # print('Direcory selected:', self.work_dir)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
         if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE:]
@@ -254,7 +255,7 @@ class Gui(tk.Tk):
         """
         self.work_file = filedialog.askopenfilename(
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
-        print('Path of file selected: ', self.work_file)  # Only for debug.
+        # print('Path of file selected:', self.work_file)  # Only for debug.
         if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE:]
             self.work_file_txt.set(temp)
@@ -262,7 +263,10 @@ class Gui(tk.Tk):
             self.work_file_txt.set(self.work_file)
 
 
-    def create_curve(self):
-        pass
+    def get_CSV_file_path(self):
+        """Create the Curve instance from the CSV file given in 'work_file'"""
+        print('File path selected : ', self.work_file)
+        self.app.create_curve(self.work_file)
+             
 
 

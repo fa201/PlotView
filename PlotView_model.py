@@ -7,8 +7,12 @@
 """
 
 
+import pandas as pd
+
+
+"""
 class Model:
-    """ Define some default values for directories or files
+     Define some default values for directories or files
 
         The working directory is supposed to contain several CSV curve files to plot.
         The goal is to avoid repeating navigation to the same directory for data.
@@ -17,12 +21,13 @@ class Model:
         The working file shows the current curve CSV file used, once the file is loaded.
 
         Variables:
-        - work_dir: string -> complete path to the working directory
-        - work_dir_txt: string -> short path showing the end of 'work_dir'
-    """
+        - app: Application -> instance of the controller
+        - curves: list -> list of Curve instances
+    
     def __init__(self, application):
         self.app = application
-
+        self.curves = []
+"""
 
 class Curve:
     """ Contains all the data relative to a curve.
@@ -46,8 +51,11 @@ class Curve:
     """
     # Count the number of curves created
     count = 1
+    # List of curve instances
+    curves = [None]
 
-    def __init__(self, path):
+    def __init__(self, application, path):
+        self.app = application
         # Curve ID: must be unique.
         # '0' is added from 1 to 9 to keep the order when sorted as text.
         if Curve.count < 10:
@@ -72,10 +80,13 @@ class Curve:
         self.marker = 'o'
         # TODO: what are the limits?
         self.marker_size = 1.0
+        Curve.curves.append(self)
+        print('curve list:', Curve.curves)
         Curve.count += 1
 
-    def read_file(self):
+    def read_file(self, path):
         """ Read the curve CSV file.
+
             It is necessary to convert data to float in 'read_csv' in order to plot.
             Requirements on the file format:
                 - delete unused data and headers: header should be on the first line
@@ -86,7 +97,8 @@ class Curve:
                 - decimal character is the point '.'
         """
         df = pd.read_csv(self.path, delimiter=',', dtype=float)
-        message = 'Curve ID {0} - size of data (lines, colums): {1}'
+        print('Curve ID {0} - size of data (lines, colums): {1}'.format(self.id, df.shape))
+        # message = 'Curve ID {0} - size of data (lines, colums): {1}'
         # TODO: check that the status bar is updated.
-        app.set_status(message.format(self.id, df.shape))
+        # app.set_status(message.format(self.id, df.shape))
         return df

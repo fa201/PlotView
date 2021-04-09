@@ -9,7 +9,7 @@
 
 
 from PlotView_GUI import Gui
-from PlotView_model import Model
+from PlotView_model import Curve
 
 
 class Application:
@@ -21,13 +21,18 @@ class Application:
             - model: Model -> 1 instance to link to the PlotView_model file.
             - gui: GUI -> 1 instance to link to the PlotView_GUI file.
         """
-        self.model = Model(self)
+        
         # The App instance is passed to the GUI instance to link both for call-backs.
         self.gui = Gui(self)
 
     def main(self):
         """Launch the GUI.mainloop()"""
         self.gui.main()
+
+    def create_curve(self, path):
+        print('In controller - File path : ', path)
+        self.model = Curve(self, path)
+
 
 if __name__ == '__main__':
     # Create the main GUI
