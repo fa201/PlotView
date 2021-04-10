@@ -121,7 +121,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.2'
+        self.PV_VERSION = '0.3'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -359,6 +359,9 @@ class Application(tk.Tk):
 
     def plot_curves(self):
         """Plot all curves with visibility = True"""
+        # It is necessary to clear the Axes since the for loop starts from 1
+        # for every curve plot. Otherwise curve_01 get duplicated for each call.
+        self.ax.clear()
         for i in range(1, Curve.count):
             if Curve.curves[i].visibility == True:
                 self.ax.plot(Curve.curves[i].data.iloc[:,0],
