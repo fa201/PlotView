@@ -39,7 +39,8 @@ class Curve:
             - width: float -> width of the curve line
             - style: string -> style of the curve line
             - marker: string -> line marker (symbol) for the curve
-            - marker_size: float -> size of line marker for the curve
+            - marker_size: float -> size of line marker for the curve from 0.0 to 10.0
+            TODO: add fig, ax, canvas, etc.
         Methods:
             - method to read the CSV file
     """
@@ -71,8 +72,8 @@ class Curve:
         self.style = 'solid'
         # TODO: what are the options?
         self.marker = 'o'
-        # TODO: what are the limits?
-        self.marker_size = 1.0
+        # 'marker_size' = 0 -> not visible.
+        self.marker_size = 0.0
 
         Curve.count += 1
 
@@ -284,7 +285,7 @@ class Application(tk.Tk):
         self.curve_tab = ttk.Frame(self.tool_notebook)
 
         # Create curve panel
-        self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve', bg='green')
+        self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
         self.curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                 padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
 
@@ -354,6 +355,24 @@ class Application(tk.Tk):
         # Show the name of the created curve in 'curve_label'
         # Curve.count-1 since Curve.count was incremented after creation.
         self.curve_label.set(Curve.curves[Curve.count-1].name)
+        self.plot_curves()
+
+    def plot_curves(self):
+        """Plot all curves with visibility = True"""
+        for i in range(1, Curve.count):
+            if Curve.curves[i].visibility == True:
+                self.ax.plot(Curve.curves[i].data.iloc[:,0],
+                    Curve.curves[i].data.iloc[:,1],
+                    label=Curve.curves[i].name,
+                    color=Curve.curves[i].color,
+                    lw=Curve.curves[i].width,
+                    ls=Curve.curves[i].style,
+                    marker=Curve.curves[i].marker,
+                    markersize=Curve.curves[i].marker_size
+                    )
+        self.ax.legend(loc='lower right')
+        self.canvas.draw()
+
 
 if __name__ == '__main__':
     app = Application()
