@@ -35,7 +35,10 @@ class Gui(tk.Tk):
             - MAX_STR_CREATE_CURVE: int -> number of caracters to be displayed to show the working directory.
 
             Variables:
+            - work_dir: string -> directory path showing working directory.
             - work_dir_txt: string -> end of directory path showing working directory.
+            - work_file: string -> file path to CSV file.
+            - work_file_txt: string -> end of file path.
         """
         super().__init__()
 
@@ -62,16 +65,19 @@ class Gui(tk.Tk):
 
         # Working directory variables.
         # 'work_dir_set' defines the directory for the CSV filedialog.
+        self.work_dir = ''
         self.work_dir_txt = tk.StringVar(self)
         self.work_dir_txt.set('___________________________________')
-
         # Path to CSV file
         # TODO: a changer et à utiliser Curve ?
         # work_file define the CSV file path
+        self.work_file = ''
         self.work_file_txt = tk.StringVar(self)
         self.work_file_txt.set('___________________________________')
         # Displayed working file path (only last characters.)
         #self.work_file_txt.set(self.work_file[-35:-1])
+        # Curve creation label showing the curve name
+        self.curve_creation = tk.StringVar(self)
 
         # METHODS
         # Allows root window to be closed by the closing icon.
@@ -224,11 +230,10 @@ class Gui(tk.Tk):
         tk.Button(self.curve_frame, text='Create',
                 command=self.get_CSV_file_path, width=12).grid(
                 row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        # tk.Label(self.curve_frame, text='Curve: ID - name -> {0} - Curve'.format(Curve.count)).grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)  # TODO: StringVar() for label (needs update after curve creation)
+        tk.Label(self.curve_frame, text=self.curve_creation).grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)  # TODO: StringVar() for label (needs update after curve creation)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
-
 
     def choose_dir(self):
         """ Get the working directory path with file dialog
@@ -262,11 +267,8 @@ class Gui(tk.Tk):
         else:
             self.work_file_txt.set(self.work_file)
 
-
     def get_CSV_file_path(self):
         """Create the Curve instance from the CSV file given in 'work_file'"""
+        # TODO: launch create curve from button ?
         print('File path selected : ', self.work_file)
         self.app.create_curve(self.work_file)
-             
-
-

@@ -10,9 +10,8 @@
 import pandas as pd
 
 
-"""
 class Model:
-     Define some default values for directories or files
+    """"Define some default values for directories or files
 
         The working directory is supposed to contain several CSV curve files to plot.
         The goal is to avoid repeating navigation to the same directory for data.
@@ -23,11 +22,18 @@ class Model:
         Variables:
         - app: Application -> instance of the controller
         - curves: list -> list of Curve instances
-    
+    """
+
     def __init__(self, application):
         self.app = application
-        self.curves = []
-"""
+        # List of curve instances starting at index 1 since count is set to 1 at start.
+        self.curves = [None]
+
+    def create_curve(self, path):
+        self.curves.append(Curve(path))
+        print('Curve created :', self.curves[Curve.count-1].name)  # Only for debug
+        # TODO: comment faire remonter [Curve.count-1].name pour qu'il soit affiché ?
+
 
 class Curve:
     """ Contains all the data relative to a curve.
@@ -49,13 +55,10 @@ class Curve:
             - method to read the CSV file
             - method plot the curve
     """
-    # Count the number of curves created
+    # Number of curves created. To be suffixed at the end of the curve name.
     count = 1
-    # List of curve instances
-    curves = [None]
 
-    def __init__(self, application, path):
-        self.app = application
+    def __init__(self, path):
         # Curve ID: must be unique.
         # '0' is added from 1 to 9 to keep the order when sorted as text.
         if Curve.count < 10:
@@ -80,8 +83,7 @@ class Curve:
         self.marker = 'o'
         # TODO: what are the limits?
         self.marker_size = 1.0
-        Curve.curves.append(self)
-        print('curve list:', Curve.curves)
+
         Curve.count += 1
 
     def read_file(self, path):
