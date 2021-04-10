@@ -26,6 +26,7 @@ except ModuleNotFoundError as e:
 class Curve:
     """ Contains all the data relative to a curve.
         Class attribute 'count' is used to describe the curve ID.
+
         The default plotting parameters are those below (user can change them).
         Attributes:
             - id: integer -> curve ID (cannot be changed by the user)
@@ -41,16 +42,11 @@ class Curve:
             - marker_size: float -> size of line marker for the curve
         Methods:
             - method to read the CSV file
-            - method plot the curve
     """
     # Number of curves created. To be suffixed at the end of the curve name.
     count = 1
     # List of curve instances starting at index 1 since count is set to 1 at start.
     curves = [None]
-    @staticmethod
-    def add_curve(path):
-        Curve.curves.append(Curve(path))
-        print('Curve created :', Curve.curves[Curve.count-1].name)  # Only for debug
 
     def __init__(self, path):
         # Curve ID: must be unique.
@@ -349,13 +345,15 @@ class Application(tk.Tk):
             self.work_file_txt.set(self.work_file)
 
     def curve_create(self):
-        """Create the Curve instance from the CSV file given in 'work_file'"""
-        print('File path selected : ', self.work_file)
-        Curve.add_curve(self.work_file)
-        # Show the name of the created curve.
+        """Create the Curve instance from the CSV file given by 'work_file'
+
+        The curve is added in the Curve.curves list. Index is Curve.count.
+        """
+        print('File path selected : ', self.work_file)  # only for debug.
+        Curve.curves.append(Curve(self.work_file))
+        # Show the name of the created curve in 'curve_label'
         # Curve.count-1 since Curve.count was incremented after creation.
         self.curve_label.set(Curve.curves[Curve.count-1].name)
-
 
 if __name__ == '__main__':
     app = Application()
