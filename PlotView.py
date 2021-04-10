@@ -26,6 +26,7 @@ except ModuleNotFoundError as e:
 class Curve:
     """ Contains all the data relative to a curve.
         Class attribute 'count' is used to describe the curve ID.
+
         The default plotting parameters are those below (user can change them).
         Attributes:
             - id: integer -> curve ID (cannot be changed by the user)
@@ -38,19 +39,15 @@ class Curve:
             - width: float -> width of the curve line
             - style: string -> style of the curve line
             - marker: string -> line marker (symbol) for the curve
-            - marker_size: float -> size of line marker for the curve
+            - marker_size: float -> size of line marker for the curve from 0.0 to 10.0
+            TODO: add fig, ax, canvas, etc.
         Methods:
             - method to read the CSV file
-            - method plot the curve
     """
     # Number of curves created. To be suffixed at the end of the curve name.
     count = 1
     # List of curve instances starting at index 1 since count is set to 1 at start.
     curves = [None]
-    @staticmethod
-    def add_curve(path):
-        Curve.curves.append(Curve(path))
-        print('Curve created :', Curve.curves[Curve.count-1].name)  # Only for debug
 
     def __init__(self, path):
         # Curve ID: must be unique.
@@ -75,8 +72,8 @@ class Curve:
         self.style = 'solid'
         # TODO: what are the options?
         self.marker = 'o'
-        # TODO: what are the limits?
-        self.marker_size = 1.0
+        # 'marker_size' = 0 -> not visible.
+        self.marker_size = 0.0
 
         Curve.count += 1
 
@@ -124,7 +121,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.2'
+        self.PV_VERSION = '0.3'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -288,7 +285,7 @@ class Application(tk.Tk):
         self.curve_tab = ttk.Frame(self.tool_notebook)
 
         # Create curve panel
-        self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve', bg='green')
+        self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
         self.curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                 padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
 
@@ -349,12 +346,35 @@ class Application(tk.Tk):
             self.work_file_txt.set(self.work_file)
 
     def curve_create(self):
-        """Create the Curve instance from the CSV file given in 'work_file'"""
-        print('File path selected : ', self.work_file)
-        Curve.add_curve(self.work_file)
-        # Show the name of the created curve.
+        """Create the Curve instance from the CSV file given by 'work_file'
+
+        The curve is added in the Curve.curves list. Index is Curve.count.
+        """
+        print('File path selected : ', self.work_file)  # only for debug.
+        Curve.curves.append(Curve(self.work_file))
+        # Show the name of the created curve in 'curve_label'
         # Curve.count-1 since Curve.count was incremented after creation.
         self.curve_label.set(Curve.curves[Curve.count-1].name)
+        self.plot_curves()
+
+    def plot_curves(self):
+        """Plot all curves with visibility = True"""
+        # It is necessary to clear the Axes since the for loop starts from 1
+        # for every curve plot. Otherwise curve_01 get duplicated for each call.
+        self.ax.clear()
+        for i in range(1, Curve.count):
+            if Curve.curves[i].visibility == True:
+                self.ax.plot(Curve.curves[i].data.iloc[:,0],
+                    Curve.curves[i].data.iloc[:,1],
+                    label=Curve.curves[i].name,
+                    color=Curve.curves[i].color,
+                    lw=Curve.curves[i].width,
+                    ls=Curve.curves[i].style,
+                    marker=Curve.curves[i].marker,
+                    markersize=Curve.curves[i].marker_size
+                    )
+        self.ax.legend(loc='lower right')
+        self.canvas.draw()
 
 
 if __name__ == '__main__':
