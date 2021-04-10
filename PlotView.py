@@ -156,6 +156,7 @@ class Application(tk.Tk):
         #self.work_file_txt.set(self.work_file[-35:-1])
         # Curve creation label showing the curve name
         self.curve_label = tk.StringVar(self)
+        self.curve_label.set('No CSV files selected.')
 
         # METHODS
         # Allows root window to be closed by the closing icon.
@@ -309,7 +310,7 @@ class Application(tk.Tk):
         tk.Button(self.curve_frame, text='Create',
                 command=self.curve_create, width=12).grid(
                 row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_frame, text=self.curve_label).grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)  # TODO: StringVar() for label (needs update after curve creation)
+        tk.Label(self.curve_frame, textvariable=self.curve_label).grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
@@ -340,6 +341,7 @@ class Application(tk.Tk):
         self.work_file = filedialog.askopenfilename(
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
         # print('Path of file selected:', self.work_file)  # Only for debug.
+        # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
         if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE:]
             self.work_file_txt.set(temp)
@@ -350,6 +352,9 @@ class Application(tk.Tk):
         """Create the Curve instance from the CSV file given in 'work_file'"""
         print('File path selected : ', self.work_file)
         Curve.add_curve(self.work_file)
+        # Show the name of the created curve.
+        # Curve.count-1 since Curve.count was incremented after creation.
+        self.curve_label.set(Curve.curves[Curve.count-1].name)
 
 
 if __name__ == '__main__':
