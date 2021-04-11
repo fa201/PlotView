@@ -193,9 +193,8 @@ class Application(tk.Tk):
 
         # STATUS BAR
         self.status_frame = tk.Frame(self)
-        # self.status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E+tk.N+tk.S) A garder ?
         # The status frame should extend on all width of the main window.
-        self.status_frame.pack(expand=True, fill=tk.X, side=tk.BOTTOM)
+        self.status_frame.pack(expand=False, fill=tk.X, side=tk.BOTTOM)
         # The status is initialized with empty message left aligned.
         self.status = tk.Label(self.status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
         # The label shoul expand on the total window width.
