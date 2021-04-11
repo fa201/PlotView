@@ -20,7 +20,7 @@ try:
     import pandas as pd
 except ModuleNotFoundError as e:
         print('The necessary Python packages are not installed.\n' + str(e))
-        print('Please check the required packages and their versions at https://github.com/fa201/PlotView.')
+        print('Please check the required packages at https://github.com/fa201/PlotView.')
 
 
 class Curve:
@@ -90,10 +90,6 @@ class Curve:
                 - decimal character is the point '.'
         """
         df = pd.read_csv(self.path, delimiter=',', dtype=float)
-        print('Curve ID {0} - size of data (lines, colums): {1}'.format(self.id, df.shape))
-        # message = 'Curve ID {0} - size of data (lines, colums): {1}'
-        # TODO: check that the status bar is updated.
-        # self.set_status(message.format(self.id, df.shape))
         return df
 
 
@@ -105,11 +101,13 @@ class Application(tk.Tk):
             Constants:
             - PV_VERSION: string -> plot view version as shown by git tag.
             - WIN_RESIZABLE: boolean -> prevents the user from resizing the root window.
-            - WIN_SIZE_POS: string -> window size (width x height) and position relative to top left corner.
+            - WIN_SIZE_POS: string -> window size (width x height) and position relative
+                                      to top left corner.
             - FONT_SIZE: integer -> size of font to be used for all widget texts.
             - PLOT_WIDTH: float -> width (in) of matplotlib figure.
             - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
-            - MAX_STR_CREATE_CURVE: int -> number of caracters to be displayed to show the working directory.
+            - MAX_STR_CREATE_CURVE: int -> number of caracters to be displayed to show the
+                                           working directory.
 
             Variables:
             - work_dir: string -> directory path showing working directory.
@@ -150,7 +148,7 @@ class Application(tk.Tk):
         self.work_file_txt = tk.StringVar(self)
         self.work_file_txt.set(self.create_underscores())
         # Displayed working file path (only last characters.)
-        #self.work_file_txt.set(self.work_file[-35:-1])
+        # self.work_file_txt.set(self.work_file[-35:-1])
         # Curve creation label showing the curve name
         self.curve_label = tk.StringVar(self)
         self.curve_label.set('No CSV files selected.')
@@ -200,13 +198,12 @@ class Application(tk.Tk):
 
         # STATUS BAR
         self.status_frame = tk.Frame(self)
-        # self.status_frame.grid(row=1, column=0, columnspan=2, sticky=tk.W+tk.E+tk.N+tk.S) A garder ?
         # The status frame should extend on all width of the main window.
-        self.status_frame.pack(expand=True, fill=tk.X, side=tk.BOTTOM)
+        self.status_frame.pack(expand=False, fill=tk.X, side=tk.BOTTOM)
         # The status is initialized with empty message left aligned.
-        self.status = tk.Label(self.status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        self.status = tk.Label(self.status_frame, text=' Ready.', bd=1, relief=tk.SUNKEN, anchor=tk.W, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # The label shoul expand on the total window width.
-        self.status.pack(fill=tk.BOTH, expand=True)
+        self.status.pack(fill=tk.BOTH, expand=False)
 
     def app_quit(self):
         """ Quit the application."""
@@ -246,30 +243,31 @@ class Application(tk.Tk):
     def help_redirect(self):
         """ Plotview wiki is shown in web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/wiki/Help')
-        #self.set_status('The PlotView wiki page is shown in your web browser.')
+        self.set_status('The PlotView wiki page is shown in your web browser.')
 
     def licence_redirect(self):
         """ PlotView licence is shown in the web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/blob/master/LICENSE')
-        #self.set_status('The page of GPL3 licence is shown in your web browser.')
+        self.set_status('The page of GPL3 licence is shown in your web browser.')
 
     def about_redirect(self):
         """ PlotView repository is shown in the web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/')
-        #self.set_status('The PlotView repository on github was opened in your web browser.')
+        self.set_status('The PlotView repository on github was opened in your web browser.')
 
+    def set_status(self, string):
+        """ Update the status bar message.
 
-    #def set_status(self, string):
-        #""" Update the status bar message."""
-        # Add 1 space on the left to give more room relative to the window left border
-        #self.status.config(text=' '+string)
+        A space is added on the left to give more room relative to the window border.
+        """
+        self.status.config(text=' '+string)
 
     def create_plot_area(self):
         # TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
         self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
         self.ax = self.fig.add_subplot(111)
         self.mat_frame = tk.Frame(self)
-        #mat_frame.grid(row=0, column=0, sticky=tk.W+tk.E+tk.N+tk.S)
+        # mat_frame.grid(row=0, column=0, sticky=tk.W+tk.E+tk.N+tk.S)
         self.mat_frame.pack(expand=False, side=tk.LEFT)
         # Creates a drawing area to put the Figure
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
@@ -296,27 +294,31 @@ class Application(tk.Tk):
         # Create curve panel
         self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
         self.curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                              padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
 
         # Working directory widgets
         tk.Button(self.curve_frame, text='Select directory',
-                command=self.choose_dir, width=12).grid(
-                row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  command=self.choose_dir, width=12).grid(
+                  row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.curve_frame, textvariable=self.work_dir_txt).grid(
-                row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
+                 row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
 
         # CSV file widgets
         tk.Button(self.curve_frame, text='Select CSV file',
-                command=self.choose_file, width=12).grid(
-                row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  command=self.choose_file, width=12).grid(
+                  row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.curve_frame, textvariable=self.work_file_txt).grid(
-                row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
+                 row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
 
         # Create curve widgets
         tk.Button(self.curve_frame, text='Create',
-                command=self.curve_create, width=12).grid(
-                row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_frame, textvariable=self.curve_label).grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  command=self.curve_create, width=12).grid(
+                  row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(self.curve_frame,
+                 textvariable=self.curve_label).grid(row=2,
+                                                     column=1,
+                                                     padx=self.WIDGET_PADX,
+                                                     pady=self.WIDGET_PADY)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
@@ -324,12 +326,11 @@ class Application(tk.Tk):
     def choose_dir(self):
         """ Get the working directory path with file dialog
 
-            Process the string of working directory to have no more than
-            'MAX_STR_CREATE_CURVE' characters. So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label widget is the same.
-            This gives no change in layout.
+            Process the string of working directory to have no more than 'MAX_STR_CREATE_CURVE'
+            characters. So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label
+            widget is the same. This gives no change in layout when selecting long or short path.
         """
         self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
-        # print('Direcory selected:', self.work_dir)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
         if self.work_dir == '':
             # CANCEL return empty string. So I reaffect the initial value to keep the layout.
@@ -339,13 +340,14 @@ class Application(tk.Tk):
             self.work_dir_txt.set(temp)
         else:
             self.work_dir_txt.set(self.work_dir)
+        self.set_status('Working directory is set at:'+self.work_dir)
 
     def choose_file(self):
         """ Get the path to the CSV file to open.
 
-            Process the string of file path to have no more than
-            'MAX_STR_CREATE_CURVE' characters. So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label widget is the same.
-            This gives no change in layout.
+            Process the string of file path to have no more than 'MAX_STR_CREATE_CURVE' characters.
+            So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label widget is
+            the same. This gives no change in layout when selecting long or short path.
         """
         self.work_file = filedialog.askopenfilename(
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
@@ -359,6 +361,7 @@ class Application(tk.Tk):
             self.work_file_txt.set(temp)
         else:
             self.work_file_txt.set(self.work_file)
+        self.set_status('CSV file selected: '+self.work_file)
 
     def curve_create(self):
         """Create the Curve instance from the CSV file given by 'work_file'
@@ -371,6 +374,7 @@ class Application(tk.Tk):
         # Curve.count-1 since Curve.count was incremented after creation.
         self.curve_label.set(Curve.curves[Curve.count-1].name)
         self.plot_curves()
+        # FIXME: if no directory and no file selected -> ask the user to provide info through status bar ?
 
     def plot_curves(self):
         """Plot all curves with visibility = True"""
@@ -378,18 +382,20 @@ class Application(tk.Tk):
         # for every curve plot. Otherwise curve_01 get duplicated for each call.
         self.ax.clear()
         for i in range(1, Curve.count):
-            if Curve.curves[i].visibility == True:
-                self.ax.plot(Curve.curves[i].data.iloc[:,0],
-                    Curve.curves[i].data.iloc[:,1],
-                    label=Curve.curves[i].name,
-                    color=Curve.curves[i].color,
-                    lw=Curve.curves[i].width,
-                    ls=Curve.curves[i].style,
-                    marker=Curve.curves[i].marker,
-                    markersize=Curve.curves[i].marker_size
-                    )
+            if Curve.curves[i].visibility:
+                self.ax.plot(Curve.curves[i].data.iloc[:, 0],
+                             Curve.curves[i].data.iloc[:, 1],
+                             label=Curve.curves[i].name,
+                             color=Curve.curves[i].color,
+                             lw=Curve.curves[i].width,
+                             ls=Curve.curves[i].style,
+                             marker=Curve.curves[i].marker,
+                             markersize=Curve.curves[i].marker_size
+                             )
+                self.set_status(Curve.curves[i].name+' is plotted.')
         self.ax.legend(loc='lower right')
         self.canvas.draw()
+        self.set_status('Plot is updated.')
 
 
 if __name__ == '__main__':
