@@ -360,6 +360,7 @@ class Application(tk.Tk):
         # Curve.count-1 since Curve.count was incremented after creation.
         self.curve_label.set(Curve.curves[Curve.count-1].name)
         self.plot_curves()
+        # FIXME: if no directory and no file selected -> ask the user to provide info through status bar ?
 
     def plot_curves(self):
         """Plot all curves with visibility = True"""
