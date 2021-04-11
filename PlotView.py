@@ -90,10 +90,6 @@ class Curve:
                 - decimal character is the point '.'
         """
         df = pd.read_csv(self.path, delimiter=',', dtype=float)
-        print('Curve ID {0} - size of data (lines, colums): {1}'.format(self.id, df.shape))
-        # message = 'Curve ID {0} - size of data (lines, colums): {1}'
-        # TODO: check that the status bar is updated.
-        # self.set_status(message.format(self.id, df.shape))
         return df
 
 
@@ -196,9 +192,9 @@ class Application(tk.Tk):
         # The status frame should extend on all width of the main window.
         self.status_frame.pack(expand=False, fill=tk.X, side=tk.BOTTOM)
         # The status is initialized with empty message left aligned.
-        self.status = tk.Label(self.status_frame, text=' ', bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        self.status = tk.Label(self.status_frame, text=' Ready.', bd=1, relief=tk.SUNKEN, anchor=tk.W, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # The label shoul expand on the total window width.
-        self.status.pack(fill=tk.BOTH, expand=True)
+        self.status.pack(fill=tk.BOTH, expand=False)
 
     def app_quit(self):
         """ Quit the application."""
@@ -238,22 +234,24 @@ class Application(tk.Tk):
     def help_redirect(self):
         """ Plotview wiki is shown in web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/wiki/Help')
-        # self.set_status('The PlotView wiki page is shown in your web browser.')
+        self.set_status('The PlotView wiki page is shown in your web browser.')
 
     def licence_redirect(self):
         """ PlotView licence is shown in the web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/blob/master/LICENSE')
-        # self.set_status('The page of GPL3 licence is shown in your web browser.')
+        self.set_status('The page of GPL3 licence is shown in your web browser.')
 
     def about_redirect(self):
         """ PlotView repository is shown in the web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/')
-        # self.set_status('The PlotView repository on github was opened in your web browser.')
+        self.set_status('The PlotView repository on github was opened in your web browser.')
 
-    # def set_status(self, string):
-        # """ Update the status bar message."""
-        # Add 1 space on the left to give more room relative to the window left border
-        # self.status.config(text=' '+string)
+    def set_status(self, string):
+        """ Update the status bar message.
+
+        A space is added on the left to give more room relative to the window border.
+        """
+        self.status.config(text=' '+string)
 
     def create_plot_area(self):
         # TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
@@ -324,13 +322,13 @@ class Application(tk.Tk):
             widget is the same. This gives no change in layout when selecting long or short path.
         """
         self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
-        # print('Direcory selected:', self.work_dir)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
         if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE:]
             self.work_dir_txt.set(temp)
         else:
             self.work_dir_txt.set(self.work_dir)
+        self.set_status('Working directory is set at:'+self.work_dir)
 
     def choose_file(self):
         """ Get the path to the CSV file to open.
@@ -348,6 +346,7 @@ class Application(tk.Tk):
             self.work_file_txt.set(temp)
         else:
             self.work_file_txt.set(self.work_file)
+        self.set_status('CSV file selected: '+self.work_file)
 
     def curve_create(self):
         """Create the Curve instance from the CSV file given by 'work_file'
@@ -378,8 +377,10 @@ class Application(tk.Tk):
                              marker=Curve.curves[i].marker,
                              markersize=Curve.curves[i].marker_size
                              )
+                self.set_status(Curve.curves[i].name+' is plotted.')
         self.ax.legend(loc='lower right')
         self.canvas.draw()
+        self.set_status('Plot is updated.')
 
 
 if __name__ == '__main__':
