@@ -137,7 +137,7 @@ class Application(tk.Tk):
         self.WIDGET_PADY = 2
         # Max length of string showed by 'Create curve' labels.
         # This is related to window width, font, and font size.
-        self.MAX_STR_CREATE_CURVE = 37
+        self.MAX_STR_CREATE_CURVE = 34
 
         # Working directory variables.
         # 'work_dir_set' defines the directory for the CSV filedialog.
@@ -145,7 +145,6 @@ class Application(tk.Tk):
         self.work_dir_txt = tk.StringVar(self)
         self.work_dir_txt.set(self.create_underscores())
         # Path to CSV file
-        # TODO: a changer et à utiliser Curve ?
         # work_file define the CSV file path
         self.work_file = ''
         self.work_file_txt = tk.StringVar(self)
@@ -194,10 +193,10 @@ class Application(tk.Tk):
 
         # FONT
         # https://stackoverflow.com/questions/31918073/tkinter-how-to-set-font-for-text
-        my_font = font.Font(name='Courier New', size=self.FONT_SIZE)
+        my_font = tk.font.nametofont('TkDefaultFont')
+        my_font.configure(size=self.FONT_SIZE)
+        # Apply previous change to all widgets created since now.
         self.option_add("*Font", my_font)
-        # TODO: test if 'Courier New' is in font.families(). If not then provide alternative font.
-        # TODO: apply the same font and size to ttk elements (notebook, etc.) for consistency
 
         # STATUS BAR
         self.status_frame = tk.Frame(self)
@@ -337,6 +336,7 @@ class Application(tk.Tk):
             self.work_dir_txt.set(temp)
         else:
             self.work_dir_txt.set(self.work_dir)
+        # FIXME: if CANCEL is clicked then the underscores disappear.
 
     def choose_file(self):
         """ Get the path to the CSV file to open.
