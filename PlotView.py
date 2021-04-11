@@ -10,9 +10,9 @@ try:
     import sys
     import tkinter as tk
     from tkinter import font
-    from tkinter import messagebox as msg
+    #from tkinter import messagebox as msg
     from tkinter import filedialog
-    from tkinter import ttk
+    import tkinter.ttk as ttk
     import webbrowser
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_tkagg import (
@@ -160,7 +160,7 @@ class Application(tk.Tk):
         self.create_menus()
         self.create_plot_area()
         self.create_notebook()
-        self.tab_curve()
+        self.curve_tab()
 
     def create_underscores(self):
         """Creates a string with underscores to fill the 'work_dir' and 'work file' labels when empty."""
@@ -286,39 +286,48 @@ class Application(tk.Tk):
         self.tool_notebook = ttk.Notebook(self.tool_frame)
         self.tool_notebook.pack(expand=True, fill=tk.BOTH)
 
-    def tab_curve(self):
+    def curve_tab(self):
         """ First tab managing curve creation."""
         # Create curve tab
         self.curve_tab = ttk.Frame(self.tool_notebook)
 
-        # Create curve panel
-        self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
-        self.curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        # CREATE CURVE PANEL
+        self.create_curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
+        self.create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-
         # Working directory widgets
-        tk.Button(self.curve_frame, text='Select directory',
+        tk.Button(self.create_curve_frame, text='Select directory',
                   command=self.choose_dir, width=12).grid(
                   row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_frame, textvariable=self.work_dir_txt).grid(
+        tk.Label(self.create_curve_frame, textvariable=self.work_dir_txt).grid(
                  row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
-
         # CSV file widgets
-        tk.Button(self.curve_frame, text='Select CSV file',
+        tk.Button(self.create_curve_frame, text='Select CSV file',
                   command=self.choose_file, width=12).grid(
                   row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_frame, textvariable=self.work_file_txt).grid(
+        tk.Label(self.create_curve_frame, textvariable=self.work_file_txt).grid(
                  row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
-
         # Create curve widgets
-        tk.Button(self.curve_frame, text='Create',
+        tk.Button(self.create_curve_frame, text='Create',
                   command=self.curve_create, width=12).grid(
                   row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_frame,
+        tk.Label(self.create_curve_frame,
                  textvariable=self.curve_label).grid(row=2,
                                                      column=1,
                                                      padx=self.WIDGET_PADX,
                                                      pady=self.WIDGET_PADY)
+
+        # SELECT ACTIVE CURVE
+        self.select_curve_frame = tk.LabelFrame(self.curve_tab, text='Select active curve')
+        self.select_curve_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                              padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        self.active_curve_combo = ttk.Combobox(self.select_curve_frame,
+                                                justify=tk.LEFT,
+                                                width=40
+                                                )
+        #self.active_curve_combo['values'] = tuple(Curve.curves)
+        self.update_active_curve_combo()
+        self.active_curve_combo.pack(padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
@@ -380,7 +389,7 @@ class Application(tk.Tk):
             self.plot_curves()
         else:
             self.set_status('ERROR - No CSV file were selected.')
-            #self.choose_file()
+        self.update_active_curve_combo()
 
     def plot_curves(self):
         """Plot all curves with visibility = True"""
@@ -403,6 +412,12 @@ class Application(tk.Tk):
         self.canvas.draw()
         self.set_status('Plot is updated.')
 
+    def update_active_curve_combo(self):
+        """Update the list of curve in the active curve combo."""
+        l = []
+        for i in range(1, Curve.count):
+            l.append(Curve.curves[i].name)
+        self.active_curve_combo['values'] = tuple(l)
 
 if __name__ == '__main__':
     app = Application()
