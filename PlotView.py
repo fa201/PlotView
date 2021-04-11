@@ -121,7 +121,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.3'
+        self.PV_VERSION = '0.4'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -135,20 +135,20 @@ class Application(tk.Tk):
         # Padding for all widgets inside a container
         self.WIDGET_PADX = 2
         self.WIDGET_PADY = 2
-        # Max length of string showed by 'Create curve' labels
-        self.MAX_STR_CREATE_CURVE = 32
+        # Max length of string showed by 'Create curve' labels.
+        # This is related to window width, font, and font size.
+        self.MAX_STR_CREATE_CURVE = 34
 
         # Working directory variables.
         # 'work_dir_set' defines the directory for the CSV filedialog.
         self.work_dir = ''
         self.work_dir_txt = tk.StringVar(self)
-        self.work_dir_txt.set('___________________________________')
+        self.work_dir_txt.set(self.create_underscores())
         # Path to CSV file
-        # TODO: a changer et à utiliser Curve ?
         # work_file define the CSV file path
         self.work_file = ''
         self.work_file_txt = tk.StringVar(self)
-        self.work_file_txt.set('___________________________________')
+        self.work_file_txt.set(self.create_underscores())
         # Displayed working file path (only last characters.)
         #self.work_file_txt.set(self.work_file[-35:-1])
         # Curve creation label showing the curve name
@@ -163,6 +163,13 @@ class Application(tk.Tk):
         self.create_plot_area()
         self.create_notebook()
         self.tab_curve()
+
+    def create_underscores(self):
+        """Creates a string with underscores to fill the 'work_dir' and 'work file' labels when empty."""
+        underscores = list()
+        for i in range(0, self.MAX_STR_CREATE_CURVE):
+            underscores.append('_')
+        return ''.join(underscores)
 
     def window_setup(self):
         """ Some basic setup is done on the GUI.
@@ -186,7 +193,9 @@ class Application(tk.Tk):
 
         # FONT
         # https://stackoverflow.com/questions/31918073/tkinter-how-to-set-font-for-text
-        my_font = font.Font(family='TkFixedFont', size=self.FONT_SIZE)
+        my_font = tk.font.nametofont('TkDefaultFont')
+        my_font.configure(size=self.FONT_SIZE)
+        # Apply previous change to all widgets created since now.
         self.option_add("*Font", my_font)
 
         # STATUS BAR
@@ -322,7 +331,10 @@ class Application(tk.Tk):
         self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
         # print('Direcory selected:', self.work_dir)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
-        if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
+        if self.work_dir == '':
+            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
+            self.work_dir_txt.set(self.create_underscores())
+        elif len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE:]
             self.work_dir_txt.set(temp)
         else:
@@ -339,7 +351,10 @@ class Application(tk.Tk):
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
         # print('Path of file selected:', self.work_file)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
-        if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
+        if self.work_file == '':
+            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
+            self.work_file_txt.set(self.create_underscores())
+        elif len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE:]
             self.work_file_txt.set(temp)
         else:
