@@ -263,7 +263,7 @@ class Application(tk.Tk):
         self.status.config(text=' '+string)
 
     def create_plot_area(self):
-        # TODO: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
+        # Tip: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
         self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
         self.ax = self.fig.add_subplot(111)
         self.mat_frame = tk.Frame(self)
@@ -332,15 +332,17 @@ class Application(tk.Tk):
         """
         self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
-        if self.work_dir == '':
-            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
-            self.work_dir_txt.set(self.create_underscores())
-        elif len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
+        if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE:]
             self.work_dir_txt.set(temp)
-        else:
+            self.set_status('Working directory is set at:'+self.work_dir)
+        elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
             self.work_dir_txt.set(self.work_dir)
-        self.set_status('Working directory is set at:'+self.work_dir)
+            self.set_status('Working directory is set at:'+self.work_dir)
+        else:
+            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
+            self.work_dir_txt.set(self.create_underscores())
+            self.set_status('WARNING - No working directory selected.')
 
     def choose_file(self):
         """ Get the path to the CSV file to open.
@@ -353,28 +355,32 @@ class Application(tk.Tk):
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
         # print('Path of file selected:', self.work_file)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
-        if self.work_file == '':
-            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
-            self.work_file_txt.set(self.create_underscores())
-        elif len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
+        if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE:]
             self.work_file_txt.set(temp)
-        else:
+            self.set_status('CSV file selected: '+self.work_file)
+        elif 0 < len(self.work_file) < (self.MAX_STR_CREATE_CURVE-3):
             self.work_file_txt.set(self.work_file)
-        self.set_status('CSV file selected: '+self.work_file)
+            self.set_status('CSV file selected: '+self.work_file)
+        else:
+            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
+            self.work_file_txt.set(self.create_underscores())
+            self.set_status('WARNING - A CSV file has to be selected.')
 
     def curve_create(self):
         """Create the Curve instance from the CSV file given by 'work_file'
 
         The curve is added in the Curve.curves list. Index is Curve.count.
         """
-        print('File path selected : ', self.work_file)  # only for debug.
-        Curve.curves.append(Curve(self.work_file))
-        # Show the name of the created curve in 'curve_label'
-        # Curve.count-1 since Curve.count was incremented after creation.
-        self.curve_label.set(Curve.curves[Curve.count-1].name)
-        self.plot_curves()
-        # FIXME: if no directory and no file selected -> ask the user to provide info through status bar ?
+        if self.work_file:
+            Curve.curves.append(Curve(self.work_file))
+            # Show the name of the created curve in 'curve_label'
+            # Curve.count-1 since Curve.count was incremented after creation.
+            self.curve_label.set(Curve.curves[Curve.count-1].name)
+            self.plot_curves()
+        else:
+            self.set_status('ERROR - No CSV file were selected.')
+            #self.choose_file()
 
     def plot_curves(self):
         """Plot all curves with visibility = True"""
