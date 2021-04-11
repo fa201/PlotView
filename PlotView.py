@@ -355,17 +355,17 @@ class Application(tk.Tk):
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
         # print('Path of file selected:', self.work_file)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
-        if self.work_file == '':
-            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
-            self.work_file_txt.set(self.create_underscores())
-            self.set_status('WARNING - A CSV file has to be selected.')
-        elif len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
+        if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE:]
             self.work_file_txt.set(temp)
             self.set_status('CSV file selected: '+self.work_file)
-        else:
+        elif 0 < len(self.work_file) < (self.MAX_STR_CREATE_CURVE-3):
             self.work_file_txt.set(self.work_file)
             self.set_status('CSV file selected: '+self.work_file)
+        else:
+            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
+            self.work_file_txt.set(self.create_underscores())
+            self.set_status('WARNING - A CSV file has to be selected.')
 
     def curve_create(self):
         """Create the Curve instance from the CSV file given by 'work_file'
