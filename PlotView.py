@@ -121,7 +121,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.3'
+        self.PV_VERSION = '0.4'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -331,12 +331,14 @@ class Application(tk.Tk):
         self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
         # print('Direcory selected:', self.work_dir)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
-        if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
+        if self.work_dir == '':
+            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
+            self.work_dir_txt.set(self.create_underscores())
+        elif len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE:]
             self.work_dir_txt.set(temp)
         else:
             self.work_dir_txt.set(self.work_dir)
-        # FIXME: if CANCEL is clicked then the underscores disappear.
 
     def choose_file(self):
         """ Get the path to the CSV file to open.
@@ -349,7 +351,10 @@ class Application(tk.Tk):
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
         # print('Path of file selected:', self.work_file)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
-        if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
+        if self.work_file == '':
+            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
+            self.work_file_txt.set(self.create_underscores())
+        elif len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE:]
             self.work_file_txt.set(temp)
         else:
