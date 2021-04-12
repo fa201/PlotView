@@ -285,6 +285,7 @@ class Application(tk.Tk):
         # Create curve tab
         self.curve_tab = ttk.Frame(self.tool_notebook)
 
+        # TODO: for 'create_curve_frame' and 'select_curve_frame' use columnspan ?
         # CREATE CURVE PANEL
         self.create_curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
         self.create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
@@ -312,7 +313,7 @@ class Application(tk.Tk):
                                                      pady=self.WIDGET_PADY)
 
         # SELECT ACTIVE CURVE
-        # TODO: check https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
+        # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
         self.select_curve_frame = tk.LabelFrame(self.curve_tab, text='Select active curve')
         self.select_curve_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
@@ -322,6 +323,21 @@ class Application(tk.Tk):
                                                 width=40
                                                 )
         self.active_curve_combo.pack(padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
+
+        # CURVE PROPERTIES
+        self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
+        self.curve_prop_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                              padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        #tk.Label(self.curve_prop_frame, text='Show').pack(padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        self.show_state = tk.IntVar()
+        self.show_state.set(1)
+        show_check = tk.Checkbutton(self.curve_prop_frame,
+                text='Show',
+                variable=self.show_state,
+                indicatoron=0,
+                command=self.show_check_update).pack(side=tk.LEFT, padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
@@ -410,6 +426,19 @@ class Application(tk.Tk):
         l = list(Curve.dic.keys())
         self.active_curve_combo['values'] = tuple(l)
 
+    def active_curve(self, event):
+        self.selected_curve = event.widget.get()
+        print('Selected curve :', self.selected_curve)
+        # TODO: get all the curve attribute form the selected curve to update widgets.
+        # TODO: status of curve selected
+
+    def show_check_update(self):
+        print('Show state: ', self.show_state.get())
+        print('Selected curve in show_check_update:', self.selected_curve)
+        Curve.dic[self.selected_curve].visibility = self.show_state.get()
+        # TODO: launch plot_curves after clicking on 'Apply' button.
+        # TODO: link Curve.dic[self.selected_curve].visibility avec set() en premier ?
+        self.plot_curves()
 
 if __name__ == '__main__':
     app = Application()
