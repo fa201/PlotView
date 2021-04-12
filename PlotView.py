@@ -7,6 +7,7 @@
 """
 
 try:
+    from collections import OrderedDict
     import sys
     import tkinter as tk
     from tkinter import font
@@ -25,12 +26,14 @@ except ModuleNotFoundError as e:
 
 class Curve:
     """ Contains all the data relative to a curve.
-        Class attribute 'count' is used to describe the curve ID.
+        Class attribute 'count' is used to describe the curve ID 'id' and gives the number of curves cerated.
+        'id' is the key of Cruve instances dictionary.
+        This key will never change whereas the user-defined 'name' can change.
 
         The default plotting parameters are those below (user can change them).
         Attributes:
-            - id: integer -> curve ID (cannot be changed by the user)
-            - name: string -> curve name as shown in the plot legend
+            - id : string -> ID of creation (0 prefixed if below 10)
+            - name: string -> user-defined name. Can be changed in the PV session
             - file: string -> path to CSV file
             - data: dataframe -> contains (X,Y) points to be plotted
             - data_type: dictionary -> contains X header and Y header
@@ -40,25 +43,17 @@ class Curve:
             - style: string -> style of the curve line
             - marker: string -> line marker (symbol) for the curve
             - marker_size: float -> size of line marker for the curve from 0.0 to 10.0
-            TODO: add fig, ax, canvas, etc.
+            TODO: add fig, ax, canvas, work_dir etc.
         Methods:
             - method to read the CSV file
     """
-    # Number of curves created. To be suffixed at the end of the curve name.
-    count = 1
-    # List of curve instances starting at index 1 since count is set to 1 at start.
-    curves = [None]
+    count = 0
+    # Dictionary of curve instances.
+    dic = OrderedDict()
 
     def __init__(self, path):
-        # Curve ID: must be unique.
-        # '0' is added from 1 to 9 to keep the order when sorted as text.
-        if Curve.count < 10:
-            # Format integrer to string to avoid this later on.
-            self.id = '0' + str(Curve.count)
-        else:
-            self.id = str(Curve.count)
-        # Curve ID is shown to avoid confusion until the relevant name is defined.
-        self.name = 'Curve_' + self.id
+        #self.id = str(Curve.count)
+        self.name = 'Name'
         self.path = path
         self.data = self.read_file(path)
         # TODO: handle this with a function and exceptions if no column or 1 column
@@ -74,7 +69,6 @@ class Curve:
         self.marker = 'o'
         # 'marker_size' = 0 -> not visible.
         self.marker_size = 0.0
-
         Curve.count += 1
 
     def read_file(self, path):
@@ -318,15 +312,15 @@ class Application(tk.Tk):
                                                      pady=self.WIDGET_PADY)
 
         # SELECT ACTIVE CURVE
+        # TODO: check https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
         self.select_curve_frame = tk.LabelFrame(self.curve_tab, text='Select active curve')
         self.select_curve_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
         self.active_curve_combo = ttk.Combobox(self.select_curve_frame,
+                                                values=list(Curve.dic.keys()),
                                                 justify=tk.LEFT,
                                                 width=40
                                                 )
-        #self.active_curve_combo['values'] = tuple(Curve.curves)
-        self.update_active_curve_combo()
         self.active_curve_combo.pack(padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
 
         # Add this tab to the notebook.
@@ -382,42 +376,40 @@ class Application(tk.Tk):
         The curve is added in the Curve.curves list. Index is Curve.count.
         """
         if self.work_file:
-            Curve.curves.append(Curve(self.work_file))
+            # Since instance is not yet created self.id does not exist. So 'count' is used.
+            Curve.dic[str(Curve.count)] = (Curve(self.work_file))
             # Show the name of the created curve in 'curve_label'
-            # Curve.count-1 since Curve.count was incremented after creation.
-            self.curve_label.set(Curve.curves[Curve.count-1].name)
+            self.curve_label.set(Curve.dic[str(Curve.count)].name)
+            self.update_active_curve_combo()
             self.plot_curves()
         else:
             self.set_status('ERROR - No CSV file were selected.')
-        self.update_active_curve_combo()
 
     def plot_curves(self):
         """Plot all curves with visibility = True"""
         # It is necessary to clear the Axes since the for loop starts from 1
         # for every curve plot. Otherwise curve_01 get duplicated for each call.
         self.ax.clear()
-        for i in range(1, Curve.count):
-            if Curve.curves[i].visibility:
-                self.ax.plot(Curve.curves[i].data.iloc[:, 0],
-                             Curve.curves[i].data.iloc[:, 1],
-                             label=Curve.curves[i].name,
-                             color=Curve.curves[i].color,
-                             lw=Curve.curves[i].width,
-                             ls=Curve.curves[i].style,
-                             marker=Curve.curves[i].marker,
-                             markersize=Curve.curves[i].marker_size
+        for i in range(1, Curve.count+1):
+            if Curve.dic[str(i)].visibility:
+                self.ax.plot(Curve.dic[str(i)].data.iloc[:, 0],
+                             Curve.dic[str(i)].data.iloc[:, 1],
+                             label=Curve.dic[str(i)].name,
+                             color=Curve.dic[str(i)].color,
+                             lw=Curve.dic[str(i)].width,
+                             ls=Curve.dic[str(i)].style,
+                             marker=Curve.dic[str(i)].marker,
+                             markersize=Curve.dic[str(i)].marker_size
                              )
-                self.set_status(Curve.curves[i].name+' is plotted.')
+                self.set_status(Curve.dic[str(i)].name+' is plotted.')
         self.ax.legend(loc='lower right')
         self.canvas.draw()
         self.set_status('Plot is updated.')
 
     def update_active_curve_combo(self):
-        """Update the list of curve in the active curve combo."""
-        l = []
-        for i in range(1, Curve.count):
-            l.append(Curve.curves[i].name)
+        l = list(Curve.dic.keys())
         self.active_curve_combo['values'] = tuple(l)
+
 
 if __name__ == '__main__':
     app = Application()
