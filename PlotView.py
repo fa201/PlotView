@@ -129,7 +129,7 @@ class Application(tk.Tk):
         self.WIDGET_PADY = 2
         # Max length of string showed by 'Create curve' labels.
         # This is related to window width, font, and font size.
-        self.MAX_STR_CREATE_CURVE = 34
+        self.MAX_STR_CREATE_CURVE = 32
 
         # Working directory variables.
         # 'work_dir_set' defines the directory for the CSV filedialog.
@@ -295,48 +295,46 @@ class Application(tk.Tk):
                   command=self.choose_dir, width=12).grid(
                   row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.create_curve_frame, textvariable=self.work_dir_txt).grid(
-                 row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
+                 row=0, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
         # CSV file widgets
         tk.Button(self.create_curve_frame, text='Select CSV file',
                   command=self.choose_file, width=12).grid(
                   row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.create_curve_frame, textvariable=self.work_file_txt).grid(
-                 row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
+                 row=1, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
         # Create curve widgets
+        self.curve_label = tk.StringVar()
+        self.curve_label.set('Name')
+        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=30).grid(
+                  row=2, column=0, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Button(self.create_curve_frame, text='Create',
-                  command=self.curve_create, width=12).grid(
-                  row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.create_curve_frame,
-                 textvariable=self.curve_label).grid(row=2,
-                                                     column=1,
-                                                     padx=self.WIDGET_PADX,
-                                                     pady=self.WIDGET_PADY)
-
-        # SELECT ACTIVE CURVE
-        # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
-        self.select_curve_frame = tk.LabelFrame(self.curve_tab, text='Select active curve')
-        self.select_curve_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                              padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-        self.active_curve_combo = ttk.Combobox(self.select_curve_frame,
-                                                values=list(Curve.dic.keys()),
-                                                justify=tk.LEFT,
-                                                width=40
-                                                )
-        self.active_curve_combo.pack(padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-        self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
-
+                  command=self.curve_create, width=6).grid(
+                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        
         # CURVE PROPERTIES
         self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
         self.curve_prop_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-        #tk.Label(self.curve_prop_frame, text='Show').pack(padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        
+        # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
+        tk.Label(self.curve_prop_frame, text='Select ID of active curve').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
+                                                values=list(Curve.dic.keys()),
+                                                justify=tk.CENTER,
+                                                width=4
+                                                )
+        self.active_curve_combo.grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
+
         self.show_state = tk.IntVar()
         self.show_state.set(1)
         show_check = tk.Checkbutton(self.curve_prop_frame,
                 text='Show active curve',
                 variable=self.show_state,
                 indicatoron=0,
-                command=self.show_check_update).pack(side=tk.LEFT, padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                command=self.show_check_update).grid(row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+
+
 
 
         # Add this tab to the notebook.
@@ -348,11 +346,12 @@ class Application(tk.Tk):
             Process the string of working directory to have no more than 'MAX_STR_CREATE_CURVE'
             characters. So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label
             widget is the same. This gives no change in layout when selecting long or short path.
+            The length of string displayed should be the same as for 'choose_file'.
         """
         self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
         if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
-            temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE:]
+            temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE+3:]
             self.work_dir_txt.set(temp)
             self.set_status('Working directory is set at:'+self.work_dir)
         elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
@@ -369,13 +368,14 @@ class Application(tk.Tk):
             Process the string of file path to have no more than 'MAX_STR_CREATE_CURVE' characters.
             So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label widget is
             the same. This gives no change in layout when selecting long or short path.
+            The length of string displayed should be the same as for 'choose_dir'.
         """
         self.work_file = filedialog.askopenfilename(
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
         # print('Path of file selected:', self.work_file)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
         if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
-            temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE:]
+            temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE+3:]
             self.work_file_txt.set(temp)
             self.set_status('CSV file selected: '+self.work_file)
         elif 0 < len(self.work_file) < (self.MAX_STR_CREATE_CURVE-3):
@@ -395,7 +395,8 @@ class Application(tk.Tk):
             # Since instance is not yet created self.id does not exist. So 'count' is used.
             Curve.dic[str(Curve.count)] = (Curve(self.work_file))
             # Show the name of the created curve in 'curve_label'
-            self.curve_label.set(Curve.dic[str(Curve.count)].name)
+            #self.curve_label.set(Curve.dic[str(Curve.count)].name)
+            Curve.dic[str(Curve.count)].name = self.curve_label.get()
             self.update_active_curve_combo()
             self.plot_curves()
         else:
