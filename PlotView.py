@@ -333,7 +333,7 @@ class Application(tk.Tk):
         self.show_state = tk.IntVar()
         self.show_state.set(1)
         show_check = tk.Checkbutton(self.curve_prop_frame,
-                text='Show',
+                text='Show active curve',
                 variable=self.show_state,
                 indicatoron=0,
                 command=self.show_check_update).pack(side=tk.LEFT, padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
@@ -427,18 +427,28 @@ class Application(tk.Tk):
         self.active_curve_combo['values'] = tuple(l)
 
     def active_curve(self, event):
-        self.selected_curve = event.widget.get()
-        print('Selected curve :', self.selected_curve)
+        try:
+            self.selected_curve = event.widget.get()
+            print('Selected curve :', self.selected_curve)
+        except AttributeError:
+            self.set_status('WARNING - There is no curve defined.')
         # TODO: get all the curve attribute form the selected curve to update widgets.
         # TODO: status of curve selected
 
     def show_check_update(self):
+        """ Process the 'show' check toggle."""
         print('Show state: ', self.show_state.get())
-        print('Selected curve in show_check_update:', self.selected_curve)
-        Curve.dic[self.selected_curve].visibility = self.show_state.get()
+        try:
+            print('Selected curve in show_check_update:', self.selected_curve)
+            Curve.dic[self.selected_curve].visibility = self.show_state.get()
+            # 'plot_curves' should be in try so that it is not launched in case of Exception.
+            # This allows to have the warning message persistent.
+            self.plot_curves()
+        except AttributeError:
+            self.set_status('WARNING - There is no curve defined.')
         # TODO: launch plot_curves after clicking on 'Apply' button.
         # TODO: link Curve.dic[self.selected_curve].visibility avec set() en premier ?
-        self.plot_curves()
+        
 
 if __name__ == '__main__':
     app = Application()
