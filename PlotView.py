@@ -7,12 +7,13 @@
 """
 
 try:
+    from collections import OrderedDict
     import sys
     import tkinter as tk
     from tkinter import font
-    from tkinter import messagebox as msg
+    #from tkinter import messagebox as msg
     from tkinter import filedialog
-    from tkinter import ttk
+    import tkinter.ttk as ttk
     import webbrowser
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_tkagg import (
@@ -25,12 +26,14 @@ except ModuleNotFoundError as e:
 
 class Curve:
     """ Contains all the data relative to a curve.
-        Class attribute 'count' is used to describe the curve ID.
+        Class attribute 'count' is used to describe the curve ID 'id' and gives the number of curves cerated.
+        'id' is the key of Cruve instances dictionary.
+        This key will never change whereas the user-defined 'name' can change.
 
         The default plotting parameters are those below (user can change them).
         Attributes:
-            - id: integer -> curve ID (cannot be changed by the user)
-            - name: string -> curve name as shown in the plot legend
+            - id : string -> ID of creation (0 prefixed if below 10)
+            - name: string -> user-defined name. Can be changed in the PV session
             - file: string -> path to CSV file
             - data: dataframe -> contains (X,Y) points to be plotted
             - data_type: dictionary -> contains X header and Y header
@@ -40,25 +43,17 @@ class Curve:
             - style: string -> style of the curve line
             - marker: string -> line marker (symbol) for the curve
             - marker_size: float -> size of line marker for the curve from 0.0 to 10.0
-            TODO: add fig, ax, canvas, etc.
+            TODO: add fig, ax, canvas, work_dir etc.
         Methods:
             - method to read the CSV file
     """
-    # Number of curves created. To be suffixed at the end of the curve name.
-    count = 1
-    # List of curve instances starting at index 1 since count is set to 1 at start.
-    curves = [None]
+    count = 0
+    # Dictionary of curve instances.
+    dic = OrderedDict()
 
     def __init__(self, path):
-        # Curve ID: must be unique.
-        # '0' is added from 1 to 9 to keep the order when sorted as text.
-        if Curve.count < 10:
-            # Format integrer to string to avoid this later on.
-            self.id = '0' + str(Curve.count)
-        else:
-            self.id = str(Curve.count)
-        # Curve ID is shown to avoid confusion until the relevant name is defined.
-        self.name = 'Curve_' + self.id
+        #self.id = str(Curve.count)
+        self.name = 'Name'
         self.path = path
         self.data = self.read_file(path)
         # TODO: handle this with a function and exceptions if no column or 1 column
@@ -74,7 +69,6 @@ class Curve:
         self.marker = 'o'
         # 'marker_size' = 0 -> not visible.
         self.marker_size = 0.0
-
         Curve.count += 1
 
     def read_file(self, path):
@@ -135,7 +129,7 @@ class Application(tk.Tk):
         self.WIDGET_PADY = 2
         # Max length of string showed by 'Create curve' labels.
         # This is related to window width, font, and font size.
-        self.MAX_STR_CREATE_CURVE = 34
+        self.MAX_STR_CREATE_CURVE = 32
 
         # Working directory variables.
         # 'work_dir_set' defines the directory for the CSV filedialog.
@@ -160,7 +154,7 @@ class Application(tk.Tk):
         self.create_menus()
         self.create_plot_area()
         self.create_notebook()
-        self.tab_curve()
+        self.curve_tab()
 
     def create_underscores(self):
         """Creates a string with underscores to fill the 'work_dir' and 'work file' labels when empty."""
@@ -286,39 +280,62 @@ class Application(tk.Tk):
         self.tool_notebook = ttk.Notebook(self.tool_frame)
         self.tool_notebook.pack(expand=True, fill=tk.BOTH)
 
-    def tab_curve(self):
+    def curve_tab(self):
         """ First tab managing curve creation."""
         # Create curve tab
         self.curve_tab = ttk.Frame(self.tool_notebook)
 
-        # Create curve panel
-        self.curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
-        self.curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        # TODO: for 'create_curve_frame' and 'select_curve_frame' use columnspan ?
+        # CREATE CURVE PANEL
+        self.create_curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
+        self.create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-
         # Working directory widgets
-        tk.Button(self.curve_frame, text='Select directory',
+        tk.Button(self.create_curve_frame, text='Select directory',
                   command=self.choose_dir, width=12).grid(
                   row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_frame, textvariable=self.work_dir_txt).grid(
-                 row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
-
+        tk.Label(self.create_curve_frame, textvariable=self.work_dir_txt).grid(
+                 row=0, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
         # CSV file widgets
-        tk.Button(self.curve_frame, text='Select CSV file',
+        tk.Button(self.create_curve_frame, text='Select CSV file',
                   command=self.choose_file, width=12).grid(
                   row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_frame, textvariable=self.work_file_txt).grid(
-                 row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
-
+        tk.Label(self.create_curve_frame, textvariable=self.work_file_txt).grid(
+                 row=1, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
         # Create curve widgets
-        tk.Button(self.curve_frame, text='Create',
-                  command=self.curve_create, width=12).grid(
-                  row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_frame,
-                 textvariable=self.curve_label).grid(row=2,
-                                                     column=1,
-                                                     padx=self.WIDGET_PADX,
-                                                     pady=self.WIDGET_PADY)
+        self.curve_label = tk.StringVar()
+        self.curve_label.set('Name')
+        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=30).grid(
+                  row=2, column=0, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Button(self.create_curve_frame, text='Create',
+                  command=self.curve_create, width=6).grid(
+                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        
+        # CURVE PROPERTIES
+        self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
+        self.curve_prop_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                              padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        
+        # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
+        tk.Label(self.curve_prop_frame, text='Select ID of active curve').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
+                                                values=list(Curve.dic.keys()),
+                                                justify=tk.CENTER,
+                                                width=4
+                                                )
+        self.active_curve_combo.grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
+
+        self.show_state = tk.IntVar()
+        self.show_state.set(1)
+        show_check = tk.Checkbutton(self.curve_prop_frame,
+                text='Show active curve',
+                variable=self.show_state,
+                indicatoron=0,
+                command=self.show_check_update).grid(row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+
+
+
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
@@ -329,11 +346,12 @@ class Application(tk.Tk):
             Process the string of working directory to have no more than 'MAX_STR_CREATE_CURVE'
             characters. So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label
             widget is the same. This gives no change in layout when selecting long or short path.
+            The length of string displayed should be the same as for 'choose_file'.
         """
         self.work_dir = filedialog.askdirectory(title='Choose a working directory for CSV files')
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
         if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
-            temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE:]
+            temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE+3:]
             self.work_dir_txt.set(temp)
             self.set_status('Working directory is set at:'+self.work_dir)
         elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
@@ -350,13 +368,14 @@ class Application(tk.Tk):
             Process the string of file path to have no more than 'MAX_STR_CREATE_CURVE' characters.
             So for any string longer than 'MAX_STR_CREATE_CURVE', the width of label widget is
             the same. This gives no change in layout when selecting long or short path.
+            The length of string displayed should be the same as for 'choose_dir'.
         """
         self.work_file = filedialog.askopenfilename(
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
         # print('Path of file selected:', self.work_file)  # Only for debug.
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
         if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
-            temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE:]
+            temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE+3:]
             self.work_file_txt.set(temp)
             self.set_status('CSV file selected: '+self.work_file)
         elif 0 < len(self.work_file) < (self.MAX_STR_CREATE_CURVE-3):
@@ -373,36 +392,64 @@ class Application(tk.Tk):
         The curve is added in the Curve.curves list. Index is Curve.count.
         """
         if self.work_file:
-            Curve.curves.append(Curve(self.work_file))
+            # Since instance is not yet created self.id does not exist. So 'count' is used.
+            Curve.dic[str(Curve.count)] = (Curve(self.work_file))
             # Show the name of the created curve in 'curve_label'
-            # Curve.count-1 since Curve.count was incremented after creation.
-            self.curve_label.set(Curve.curves[Curve.count-1].name)
+            #self.curve_label.set(Curve.dic[str(Curve.count)].name)
+            Curve.dic[str(Curve.count)].name = self.curve_label.get()
+            self.update_active_curve_combo()
             self.plot_curves()
         else:
             self.set_status('ERROR - No CSV file were selected.')
-            #self.choose_file()
 
     def plot_curves(self):
         """Plot all curves with visibility = True"""
         # It is necessary to clear the Axes since the for loop starts from 1
         # for every curve plot. Otherwise curve_01 get duplicated for each call.
         self.ax.clear()
-        for i in range(1, Curve.count):
-            if Curve.curves[i].visibility:
-                self.ax.plot(Curve.curves[i].data.iloc[:, 0],
-                             Curve.curves[i].data.iloc[:, 1],
-                             label=Curve.curves[i].name,
-                             color=Curve.curves[i].color,
-                             lw=Curve.curves[i].width,
-                             ls=Curve.curves[i].style,
-                             marker=Curve.curves[i].marker,
-                             markersize=Curve.curves[i].marker_size
+        for i in range(1, Curve.count+1):
+            if Curve.dic[str(i)].visibility:
+                self.ax.plot(Curve.dic[str(i)].data.iloc[:, 0],
+                             Curve.dic[str(i)].data.iloc[:, 1],
+                             label=Curve.dic[str(i)].name,
+                             color=Curve.dic[str(i)].color,
+                             lw=Curve.dic[str(i)].width,
+                             ls=Curve.dic[str(i)].style,
+                             marker=Curve.dic[str(i)].marker,
+                             markersize=Curve.dic[str(i)].marker_size
                              )
-                self.set_status(Curve.curves[i].name+' is plotted.')
+                self.set_status(Curve.dic[str(i)].name+' is plotted.')
         self.ax.legend(loc='lower right')
         self.canvas.draw()
         self.set_status('Plot is updated.')
 
+    def update_active_curve_combo(self):
+        l = list(Curve.dic.keys())
+        self.active_curve_combo['values'] = tuple(l)
+
+    def active_curve(self, event):
+        try:
+            self.selected_curve = event.widget.get()
+            print('Selected curve :', self.selected_curve)
+        except AttributeError:
+            self.set_status('WARNING - There is no curve defined.')
+        # TODO: get all the curve attribute form the selected curve to update widgets.
+        # TODO: status of curve selected
+
+    def show_check_update(self):
+        """ Process the 'show' check toggle."""
+        print('Show state: ', self.show_state.get())
+        try:
+            print('Selected curve in show_check_update:', self.selected_curve)
+            Curve.dic[self.selected_curve].visibility = self.show_state.get()
+            # 'plot_curves' should be in try so that it is not launched in case of Exception.
+            # This allows to have the warning message persistent.
+            self.plot_curves()
+        except AttributeError:
+            self.set_status('WARNING - There is no curve defined.')
+        # TODO: launch plot_curves after clicking on 'Apply' button.
+        # TODO: link Curve.dic[self.selected_curve].visibility avec set() en premier ?
+        
 
 if __name__ == '__main__':
     app = Application()
