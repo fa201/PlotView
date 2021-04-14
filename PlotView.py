@@ -348,10 +348,10 @@ class Application(tk.Tk):
         self.active_curve_name = tk.StringVar()
         self.active_curve_name.set(' ')
         tk.Label(self.curve_prop_frame, 
-                text='Name: ').grid(row=1,
+                text='Name').grid(row=1,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_prop_frame, 
-                textvariable=self.active_curve_name).grid(row=1,
+        tk.Entry(self.curve_prop_frame, 
+                textvariable=self.active_curve_name, width=24).grid(row=1,
                         column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         
         # Curve color
@@ -480,6 +480,13 @@ class Application(tk.Tk):
 
     def update_curve(self):
         """Update Curve instance attributes from the GUI input"""
+        if len(self.active_curve_name.get()) != 0:
+            Curve.dic[str(self.selected_curve)].name = self.active_curve_name.get()
+        else:
+            # status message will be replaced by the one from 'plot_curves'.
+            # TODO add a warning popup window. 
+            print('The name of curve', Curve.dic[str(self.selected_curve)].name, 'is missing.')
+
         if float(self.curve_width.get()) != 0:
             Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
         else:
