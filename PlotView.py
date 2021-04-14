@@ -25,7 +25,7 @@ except ModuleNotFoundError as e:
         print('Please check the required packages at https://github.com/fa201/PlotView.')
 
 
-my_linestyles = ['-', '--', ':', '.']
+my_linestyles = ['-', '--', ':']
 
 my_markers = ['o', '+', '.', 'x', '^', 'v', 's', 'x']
 
@@ -376,6 +376,20 @@ class Application(tk.Tk):
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_width, width=4, justify=tk.CENTER).grid(
                   row=3, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
+        # Line style
+        tk.Label(self.curve_prop_frame, 
+                text='Line style').grid(row=4,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_style = tk.StringVar()
+        self.curve_style.set(my_linestyles[0])
+        self.curve_style_combo = ttk.Combobox(self.curve_prop_frame,
+                                                values=my_linestyles,
+                                                justify=tk.CENTER,
+                                                width=3
+                                                )
+        self.curve_style_combo.grid(row=4, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_style_combo.bind('<<ComboboxSelected>>', self.change_curve_style)
+
         # APPLY BUTTON
         tk.Button(self.curve_prop_frame, text='Apply',
                   command=self.update_curve, width=6).grid(
@@ -445,7 +459,7 @@ class Application(tk.Tk):
             Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
         else:
             # status message will be replaced by the one from 'plot_curves'.
-            # TODO add a warning popup window because 
+            # TODO add a warning popup window. 
             print('The width of curve ', Curve.dic[str(self.selected_curve)].name, ' is 0!')
         self.plot_curves()
 
@@ -481,8 +495,8 @@ class Application(tk.Tk):
             self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
             self.set_status('Selected curve: '+Curve.dic[str(self.selected_curve)].name)
         except AttributeError:
+            # TODO add a warning popup window.
             self.set_status('WARNING - There is no curve defined.')
-        # TODO: get all the curve attribute form the selected curve to update widgets.
 
     def show_check_update(self):
         """ Process the 'show' check toggle."""
@@ -491,8 +505,8 @@ class Application(tk.Tk):
             # 'plot_curves' should be in try so that it is not launched in case of Exception.
             # This allows to have the warning message persistent.
         except AttributeError:
+            # TODO add a warning popup window.
             self.set_status('WARNING - There is no curve defined.')
-        # TODO: launch plot_curves after clicking on 'Apply' button.
         # TODO: link Curve.dic[self.selected_curve].visibility avec set() en premier ?
     
     def change_curve_color(self, event):
@@ -500,7 +514,16 @@ class Application(tk.Tk):
             Curve.dic[str(self.selected_curve)].color = event.widget.get()
             self.set_status('Color of curve '+Curve.dic[str(self.selected_curve)].name+' is updated.')
         except AttributeError:
+            # TODO add a warning popup window.
             self.set_status('WARNING - There is no color defined.')
+
+    def change_curve_style(self, event):
+        try:
+            Curve.dic[str(self.selected_curve)].style = event.widget.get()
+            self.set_status('Style of curve '+Curve.dic[str(self.selected_curve)].name+' is updated.')
+        except AttributeError:
+            # TODO add a warning popup window.
+            self.set_status('WARNING - There is no style defined.')
 
 
 if __name__ == '__main__':
