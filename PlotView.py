@@ -25,14 +25,13 @@ except ModuleNotFoundError as e:
         print('Please check the required packages at https://github.com/fa201/PlotView.')
 
 
-my_linestyles = ['-', '--', ':']
-
-my_markers = ['o', '+', '.', 'x', '^', 'v', 's', 'x']
-
+# Constants for curve styling properties.
 my_colors = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold', 
             'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
             'peru', 'limegreen', 'turquoise', 'royalblue'
             ]
+my_linestyles = ['-', '--', ':']
+my_markers = ['o', '+', '.', 'x', '^', 'v', 's', 'x']
 
 
 class Curve:
