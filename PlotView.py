@@ -79,6 +79,7 @@ class Curve:
         # TODO: what are the options?
         self.marker = 'o'
         # 'marker_size' = 0 -> not visible.
+        # TODO mention this behavior in the help. Size of marker has to be changed to be visible.
         self.marker_size = 0.0
         Curve.count += 1
 
@@ -390,10 +391,34 @@ class Application(tk.Tk):
         self.curve_style_combo.grid(row=4, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.curve_style_combo.bind('<<ComboboxSelected>>', self.change_curve_style)
 
+        # Marker type
+        tk.Label(self.curve_prop_frame, 
+                text='Marker style').grid(row=5,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.marker_style = tk.StringVar()
+        self.marker_style.set(my_markers[0])
+        self.marker_style_combo = ttk.Combobox(self.curve_prop_frame,
+                                                values=my_markers,
+                                                justify=tk.CENTER,
+                                                width=3
+                                                )
+        self.marker_style_combo.grid(row=5, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.marker_style_combo.bind('<<ComboboxSelected>>', self.change_marker_style)
+
+        # Marker size
+        tk.Label(self.curve_prop_frame, 
+                text='Marker size').grid(row=6,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.marker_size = tk.StringVar()
+        self.marker_size.set('0')
+        tk.Entry(self.curve_prop_frame, textvariable=self.marker_size, width=4, justify=tk.CENTER).grid(
+                  row=6, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+
+
         # APPLY BUTTON
         tk.Button(self.curve_prop_frame, text='Apply',
                   command=self.update_curve, width=6).grid(
-                  row=6, column=2, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=7, column=2, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
@@ -460,7 +485,13 @@ class Application(tk.Tk):
         else:
             # status message will be replaced by the one from 'plot_curves'.
             # TODO add a warning popup window. 
-            print('The width of curve ', Curve.dic[str(self.selected_curve)].name, ' is 0!')
+            print('The width of curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
+        if float(self.marker_size.get()) != 0:
+            Curve.dic[str(self.selected_curve)].marker_size = float(self.marker_size.get())
+        else:
+            # status message will be replaced by the one from 'plot_curves'.
+            # TODO add a warning popup window. 
+            print('The size of marker for curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
         self.plot_curves()
 
     def plot_curves(self):
@@ -525,6 +556,13 @@ class Application(tk.Tk):
             # TODO add a warning popup window.
             self.set_status('WARNING - There is no style defined.')
 
+    def change_marker_style(self, event):
+        try:
+            Curve.dic[str(self.selected_curve)].marker = event.widget.get()
+            self.set_status('Style of marker for curve '+Curve.dic[str(self.selected_curve)].name+' is updated.')
+        except AttributeError:
+            # TODO add a warning popup window.
+            self.set_status('WARNING - There is no marker style defined.')
 
 if __name__ == '__main__':
     app = Application()
