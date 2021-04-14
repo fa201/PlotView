@@ -336,15 +336,6 @@ class Application(tk.Tk):
                                                 )
         self.active_curve_combo.grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
-        self.active_curve_name = tk.StringVar()
-        self.active_curve_name.set(' ')
-        tk.Label(self.curve_prop_frame, 
-                text='Name: ').grid(row=1,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.curve_prop_frame, 
-                textvariable=self.active_curve_name).grid(row=1,
-                        column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-
         self.show_state = tk.IntVar()
         self.show_state.set(1)
         show_check = tk.Checkbutton(self.curve_prop_frame,
@@ -353,9 +344,35 @@ class Application(tk.Tk):
                 indicatoron=1,
                 command=self.show_check_update).grid(row=0, 
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.active_curve_name = tk.StringVar()
+        self.active_curve_name.set(' ')
+        tk.Label(self.curve_prop_frame, 
+                text='Name: ').grid(row=1,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(self.curve_prop_frame, 
+                textvariable=self.active_curve_name).grid(row=1,
+                        column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        
+        # Curve color
+        tk.Label(self.curve_prop_frame, 
+                text='Color').grid(row=2,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_color = tk.StringVar()
+        self.curve_color.set(my_colors[0])
+        self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
+                                                values=my_colors,
+                                                justify=tk.CENTER,
+                                                width=10
+                                                )
+        self.curve_color_combo.grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
 
 
 
+        # APPLY BUTTON
+        tk.Button(self.curve_prop_frame, text='Apply',
+                  command=self.plot_curves, width=6).grid(
+                  row=6, column=2, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
@@ -392,7 +409,6 @@ class Application(tk.Tk):
         """
         self.work_file = filedialog.askopenfilename(
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
-        print('Path of file selected:', self.work_file)  # Only for debug.
         if self.work_file:
             self.set_status('CSV file selected: '+self.work_file)
         else:
@@ -451,7 +467,6 @@ class Application(tk.Tk):
             self.set_status('WARNING - There is no curve defined.')
         # TODO: get all the curve attribute form the selected curve to update widgets.
 
-
     def show_check_update(self):
         """ Process the 'show' check toggle."""
         print('Show state: ', self.show_state.get())
@@ -460,12 +475,17 @@ class Application(tk.Tk):
             Curve.dic[self.selected_curve].visibility = self.show_state.get()
             # 'plot_curves' should be in try so that it is not launched in case of Exception.
             # This allows to have the warning message persistent.
-            self.plot_curves()
         except AttributeError:
             self.set_status('WARNING - There is no curve defined.')
         # TODO: launch plot_curves after clicking on 'Apply' button.
         # TODO: link Curve.dic[self.selected_curve].visibility avec set() en premier ?
 
+    def change_curve_color(self, event):
+        try:
+            Curve.dic[str(self.selected_curve)].color = event.widget.get()
+            self.set_status('Color of curve '+Curve.dic[str(self.selected_curve)].name+' is updated.')
+        except AttributeError:
+            self.set_status('WARNING - There is no color defined.')
 
 if __name__ == '__main__':
     app = Application()
