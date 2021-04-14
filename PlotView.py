@@ -133,12 +133,12 @@ class Application(tk.Tk):
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
-        self.PLOT_WIDTH = 9.0
+        self.PLOT_WIDTH = 8.9
         self.PLOT_HEIGHT = 6.68
         # Parameters for widgets on RH tool panel.
         # Padding for all containers to uniformize the look
-        self.CONTAINER_PADX = 7
-        self.CONTAINER_PADY = 7
+        self.CONTAINER_PADX = 6
+        self.CONTAINER_PADY = 6
         # Padding for all widgets inside a container
         self.WIDGET_PADX = 2
         self.WIDGET_PADY = 2
@@ -320,7 +320,7 @@ class Application(tk.Tk):
                  textvariable=self.work_dir_txt
                  ).grid(row=0,
                         column=1,
-                        columnspan=3,
+                        columnspan=2,
                         padx=self.WIDGET_PADX,
                         pady=self.WIDGET_PADY,
                         sticky=tk.W)
@@ -333,11 +333,11 @@ class Application(tk.Tk):
         self.curve_label = tk.StringVar()
         self.curve_label.set('Curve_label')
         tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=24).grid(
-                 row=1, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                 row=1, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve create widget
         tk.Button(self.create_curve_frame, text='Create',
-                  command=self.curve_create, width=6).grid(
-                  row=2, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  command=self.curve_create, width=4).grid(
+                  row=0, column=3, rowspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # CURVE PROPERTIES
         self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
