@@ -70,8 +70,8 @@ class Curve:
         self.path = path
         self.data_in = self.read_file(path)
         # TODO: handle the reading with a function and exceptions if no column or 1 column
-        self.data_type = {'x_type': self.data.columns[0], 'y_type': self.data.columns[1]}
-        self.data_out = self.process_data_in(self.data_in)
+        self.data_type = {'x_type': self.data_in.columns[0], 'y_type': self.data_in.columns[1]}
+        self.data_out = self.data_in.copy()
         self.visibility = True
         self.color = 'black'
         self.width = 1.0
@@ -101,13 +101,6 @@ class Curve:
         df = pd.read_csv(self.path, delimiter=',', dtype=float)
         return df
 
-    def process_data_in(self, df_in):
-        """Apply offset and scale on input dataframe 'data_in'"""
-        df_out = df_in.copy()
-        # TODO: check for scale value different from 0.
-        df_out.iloc[:, 0] = df_in.iloc[:, 0] * self.x_scale + self.x_offset
-        df_out.iloc[:, 1] = df_in.iloc[:, 1] * self.y_scale + self.y_offset
-        return df_out
 
 class Application(tk.Tk):
     """"It defines the main window of GUI."""
@@ -355,10 +348,10 @@ class Application(tk.Tk):
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
         tk.Label(self.curve_prop_frame, text='Curve ID').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
-                                                values=list(Curve.dic.keys()),
-                                                justify=tk.CENTER,
-                                                width=4
-                                                )
+                                               values=list(Curve.dic.keys()),
+                                               justify=tk.CENTER,
+                                               width=4
+                                               )
         self.active_curve_combo.grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
         self.show_state = tk.IntVar()
@@ -438,10 +431,46 @@ class Application(tk.Tk):
         tk.Entry(self.curve_prop_frame, textvariable=self.marker_size, width=4, justify=tk.CENTER).grid(
                   row=6, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
+        # X scale
+        tk.Label(self.curve_prop_frame,
+                text='X scale').grid(row=7,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_x_scale = tk.DoubleVar()
+        self.curve_x_scale.set(1.0)
+        tk.Entry(self.curve_prop_frame, textvariable=self.curve_x_scale, width=5, justify=tk.CENTER).grid(
+                  row=7, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+
+        # Y scale
+        tk.Label(self.curve_prop_frame,
+                text='Y scale').grid(row=7,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_y_scale = tk.DoubleVar()
+        self.curve_y_scale.set(1.0)
+        tk.Entry(self.curve_prop_frame, textvariable=self.curve_y_scale, width=5, justify=tk.CENTER).grid(
+                  row=7, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+
+        # X offset
+        tk.Label(self.curve_prop_frame,
+                text='X offset').grid(row=8,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_x_offset = tk.DoubleVar()
+        self.curve_x_offset.set(0)
+        tk.Entry(self.curve_prop_frame, textvariable=self.curve_x_offset, width=5, justify=tk.CENTER).grid(
+                  row=8, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+
+        # Y offset
+        tk.Label(self.curve_prop_frame,
+                text='Y offset').grid(row=8,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_y_offset = tk.DoubleVar()
+        self.curve_y_offset.set(0)
+        tk.Entry(self.curve_prop_frame, textvariable=self.curve_y_offset, width=5, justify=tk.CENTER).grid(
+                  row=8, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+
         # APPLY BUTTON
         tk.Button(self.curve_prop_frame, text='Apply',
                   command=self.update_curve, width=6).grid(
-                  row=7, column=2, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=9, column=2, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
@@ -502,6 +531,7 @@ class Application(tk.Tk):
 
     def update_curve(self):
         """Update Curve instance attributes from the GUI input"""
+        # Update curve name
         if len(self.active_curve_name.get()) != 0:
             Curve.dic[str(self.selected_curve)].name = self.active_curve_name.get()
         else:
@@ -509,18 +539,43 @@ class Application(tk.Tk):
             # TODO add a warning popup window.
             print('The name of curve', Curve.dic[str(self.selected_curve)].name, 'is missing.')
 
+        # Update curve width
         if float(self.curve_width.get()) != 0:
             Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
         else:
             # status message will be replaced by the one from 'plot_curves'.
             # TODO add a warning popup window.
             print('The width of curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
+
+        # Update marker size
         if float(self.marker_size.get()) != 0:
             Curve.dic[str(self.selected_curve)].marker_size = float(self.marker_size.get())
         else:
             # status message will be replaced by the one from 'plot_curves'.
             # TODO add a warning popup window.
             print('The size of marker for curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
+
+        # Update scale and offset values for curve
+        # TODO: check for scale value different from 0.
+        #df_out.iloc[:, 0] = df_in.iloc[:, 0] * self.x_scale + self.x_offset
+        #df_out.iloc[:, 1] = df_in.iloc[:, 1] * self.y_scale + self.y_offset
+        if self.curve_x_scale != 0:
+            Curve.dic[str(self.selected_curve)].x_scale = self.curve_x_scale.get()
+            Curve.dic[str(self.selected_curve)].x_offset = self.curve_x_offset.get()
+            Curve.dic[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 0]* Curve.dic[str(self.selected_curve)].x_scale + Curve.dic[str(self.selected_curve)].x_offset
+        else:
+            # status message will be replaced by the one from 'plot_curves'.
+            # TODO add a warning popup window.
+            print('The value of X scale for curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
+        if self.curve_y_scale != 0:
+            Curve.dic[str(self.selected_curve)].y_scale = self.curve_y_scale.get()
+            Curve.dic[str(self.selected_curve)].y_offset = self.curve_y_offset.get()
+            Curve.dic[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 1]* Curve.dic[str(self.selected_curve)].y_scale + Curve.dic[str(self.selected_curve)].y_offset
+        else:
+            # status message will be replaced by the one from 'plot_curves'.
+            # TODO add a warning popup window.
+            print('The value of Y scale for curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
+
         self.plot_curves()
 
     def plot_curves(self):
@@ -530,8 +585,8 @@ class Application(tk.Tk):
         self.ax.clear()
         for i in range(1, Curve.count+1):
             if Curve.dic[str(i)].visibility:
-                self.ax.plot(Curve.dic[str(i)].data.iloc[:, 0],
-                             Curve.dic[str(i)].data.iloc[:, 1],
+                self.ax.plot(Curve.dic[str(i)].data_out.iloc[:, 0],
+                             Curve.dic[str(i)].data_out.iloc[:, 1],
                              label=Curve.dic[str(i)].name,
                              color=Curve.dic[str(i)].color,
                              lw=Curve.dic[str(i)].width,
