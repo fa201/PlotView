@@ -346,13 +346,13 @@ class Application(tk.Tk):
 
         # Active curve
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
-        tk.Label(self.curve_prop_frame, text='Select curve').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(self.curve_prop_frame, text='Select curve').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
                                                values=list(Curve.dic.keys()),
                                                justify=tk.CENTER,
                                                width=4
                                                )
-        self.active_curve_combo.grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.active_curve_combo.grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
         self.show_state = tk.IntVar()
         self.show_state.set(1)
@@ -361,113 +361,113 @@ class Application(tk.Tk):
                 variable=self.show_state,
                 indicatoron=1,
                 command=self.show_check_update).grid(row=0,
-                        column=2, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.active_curve_name = tk.StringVar()
         self.active_curve_name.set(' ')
         tk.Label(self.curve_prop_frame,
                 text='Name').grid(row=1,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         tk.Entry(self.curve_prop_frame,
                 textvariable=self.active_curve_name, width=30).grid(row=1,
-                        column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Curve color
         tk.Label(self.curve_prop_frame,
                 text='Line color').grid(row=2,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_colors,
                                                 justify=tk.CENTER,
                                                 width=12
                                                 )
         self.curve_color_combo.set(my_colors[0])
-        self.curve_color_combo.grid(row=2, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_color_combo.grid(row=2, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
 
         # Line width
         tk.Label(self.curve_prop_frame,
                 text='Line width').grid(row=3,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_width = tk.StringVar()
         self.curve_width.set('1')
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_width, width=4, justify=tk.CENTER).grid(
-                  row=3, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=3, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Line style
         tk.Label(self.curve_prop_frame,
                 text='Line style').grid(row=3,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_linestyles,
                                                 justify=tk.CENTER,
                                                 width=3
                                                 )
         self.curve_style_combo.set(my_linestyles[0])
-        self.curve_style_combo.grid(row=3, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_style_combo.grid(row=3, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_style_combo.bind('<<ComboboxSelected>>', self.change_curve_style)
 
         # Marker type
         tk.Label(self.curve_prop_frame,
                 text='Marker style').grid(row=5,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.marker_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_markers,
                                                 justify=tk.CENTER,
                                                 width=3
                                                 )
         self.marker_style_combo.set(my_markers[0])
-        self.marker_style_combo.grid(row=5, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.marker_style_combo.grid(row=5, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.marker_style_combo.bind('<<ComboboxSelected>>', self.change_marker_style)
 
         # Marker size
         tk.Label(self.curve_prop_frame,
                 text='Marker size').grid(row=5,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.marker_size = tk.StringVar()
         self.marker_size.set('0')
         tk.Entry(self.curve_prop_frame, textvariable=self.marker_size, width=4, justify=tk.CENTER).grid(
-                  row=5, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=5, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # X scale
         tk.Label(self.curve_prop_frame,
                 text='Scale X axis').grid(row=6,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_x_scale = tk.DoubleVar()
         self.curve_x_scale.set(1.0)
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_x_scale, width=8, justify=tk.CENTER).grid(
-                  row=6, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=6, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Y scale
         tk.Label(self.curve_prop_frame,
                 text='Scale Y axis').grid(row=6,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_y_scale = tk.DoubleVar()
         self.curve_y_scale.set(1.0)
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_y_scale, width=8, justify=tk.CENTER).grid(
-                  row=6, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=6, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # X offset
         tk.Label(self.curve_prop_frame,
                 text='Offset X axis').grid(row=7,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_x_offset = tk.DoubleVar()
         self.curve_x_offset.set(0)
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_x_offset, width=8, justify=tk.CENTER).grid(
-                  row=7, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=7, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Y offset
         tk.Label(self.curve_prop_frame,
                 text='Offset Y axis').grid(row=7,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_y_offset = tk.DoubleVar()
         self.curve_y_offset.set(0)
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_y_offset, width=8, justify=tk.CENTER).grid(
-                  row=7, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=7, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # APPLY BUTTON
         tk.Button(self.curve_prop_frame, text='Apply',
                   command=self.update_curve, width=6).grid(
-                  row=8, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=8, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
