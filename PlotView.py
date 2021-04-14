@@ -19,7 +19,6 @@ try:
     from matplotlib.backends.backend_tkagg import (
         FigureCanvasTkAgg, NavigationToolbar2Tk)
     import pandas as pd
-    import constants
 except ModuleNotFoundError as e:
         print('The necessary Python packages are not installed.\n' + str(e))
         print('Please check the required packages at https://github.com/fa201/PlotView.')
@@ -307,20 +306,19 @@ class Application(tk.Tk):
                   row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.create_curve_frame, textvariable=self.work_dir_txt).grid(
                  row=0, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
-        # CSV file widgets
+        # CSV file widget
         tk.Button(self.create_curve_frame, text='Select CSV file',
                   command=self.choose_file, width=12).grid(
                   row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.create_curve_frame, textvariable=self.work_file_txt).grid(
-                 row=1, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
-        # Create curve widgets
+        # Curve name widget
         self.curve_label = tk.StringVar()
-        self.curve_label.set('Name')
-        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=30).grid(
-                  row=2, column=0, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_label.set('Name of curve')
+        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=20).grid(
+                  row=1, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        # Curve create widget
         tk.Button(self.create_curve_frame, text='Create',
                   command=self.curve_create, width=6).grid(
-                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=2, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
         # CURVE PROPERTIES
         self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
@@ -340,10 +338,10 @@ class Application(tk.Tk):
         self.show_state = tk.IntVar()
         self.show_state.set(1)
         show_check = tk.Checkbutton(self.curve_prop_frame,
-                text='Show active curve',
+                text='Show curve',
                 variable=self.show_state,
-                indicatoron=0,
-                command=self.show_check_update).grid(row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                indicatoron=1,
+                command=self.show_check_update).grid(row=0, column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
 
 
@@ -383,14 +381,8 @@ class Application(tk.Tk):
         """
         self.work_file = filedialog.askopenfilename(
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
-        # print('Path of file selected:', self.work_file)  # Only for debug.
-        # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
-        if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
-            temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE+3:]
-            self.work_file_txt.set(temp)
-            self.set_status('CSV file selected: '+self.work_file)
-        elif 0 < len(self.work_file) < (self.MAX_STR_CREATE_CURVE-3):
-            self.work_file_txt.set(self.work_file)
+        print('Path of file selected:', self.work_file)  # Only for debug.
+        if self.work_file:
             self.set_status('CSV file selected: '+self.work_file)
         else:
             # CANCEL return empty string. So I reaffect the initial value to keep the layout.
