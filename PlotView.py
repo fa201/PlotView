@@ -19,9 +19,20 @@ try:
     from matplotlib.backends.backend_tkagg import (
         FigureCanvasTkAgg, NavigationToolbar2Tk)
     import pandas as pd
+    import constants
 except ModuleNotFoundError as e:
         print('The necessary Python packages are not installed.\n' + str(e))
         print('Please check the required packages at https://github.com/fa201/PlotView.')
+
+
+my_linestyles = ['-', '--', ':', '.']
+
+my_markers = ['o', '+', '.', 'x', '^', 'v', 's', 'x']
+
+my_colors = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold', 'darkkhaki',
+            'green', 'skyblue', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
+            'orchid', 'peru', 'limegreen', 'turquoise', 'yellow', 'royalblue'
+            ]
 
 
 class Curve:
@@ -113,7 +124,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.4'
+        self.PV_VERSION = '0.5'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -310,12 +321,12 @@ class Application(tk.Tk):
         tk.Button(self.create_curve_frame, text='Create',
                   command=self.curve_create, width=6).grid(
                   row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        
+
         # CURVE PROPERTIES
         self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
         self.curve_prop_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-        
+
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
         tk.Label(self.curve_prop_frame, text='Select ID of active curve').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
@@ -449,7 +460,7 @@ class Application(tk.Tk):
             self.set_status('WARNING - There is no curve defined.')
         # TODO: launch plot_curves after clicking on 'Apply' button.
         # TODO: link Curve.dic[self.selected_curve].visibility avec set() en premier ?
-        
+
 
 if __name__ == '__main__':
     app = Application()
