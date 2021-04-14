@@ -29,9 +29,9 @@ my_linestyles = ['-', '--', ':', '.']
 
 my_markers = ['o', '+', '.', 'x', '^', 'v', 's', 'x']
 
-my_colors = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold', 'darkkhaki',
-            'green', 'skyblue', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
-            'orchid', 'peru', 'limegreen', 'turquoise', 'yellow', 'royalblue'
+my_colors = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold', 
+            'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
+            'peru', 'limegreen', 'turquoise', 'royalblue'
             ]
 
 
@@ -469,9 +469,7 @@ class Application(tk.Tk):
 
     def show_check_update(self):
         """ Process the 'show' check toggle."""
-        print('Show state: ', self.show_state.get())
         try:
-            print('Selected curve in show_check_update:', self.selected_curve)
             Curve.dic[self.selected_curve].visibility = self.show_state.get()
             # 'plot_curves' should be in try so that it is not launched in case of Exception.
             # This allows to have the warning message persistent.
