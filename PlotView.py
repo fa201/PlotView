@@ -6,6 +6,7 @@
     PlotView is summarized as PV in variable names.
 """
 
+
 try:
     from collections import OrderedDict
     import sys
@@ -295,25 +296,25 @@ class Application(tk.Tk):
         # Create curve tab
         self.curve_tab = ttk.Frame(self.tool_notebook)
 
-        # TODO: for 'create_curve_frame' and 'select_curve_frame' use columnspan ?
+        # FIXME: layout should not be dependant of length of strings for curve name, path, etc.
         # CREATE CURVE PANEL
         self.create_curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
         self.create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
         # Working directory widgets
-        tk.Button(self.create_curve_frame, text='Select directory',
-                  command=self.choose_dir, width=12).grid(
+        tk.Button(self.create_curve_frame, text='Work directory',
+                  command=self.choose_dir, width=9).grid(
                   row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.create_curve_frame, textvariable=self.work_dir_txt).grid(
                  row=0, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
         # CSV file widget
-        tk.Button(self.create_curve_frame, text='Select CSV file',
-                  command=self.choose_file, width=12).grid(
+        tk.Button(self.create_curve_frame, text='CSV file',
+                  command=self.choose_file, width=9).grid(
                   row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve name widget
         self.curve_label = tk.StringVar()
         self.curve_label.set('Name of curve')
-        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=20).grid(
+        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=24).grid(
                   row=1, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve create widget
         tk.Button(self.create_curve_frame, text='Create',
@@ -325,8 +326,9 @@ class Application(tk.Tk):
         self.curve_prop_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
 
+        # Active curve
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
-        tk.Label(self.curve_prop_frame, text='Select ID of active curve').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(self.curve_prop_frame, text='Curve ID').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=list(Curve.dic.keys()),
                                                 justify=tk.CENTER,
@@ -334,6 +336,14 @@ class Application(tk.Tk):
                                                 )
         self.active_curve_combo.grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
+        self.active_curve_name = tk.StringVar()
+        self.active_curve_name.set(' ')
+        tk.Label(self.curve_prop_frame, 
+                text='Name: ').grid(row=1,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(self.curve_prop_frame, 
+                textvariable=self.active_curve_name).grid(row=1,
+                        column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
         self.show_state = tk.IntVar()
         self.show_state.set(1)
@@ -341,7 +351,8 @@ class Application(tk.Tk):
                 text='Show curve',
                 variable=self.show_state,
                 indicatoron=1,
-                command=self.show_check_update).grid(row=0, column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                command=self.show_check_update).grid(row=0, 
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
 
 
@@ -433,11 +444,13 @@ class Application(tk.Tk):
     def active_curve(self, event):
         try:
             self.selected_curve = event.widget.get()
-            print('Selected curve :', self.selected_curve)
+            # Update the active curve label.
+            self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
+            self.set_status('Selected curve: '+Curve.dic[str(self.selected_curve)].name)
         except AttributeError:
             self.set_status('WARNING - There is no curve defined.')
         # TODO: get all the curve attribute form the selected curve to update widgets.
-        # TODO: status of curve selected
+
 
     def show_check_update(self):
         """ Process the 'show' check toggle."""
