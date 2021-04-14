@@ -73,10 +73,13 @@ class Curve:
         self.data_type = {'x_type': self.data_in.columns[0], 'y_type': self.data_in.columns[1]}
         self.data_out = self.data_in.copy()
         self.visibility = True
-        self.color = 'black'
+        #self.color = 'black'
+        self.color = my_colors[0]
         self.width = 1.0
-        self.style = 'solid'
-        self.marker = 'o'
+        #self.style = 'solid'
+        self.style = my_linestyles[0]
+        #self.marker = 'o'
+        self.marker = my_markers[0]
         # 'marker_size' = 0 -> not visible.
         # TODO mention this behavior in the help. Size of marker has to be changed to be visible.
         self.marker_size = 0.0
@@ -375,13 +378,14 @@ class Application(tk.Tk):
         tk.Label(self.curve_prop_frame,
                 text='Color').grid(row=2,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        self.curve_color = tk.StringVar()
-        self.curve_color.set(my_colors[0])
+        #self.curve_color = tk.StringVar()
+        #self.curve_color.set(my_colors[0])
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_colors,
                                                 justify=tk.CENTER,
                                                 width=10
                                                 )
+        self.curve_color_combo.set(my_colors[0])
         self.curve_color_combo.grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
 
@@ -398,13 +402,14 @@ class Application(tk.Tk):
         tk.Label(self.curve_prop_frame,
                 text='Line style').grid(row=4,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        self.curve_style = tk.StringVar()
-        self.curve_style.set(my_linestyles[0])
+        #self.curve_style = tk.StringVar()
+        #self.curve_style.set(my_linestyles[0])
         self.curve_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_linestyles,
                                                 justify=tk.CENTER,
                                                 width=3
                                                 )
+        self.curve_style_combo.set(my_linestyles[0])
         self.curve_style_combo.grid(row=4, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.curve_style_combo.bind('<<ComboboxSelected>>', self.change_curve_style)
 
@@ -412,13 +417,14 @@ class Application(tk.Tk):
         tk.Label(self.curve_prop_frame,
                 text='Marker style').grid(row=5,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        self.marker_style = tk.StringVar()
-        self.marker_style.set(my_markers[0])
+        #self.marker_style = tk.StringVar()
+        #self.marker_style.set(my_markers[0])
         self.marker_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_markers,
                                                 justify=tk.CENTER,
                                                 width=3
                                                 )
+        self.marker_style_combo.set(my_markers[0])
         self.marker_style_combo.grid(row=5, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.marker_style_combo.bind('<<ComboboxSelected>>', self.change_marker_style)
 
@@ -603,14 +609,26 @@ class Application(tk.Tk):
         self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
 
     def active_curve(self, event):
-        try:
-            self.selected_curve = event.widget.get()
-            # Update the active curve label.
-            self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
-            self.set_status('Selected curve: '+Curve.dic[str(self.selected_curve)].name)
-        except AttributeError:
+        """Update curve widgets based on curve attributes"""
+        #try:
+        self.selected_curve = event.widget.get()
+        # Update the active curve label.
+        self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
+        self.show_state.set(Curve.dic[str(self.selected_curve)].visibility)
+        self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
+        self.curve_color_combo.set(Curve.dic[str(self.selected_curve)].color)
+        self.curve_width.set(Curve.dic[str(self.selected_curve)].width)
+        self.curve_style_combo.set(Curve.dic[str(self.selected_curve)].style)
+        self.marker_style_combo.set(Curve.dic[str(self.selected_curve)].marker)
+        self.marker_size.set(Curve.dic[str(self.selected_curve)].marker_size)
+        self.curve_x_scale.set(Curve.dic[str(self.selected_curve)].x_scale)
+        self.curve_y_scale.set(Curve.dic[str(self.selected_curve)].y_scale)
+        self.curve_x_offset.set(Curve.dic[str(self.selected_curve)].x_offset)
+        self.curve_y_offset.set(Curve.dic[str(self.selected_curve)].y_offset)
+        self.set_status('Selected curve: '+Curve.dic[str(self.selected_curve)].name)
+        #except AttributeError:
             # TODO add a warning popup window.
-            self.set_status('WARNING - There is no curve defined.')
+            #self.set_status('WARNING - There is no curve defined.')
 
     def show_check_update(self):
         """ Process the 'show' check toggle."""
