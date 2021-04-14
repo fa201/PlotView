@@ -128,7 +128,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.6'
+        self.PV_VERSION = '0.7'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -170,6 +170,7 @@ class Application(tk.Tk):
         self.create_plot_area()
         self.create_notebook()
         self.curve_tab()
+        self.plot_tab()
 
     def create_underscores(self):
         """Creates a string with underscores to fill the 'work_dir' labels when empty."""
@@ -335,9 +336,15 @@ class Application(tk.Tk):
         tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=24).grid(
                  row=1, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve create widget
-        tk.Button(self.create_curve_frame, text='Create',
-                  command=self.curve_create, width=4).grid(
-                  row=0, column=3, rowspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Button(self.create_curve_frame,
+                  text='Create',
+                  command=self.curve_create,
+                  width=4).grid(row=0,
+                                column=3,
+                                rowspan=2,
+                                padx=self.WIDGET_PADX,
+                                pady=self.WIDGET_PADY,
+                                sticky=tk.E+tk.W+tk.N+tk.S)
 
         # CURVE PROPERTIES
         self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
@@ -591,6 +598,10 @@ class Application(tk.Tk):
                              )
                 self.set_status(Curve.dic[str(i)].name+' is plotted.')
         self.ax.legend(loc='lower right')
+        self.ax.set_title(self.main_title.get())
+        self.ax.set_xlabel(self.x_title.get())
+        self.ax.set_ylabel(self.y_title.get())
+        self.fig.tight_layout()
         self.canvas.draw()
         self.set_status('Plot is updated.')
 
@@ -662,6 +673,48 @@ class Application(tk.Tk):
         except AttributeError:
             # TODO add a warning popup window.
             self.set_status('WARNING - There is no marker style defined.')
+
+    def plot_tab(self):
+        """ Second tab managing plot parameters creation."""
+        # Create plot tab
+        self.plot_tab = ttk.Frame(self.tool_notebook)
+
+        # CREATE PLOT PANEL
+        self.plot_frame = tk.LabelFrame(self.plot_tab, text='Plot titles')
+        self.plot_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        # Main title
+        tk.Label(self.plot_frame,
+                text='Main title').grid(row=0,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.main_title = tk.StringVar()
+        self.main_title.set('Title')
+        tk.Entry(self.plot_frame, textvariable=self.main_title, width=30, justify=tk.CENTER).grid(
+                  row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # X axis title
+        tk.Label(self.plot_frame,
+                text='X title').grid(row=1,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.x_title = tk.StringVar()
+        self.x_title.set('X')
+        tk.Entry(self.plot_frame, textvariable=self.x_title, width=30, justify=tk.CENTER).grid(
+                  row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # Y axis title
+        tk.Label(self.plot_frame,
+                text='Y title').grid(row=2,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.y_title = tk.StringVar()
+        self.y_title.set('Y')
+        tk.Entry(self.plot_frame, textvariable=self.y_title, width=30, justify=tk.CENTER).grid(
+                  row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # APPLY BUTTON
+        tk.Button(self.plot_frame, text='Apply',
+                  command=self.plot_curves, width=6).grid(
+                  row=4, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # Add this tab to the notebook.
+        self.tool_notebook.add(self.plot_tab, text='Plot area')
 
 
 if __name__ == '__main__':
