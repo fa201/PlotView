@@ -367,11 +367,18 @@ class Application(tk.Tk):
         self.curve_color_combo.grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
 
-
+        # Line width
+        tk.Label(self.curve_prop_frame, 
+                text='Line width').grid(row=3,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_width = tk.StringVar()
+        self.curve_width.set('1')
+        tk.Entry(self.curve_prop_frame, textvariable=self.curve_width, width=4, justify=tk.CENTER).grid(
+                  row=3, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
         # APPLY BUTTON
         tk.Button(self.curve_prop_frame, text='Apply',
-                  command=self.plot_curves, width=6).grid(
+                  command=self.update_curve, width=6).grid(
                   row=6, column=2, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
 
         # Add this tab to the notebook.
@@ -432,6 +439,16 @@ class Application(tk.Tk):
         else:
             self.set_status('ERROR - No CSV file were selected.')
 
+    def update_curve(self):
+        """Update Curve instance attributes from the GUI input"""
+        if float(self.curve_width.get()) != 0:
+            Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
+        else:
+            # status message will be replaced by the one from 'plot_curves'.
+            # TODO add a warning popup window because 
+            print('The width of curve ', Curve.dic[str(self.selected_curve)].name, ' is 0!')
+        self.plot_curves()
+
     def plot_curves(self):
         """Plot all curves with visibility = True"""
         # It is necessary to clear the Axes since the for loop starts from 1
@@ -477,13 +494,14 @@ class Application(tk.Tk):
             self.set_status('WARNING - There is no curve defined.')
         # TODO: launch plot_curves after clicking on 'Apply' button.
         # TODO: link Curve.dic[self.selected_curve].visibility avec set() en premier ?
-
+    
     def change_curve_color(self, event):
         try:
             Curve.dic[str(self.selected_curve)].color = event.widget.get()
             self.set_status('Color of curve '+Curve.dic[str(self.selected_curve)].name+' is updated.')
         except AttributeError:
             self.set_status('WARNING - There is no color defined.')
+
 
 if __name__ == '__main__':
     app = Application()
