@@ -12,7 +12,7 @@ try:
     import sys
     import tkinter as tk
     from tkinter import font
-    #from tkinter import messagebox as msg
+    # from tkinter import messagebox as msg
     from tkinter import filedialog
     import tkinter.ttk as ttk
     import webbrowser
@@ -26,33 +26,37 @@ except ModuleNotFoundError as e:
 
 
 # Constants for curve styling properties.
-my_colors = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold', 
-            'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
-            'peru', 'limegreen', 'turquoise', 'royalblue'
-            ]
+my_colors = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
+             'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
+             'peru', 'limegreen', 'turquoise', 'royalblue'
+             ]
 my_linestyles = ['-', '--', ':']
 my_markers = ['o', '+', '.', 'x', '^', 'v', 's', 'x']
 
 
 class Curve:
     """ Contains all the data relative to a curve.
-        Class attribute 'count' is used to describe the curve ID 'id' and gives the number of curves cerated.
+        Class attribute 'count' is used the curve ID 'id' and gives the number of curves created.
         'id' is the key of Cruve instances dictionary.
         This key will never change whereas the user-defined 'name' can change.
 
         The default plotting parameters are those below (user can change them).
         Attributes:
-            - id : string -> ID of creation (0 prefixed if below 10)
             - name: string -> user-defined name. Can be changed in the PV session
-            - file: string -> path to CSV file
-            - data: dataframe -> contains (X,Y) points to be plotted
+            - path: string -> path to CSV file
+            - data_in: dataframe -> contains (X,Y) points as read in the CSV file
             - data_type: dictionary -> contains X header and Y header
+            - data_out: dataframe -> data_in with offset and scale values to be plotted
             - visibility: boolean -> flag to show the curve in the plot or not
             - color: string -> color of the curve line
             - width: float -> width of the curve line
             - style: string -> style of the curve line
             - marker: string -> line marker (symbol) for the curve
             - marker_size: float -> size of line marker for the curve from 0.0 to 10.0
+            - x_offset: float -> X data offset after X data scale
+            - y_offset: float -> Y data offset after Y data scale
+            - x_scale: float -> X data scaling
+            - y_scale: float -> Y data scaling
             TODO: add fig, ax, canvas, work_dir etc.
         Methods:
             - method to read the CSV file
@@ -62,24 +66,24 @@ class Curve:
     dic = OrderedDict()
 
     def __init__(self, path):
-        #self.id = str(Curve.count)
         self.name = 'Name'
         self.path = path
-        self.data = self.read_file(path)
-        # TODO: handle this with a function and exceptions if no column or 1 column
-        self.data_type = {'x_type': self.data.columns[0], 'y_type': self.data.columns[1]}
-        #
+        self.data_in = self.read_file(path)
+        # TODO: handle the reading with a function and exceptions if no column or 1 column
+        self.data_type = {'x_type': self.data_in.columns[0], 'y_type': self.data_in.columns[1]}
+        self.data_out = self.data_in.copy()
         self.visibility = True
-        self.color = 'black'
-        # TODO: what are the limits of width?
+        self.color = my_colors[0]
         self.width = 1.0
-        # TODO: what are the options?
-        self.style = 'solid'
-        # TODO: what are the options?
-        self.marker = 'o'
+        self.style = my_linestyles[0]
+        self.marker = my_markers[0]
         # 'marker_size' = 0 -> not visible.
         # TODO mention this behavior in the help. Size of marker has to be changed to be visible.
         self.marker_size = 0.0
+        self.x_offset = 0.0
+        self.y_offset = 0.0
+        self.x_scale = 1.0
+        self.y_scale = 1.0
         Curve.count += 1
 
     def read_file(self, path):
@@ -124,17 +128,17 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.5'
+        self.PV_VERSION = '0.6'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
-        self.PLOT_WIDTH = 9.0
+        self.PLOT_WIDTH = 8.9
         self.PLOT_HEIGHT = 6.68
         # Parameters for widgets on RH tool panel.
         # Padding for all containers to uniformize the look
-        self.CONTAINER_PADX = 7
-        self.CONTAINER_PADY = 7
+        self.CONTAINER_PADX = 6
+        self.CONTAINER_PADY = 6
         # Padding for all widgets inside a container
         self.WIDGET_PADX = 2
         self.WIDGET_PADY = 2
@@ -168,7 +172,7 @@ class Application(tk.Tk):
         self.curve_tab()
 
     def create_underscores(self):
-        """Creates a string with underscores to fill the 'work_dir' and 'work file' labels when empty."""
+        """Creates a string with underscores to fill the 'work_dir' labels when empty."""
         underscores = list()
         for i in range(0, self.MAX_STR_CREATE_CURVE):
             underscores.append('_')
@@ -206,7 +210,14 @@ class Application(tk.Tk):
         # The status frame should extend on all width of the main window.
         self.status_frame.pack(expand=False, fill=tk.X, side=tk.BOTTOM)
         # The status is initialized with empty message left aligned.
-        self.status = tk.Label(self.status_frame, text=' Ready.', bd=1, relief=tk.SUNKEN, anchor=tk.W, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.status = tk.Label(self.status_frame,
+                               text=' Ready.',
+                               bd=1,
+                               relief=tk.SUNKEN,
+                               anchor=tk.W,
+                               padx=self.WIDGET_PADX,
+                               pady=self.WIDGET_PADY
+                               )
         # The label shoul expand on the total window width.
         self.status.pack(fill=tk.BOTH, expand=False)
 
@@ -300,13 +311,19 @@ class Application(tk.Tk):
         # CREATE CURVE PANEL
         self.create_curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
         self.create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                              padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
         # Working directory widgets
         tk.Button(self.create_curve_frame, text='Work directory',
                   command=self.choose_dir, width=9).grid(
                   row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.create_curve_frame, textvariable=self.work_dir_txt).grid(
-                 row=0, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W)
+        tk.Label(self.create_curve_frame,
+                 textvariable=self.work_dir_txt
+                 ).grid(row=0,
+                        column=1,
+                        columnspan=2,
+                        padx=self.WIDGET_PADX,
+                        pady=self.WIDGET_PADY,
+                        sticky=tk.W)
         # CSV file widget
         tk.Button(self.create_curve_frame, text='CSV file',
                   command=self.choose_file, width=9).grid(
@@ -316,109 +333,141 @@ class Application(tk.Tk):
         self.curve_label = tk.StringVar()
         self.curve_label.set('Curve_label')
         tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=24).grid(
-                  row=1, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                 row=1, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve create widget
         tk.Button(self.create_curve_frame, text='Create',
-                  command=self.curve_create, width=6).grid(
-                  row=2, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  command=self.curve_create, width=4).grid(
+                  row=0, column=3, rowspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # CURVE PROPERTIES
         self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
         self.curve_prop_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                              padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                                   padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
 
         # Active curve
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
-        tk.Label(self.curve_prop_frame, text='Curve ID').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(self.curve_prop_frame, text='Select curve').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
-                                                values=list(Curve.dic.keys()),
-                                                justify=tk.CENTER,
-                                                width=4
-                                                )
-        self.active_curve_combo.grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                                               values=list(Curve.dic.keys()),
+                                               justify=tk.CENTER,
+                                               width=4
+                                               )
+        self.active_curve_combo.grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
         self.show_state = tk.IntVar()
         self.show_state.set(1)
-        show_check = tk.Checkbutton(self.curve_prop_frame,
+        tk.Checkbutton(self.curve_prop_frame,
                 text='Show curve',
                 variable=self.show_state,
                 indicatoron=1,
-                command=self.show_check_update).grid(row=0, 
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                command=self.show_check_update).grid(row=0,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.active_curve_name = tk.StringVar()
         self.active_curve_name.set(' ')
-        tk.Label(self.curve_prop_frame, 
+        tk.Label(self.curve_prop_frame,
                 text='Name').grid(row=1,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Entry(self.curve_prop_frame, 
-                textvariable=self.active_curve_name, width=24).grid(row=1,
-                        column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.curve_prop_frame,
+                textvariable=self.active_curve_name, width=30).grid(row=1,
+                        column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
         # Curve color
-        tk.Label(self.curve_prop_frame, 
-                text='Color').grid(row=2,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        self.curve_color = tk.StringVar()
-        self.curve_color.set(my_colors[0])
+        tk.Label(self.curve_prop_frame,
+                text='Line color').grid(row=2,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_colors,
                                                 justify=tk.CENTER,
-                                                width=10
+                                                width=12
                                                 )
-        self.curve_color_combo.grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_color_combo.set(my_colors[0])
+        self.curve_color_combo.grid(row=2, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
 
         # Line width
-        tk.Label(self.curve_prop_frame, 
+        tk.Label(self.curve_prop_frame,
                 text='Line width').grid(row=3,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_width = tk.StringVar()
         self.curve_width.set('1')
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_width, width=4, justify=tk.CENTER).grid(
-                  row=3, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=3, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Line style
-        tk.Label(self.curve_prop_frame, 
-                text='Line style').grid(row=4,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        self.curve_style = tk.StringVar()
-        self.curve_style.set(my_linestyles[0])
+        tk.Label(self.curve_prop_frame,
+                text='Line style').grid(row=3,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_linestyles,
                                                 justify=tk.CENTER,
                                                 width=3
                                                 )
-        self.curve_style_combo.grid(row=4, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_style_combo.set(my_linestyles[0])
+        self.curve_style_combo.grid(row=3, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_style_combo.bind('<<ComboboxSelected>>', self.change_curve_style)
 
         # Marker type
-        tk.Label(self.curve_prop_frame, 
+        tk.Label(self.curve_prop_frame,
                 text='Marker style').grid(row=5,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        self.marker_style = tk.StringVar()
-        self.marker_style.set(my_markers[0])
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.marker_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_markers,
                                                 justify=tk.CENTER,
                                                 width=3
                                                 )
-        self.marker_style_combo.grid(row=5, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.marker_style_combo.set(my_markers[0])
+        self.marker_style_combo.grid(row=5, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.marker_style_combo.bind('<<ComboboxSelected>>', self.change_marker_style)
 
         # Marker size
-        tk.Label(self.curve_prop_frame, 
-                text='Marker size').grid(row=6,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(self.curve_prop_frame,
+                text='Marker size').grid(row=5,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.marker_size = tk.StringVar()
         self.marker_size.set('0')
         tk.Entry(self.curve_prop_frame, textvariable=self.marker_size, width=4, justify=tk.CENTER).grid(
-                  row=6, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=5, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
+        # X scale
+        tk.Label(self.curve_prop_frame,
+                text='Scale X axis').grid(row=6,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.curve_x_scale = tk.DoubleVar()
+        self.curve_x_scale.set(1.0)
+        tk.Entry(self.curve_prop_frame, textvariable=self.curve_x_scale, width=8, justify=tk.CENTER).grid(
+                  row=6, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # Y scale
+        tk.Label(self.curve_prop_frame,
+                text='Scale Y axis').grid(row=6,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.curve_y_scale = tk.DoubleVar()
+        self.curve_y_scale.set(1.0)
+        tk.Entry(self.curve_prop_frame, textvariable=self.curve_y_scale, width=8, justify=tk.CENTER).grid(
+                  row=6, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # X offset
+        tk.Label(self.curve_prop_frame,
+                text='Offset X axis').grid(row=7,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.curve_x_offset = tk.DoubleVar()
+        self.curve_x_offset.set(0)
+        tk.Entry(self.curve_prop_frame, textvariable=self.curve_x_offset, width=8, justify=tk.CENTER).grid(
+                  row=7, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # Y offset
+        tk.Label(self.curve_prop_frame,
+                text='Offset Y axis').grid(row=7,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.curve_y_offset = tk.DoubleVar()
+        self.curve_y_offset.set(0)
+        tk.Entry(self.curve_prop_frame, textvariable=self.curve_y_offset, width=8, justify=tk.CENTER).grid(
+                  row=7, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # APPLY BUTTON
         tk.Button(self.curve_prop_frame, text='Apply',
                   command=self.update_curve, width=6).grid(
-                  row=7, column=2, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  row=8, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
@@ -471,7 +520,6 @@ class Application(tk.Tk):
             # Since instance is not yet created self.id does not exist. So 'count' is used.
             Curve.dic[str(Curve.count)] = (Curve(self.work_file))
             # Show the name of the created curve in 'curve_label'
-            #self.curve_label.set(Curve.dic[str(Curve.count)].name)
             Curve.dic[str(Curve.count)].name = self.curve_label.get()
             self.update_active_curve_combo()
             self.plot_curves()
@@ -480,25 +528,49 @@ class Application(tk.Tk):
 
     def update_curve(self):
         """Update Curve instance attributes from the GUI input"""
+        # Update curve name
         if len(self.active_curve_name.get()) != 0:
             Curve.dic[str(self.selected_curve)].name = self.active_curve_name.get()
         else:
             # status message will be replaced by the one from 'plot_curves'.
-            # TODO add a warning popup window. 
+            # TODO add a warning popup window.
             print('The name of curve', Curve.dic[str(self.selected_curve)].name, 'is missing.')
 
+        # Update curve width
         if float(self.curve_width.get()) != 0:
             Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
         else:
             # status message will be replaced by the one from 'plot_curves'.
-            # TODO add a warning popup window. 
+            # TODO add a warning popup window.
             print('The width of curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
+
+        # Update marker size
         if float(self.marker_size.get()) != 0:
             Curve.dic[str(self.selected_curve)].marker_size = float(self.marker_size.get())
         else:
             # status message will be replaced by the one from 'plot_curves'.
-            # TODO add a warning popup window. 
+            # TODO add a warning popup window.
             print('The size of marker for curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
+
+        # Update scale and offset values for curve
+        # TODO: check for scale value different from 0.
+        if self.curve_x_scale != 0:
+            Curve.dic[str(self.selected_curve)].x_scale = self.curve_x_scale.get()
+            Curve.dic[str(self.selected_curve)].x_offset = self.curve_x_offset.get()
+            Curve.dic[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 0]* Curve.dic[str(self.selected_curve)].x_scale + Curve.dic[str(self.selected_curve)].x_offset
+        else:
+            # status message will be replaced by the one from 'plot_curves'.
+            # TODO add a warning popup window.
+            print('The value of X scale for curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
+        if self.curve_y_scale != 0:
+            Curve.dic[str(self.selected_curve)].y_scale = self.curve_y_scale.get()
+            Curve.dic[str(self.selected_curve)].y_offset = self.curve_y_offset.get()
+            Curve.dic[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 1]* Curve.dic[str(self.selected_curve)].y_scale + Curve.dic[str(self.selected_curve)].y_offset
+        else:
+            # status message will be replaced by the one from 'plot_curves'.
+            # TODO add a warning popup window.
+            print('The value of Y scale for curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
+
         self.plot_curves()
 
     def plot_curves(self):
@@ -508,8 +580,8 @@ class Application(tk.Tk):
         self.ax.clear()
         for i in range(1, Curve.count+1):
             if Curve.dic[str(i)].visibility:
-                self.ax.plot(Curve.dic[str(i)].data.iloc[:, 0],
-                             Curve.dic[str(i)].data.iloc[:, 1],
+                self.ax.plot(Curve.dic[str(i)].data_out.iloc[:, 0],
+                             Curve.dic[str(i)].data_out.iloc[:, 1],
                              label=Curve.dic[str(i)].name,
                              color=Curve.dic[str(i)].color,
                              lw=Curve.dic[str(i)].width,
@@ -523,14 +595,25 @@ class Application(tk.Tk):
         self.set_status('Plot is updated.')
 
     def update_active_curve_combo(self):
-        l = list(Curve.dic.keys())
-        self.active_curve_combo['values'] = tuple(l)
+        self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
 
     def active_curve(self, event):
+        """Update curve widgets based on curve attributes"""
         try:
             self.selected_curve = event.widget.get()
             # Update the active curve label.
             self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
+            self.show_state.set(Curve.dic[str(self.selected_curve)].visibility)
+            self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
+            self.curve_color_combo.set(Curve.dic[str(self.selected_curve)].color)
+            self.curve_width.set(Curve.dic[str(self.selected_curve)].width)
+            self.curve_style_combo.set(Curve.dic[str(self.selected_curve)].style)
+            self.marker_style_combo.set(Curve.dic[str(self.selected_curve)].marker)
+            self.marker_size.set(Curve.dic[str(self.selected_curve)].marker_size)
+            self.curve_x_scale.set(Curve.dic[str(self.selected_curve)].x_scale)
+            self.curve_y_scale.set(Curve.dic[str(self.selected_curve)].y_scale)
+            self.curve_x_offset.set(Curve.dic[str(self.selected_curve)].x_offset)
+            self.curve_y_offset.set(Curve.dic[str(self.selected_curve)].y_offset)
             self.set_status('Selected curve: '+Curve.dic[str(self.selected_curve)].name)
         except AttributeError:
             # TODO add a warning popup window.
@@ -546,11 +629,14 @@ class Application(tk.Tk):
             # TODO add a warning popup window.
             self.set_status('WARNING - There is no curve defined.')
         # TODO: link Curve.dic[self.selected_curve].visibility avec set() en premier ?
-    
+
     def change_curve_color(self, event):
         try:
             Curve.dic[str(self.selected_curve)].color = event.widget.get()
-            self.set_status('Color of curve '+Curve.dic[str(self.selected_curve)].name+' is updated.')
+            self.set_status('Color of curve ' +
+                            Curve.dic[str(self.selected_curve)].name +
+                            ' is updated.'
+                            )
         except AttributeError:
             # TODO add a warning popup window.
             self.set_status('WARNING - There is no color defined.')
@@ -558,7 +644,10 @@ class Application(tk.Tk):
     def change_curve_style(self, event):
         try:
             Curve.dic[str(self.selected_curve)].style = event.widget.get()
-            self.set_status('Style of curve '+Curve.dic[str(self.selected_curve)].name+' is updated.')
+            self.set_status('Style of curve ' +
+                            Curve.dic[str(self.selected_curve)].name +
+                            ' is updated.'
+                            )
         except AttributeError:
             # TODO add a warning popup window.
             self.set_status('WARNING - There is no style defined.')
@@ -566,10 +655,14 @@ class Application(tk.Tk):
     def change_marker_style(self, event):
         try:
             Curve.dic[str(self.selected_curve)].marker = event.widget.get()
-            self.set_status('Style of marker for curve '+Curve.dic[str(self.selected_curve)].name+' is updated.')
+            self.set_status('Style of marker for curve ' +
+                            Curve.dic[str(self.selected_curve)].name +
+                            ' is updated.'
+                            )
         except AttributeError:
             # TODO add a warning popup window.
             self.set_status('WARNING - There is no marker style defined.')
+
 
 if __name__ == '__main__':
     app = Application()
