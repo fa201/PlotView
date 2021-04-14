@@ -312,8 +312,9 @@ class Application(tk.Tk):
                   command=self.choose_file, width=9).grid(
                   row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve name widget
+        # TODO: when the widget has the focus, deleted the 'curve_label' to modify quicker the name.
         self.curve_label = tk.StringVar()
-        self.curve_label.set('Name of curve')
+        self.curve_label.set('Curve_label')
         tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=24).grid(
                   row=1, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve create widget
