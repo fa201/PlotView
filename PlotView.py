@@ -601,6 +601,7 @@ class Application(tk.Tk):
         self.ax.set_title(self.main_title.get())
         self.ax.set_xlabel(self.x_title.get())
         self.ax.set_ylabel(self.y_title.get())
+        self.ax.axis([self.x_min_range, self.x_max_range, self.y_min_range, self.y_max_range])
         self.fig.tight_layout()
         self.canvas.draw()
         self.set_status('Plot is updated.')
@@ -708,10 +709,64 @@ class Application(tk.Tk):
         tk.Entry(self.plot_frame, textvariable=self.y_title, width=30, justify=tk.CENTER).grid(
                   row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
+        # CREATE RANGE PANEL
+        self.range_frame = tk.LabelFrame(self.plot_tab, text='Plot ranges for X and Y')
+        self.range_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        # Auto-scale or user defined
+        self.autoscale = tk.IntVar()
+        self.autoscale.set(1)
+        tk.Radiobutton(self.range_frame, text='Auto scale', 
+                variable=self.autoscale, value=1).grid(row=0, 
+                column=0, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.range_frame, text='User defined', 
+                variable=self.autoscale, value=0).grid(row=0, 
+                column=2, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # User defined
+        tk.Label(self.range_frame,
+                text='User defined ranges:').grid(row=1,
+                        column=0, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # FIXME: find a way to get an event for this check to change the state automatically.
+        # https://stackoverflow.com/questions/26333769/event-triggered-by-listbox-and-radiobutton-in-tkinter
+        if self.autoscale:
+            self.range_toggle = 'disabled'
+        else:
+            self.range_toggle = 'normal'
+        # X min
+        tk.Label(self.range_frame,
+                text='X min').grid(row=2,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.x_min_range = tk.DoubleVar()
+        tk.Entry(self.range_frame, textvariable=self.x_min_range, state=self.range_toggle, width=8, justify=tk.CENTER).grid(
+                  row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # X max
+        tk.Label(self.range_frame,
+                text='X max').grid(row=2,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.x_max_range = tk.DoubleVar()
+        self.x_max_range.set(100)
+        tk.Entry(self.range_frame, textvariable=self.x_max_range, state=self.range_toggle, width=8, justify=tk.CENTER).grid(
+                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # Y min
+        tk.Label(self.range_frame,
+                text='Y min').grid(row=3,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.y_min_range = tk.DoubleVar()
+        tk.Entry(self.range_frame, textvariable=self.y_min_range, state=self.range_toggle, width=8, justify=tk.CENTER).grid(
+                  row=3, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # Y max
+        tk.Label(self.range_frame,
+                text='Y max').grid(row=3,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.y_max_range = tk.DoubleVar()
+        self.y_max_range.set(100)
+        tk.Entry(self.range_frame, textvariable=self.y_max_range, state=self.range_toggle, width=8, justify=tk.CENTER).grid(
+                  row=3, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
         # APPLY BUTTON
-        tk.Button(self.plot_frame, text='Apply',
+        tk.Button(self.plot_tab, text='Apply all',
                   command=self.plot_curves, width=6).grid(
-                  row=4, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+                  row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.plot_tab, text='Plot area')
