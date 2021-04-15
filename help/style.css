@@ -1,0 +1,257 @@
+html {
+    font-size: 62.5%;   /* Définit la taille de police standard à 0.625*16px=10px. Donc 2rem = 20 px */
+    background-color: white;
+}
+
+body {
+    font-family: Verdana, Arial, Helvetica, "Lucida Sans Unicode", Verdana, sans-serif;
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: column; /* Les blocks enfant seront disposés verticalement */
+    min-height: 100vh;      /* La hauteur du body est celle de la fenêtre du navigateur */
+    max-width: 1400px;      /* Evite d'avoir un aspect trop aplati. Limite à 1200 / 1400 px ? */
+    margin: 0 auto;         /* Centre le body en largeur */
+    background-color: hsl(60, 10%, 95%);
+    line-height: 1.8rem;   /* Hauteur de ligne augmentée des paragraphes augmentée pour améliorer la lisibilité */
+}
+
+p {
+    margin: 0.5rem 0;      /* Espacement vertical entre paragraphes*/
+}
+
+strong {
+    color: black;
+    font-weight: bold;
+}
+
+em {
+    font-style: normal;
+    color: hsl(30, 90%, 30%);
+    font-weight: bold;
+    font-size: 1.4rem;      /* pour le détacher du texte normal et atténuer l'effet du bold */
+}
+
+abbr{
+    text-decoration-style: dotted;
+}
+
+/* ============= NAV start ============= */
+
+.nav_first {        /* Container flexbox servant à centrer horizontalement et verticalement */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;        /* Permet d'empiler les menus verticalement sur les écran étroits */
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 1.7rem;
+    line-height: 2.5rem;
+    font-variant: small-caps;
+    background-color: hsl(220, 80%, 49%);
+}
+
+nav a:link,
+nav a:visited {
+    text-decoration: none;  /* Supprime le souligné pour les liens */
+    display: inline-block;  /* Permet de rajouter le padding vertical sur le lien (normalement inline) */
+    padding: 0.7rem 2rem;   /* Espace les liens des menus en maintenant l'espace vide cliquable */
+    color: hsl(40, 100%, 99%);
+    font-weight: bold;
+}
+
+nav a.nav_current1 {     /* Il faut rajouter 'nav a' devant la classe pour augmenter son poids et forcer la mise en forme */
+    font-size: 1.7rem;
+    background-color: hsl(220, 90%, 30%);   /* Idem fond du nav 2 pour créer un effet de sous-menu */
+}
+
+nav a.nav_current2 {     /* Il faut rajouter 'nav a' devant la classe pour augmenter son poids et forcer la mise en forme */
+    font-size: 1.7rem;
+    background-color: hsl(220, 90%, 30%);   /* Idem fond du nav 2 pour créer un effet de sous-menu */
+    text-decoration: underline;
+}
+
+nav a:hover{
+    text-decoration: none;
+    background-color: hsl(40, 0%, 7%);
+}
+
+/* ============= NAV end ============= */
+
+
+/* ========== MAIN CONTAINER start ========== */
+.main_container {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;         /* grow=1 permet au main d'occuper toute la hauteur disponible en poussant le footer en bas */
+    justify-content: flex-start;
+    align-items: stretch;       /* Etire en bas pour repossuer le footer en pied de page */
+}
+
+.with_aside {
+    box-sizing: border-box;   /* Inclut le padding dans la largeur exprimée */
+    width: 66vw;             /* % de la largeur du navigateur pour éviter les scroll */
+    padding: 0.5rem 2rem;         /* Identique à aside */
+    text-align: justify;
+}
+
+.without_aside {                    /* idem with_aside */
+    box-sizing: border-box;   /* Inclut le padding dans la largeur exprimée */
+    padding: 0.5rem 2rem;         /* Identique à aside */
+    text-align: justify;
+}
+
+.article_image {
+    float: right;
+    width: 200px;
+    margin: 1rem 0 1rem 1rem;   /* Pas besoin de rajouter de la marge à droite */
+}
+
+aside{
+    box-sizing: border-box;         /* Inclut le padding dans la largeur exprimée */
+    width: 34vw;            /* % de la largeur du navigateur pour éviter les scroll */
+    text-align: justify;
+    border-radius: 1.7rem;
+    margin: 0.3rem 0.3rem 0.3rem 0.3rem;       /* Pour voir les bords de aside */
+}
+
+.aside_image {
+    float: right;
+    width: 200px;
+    margin: 1rem 0 1rem 1rem;   /* Pas besoin de rajouter de la marge à droite */
+}
+
+/* Titres */
+h1 {
+    font-size: 1.8rem;
+    padding: 1rem 0 1rem 2rem;
+    text-decoration: underline;
+    font-weight: bold;
+    margin-top: 1rem;
+    color: hsl(210, 80%, 0%);
+}
+
+h2 {
+    font-size: 2rem;
+    font-style: italic;
+    border-bottom: 1px solid darkgrey;
+    margin: 3.5rem auto 0.7rem auto;
+}
+
+h3 {
+    font-weight: bold;
+    font-size: 1.5rem;
+    font-variant: small-caps;
+    margin: 2rem auto 0.5rem auto;
+    color: hsl(220, 90%, 50%);
+}
+
+/* Tableaux */
+table, th, td {
+    text-align: center;
+    vertical-align: middle;
+    border-collapse: collapse;
+    border: 1px solid grey;
+    caption-side: top;
+    margin: auto;               /* Centre le tableau en largeur */
+    background-color: hsl(180, 82%, 90%); /* Mettre la même couleur sur caption */
+}
+
+th {
+    font-weight: bold;
+    padding: 0.5rem;
+}
+
+td {
+    padding: 0.3rem 0.6rem;
+    margin: 0;
+}
+
+caption {
+    font-weight: bold;
+    padding: 0.5rem;
+    border-collapse: collapse;
+    border: 1px solid grey;
+    border-bottom: none;        /* supprime la bordure inf de la dernière case qui fait doublon avec le tableau */
+    margin-top: 0.3rem;         /* crée un espace avec le paragraphe précédent */
+    background-color: hsl(180, 82%, 90%); /* Mettre la même couleur sur que pour table */
+}
+
+.en_ligne {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* images */
+figcaption {
+    font: 1.2rem;
+    font-style: italic;
+    margin: -0.5rem 0.5rem 0.5rem 0.5rem;   /* -5px pour annuler la marge mise sur les images */
+    text-align: center;         /* centré sur l'image */
+}
+
+.image_droite {
+    float: right;
+}
+
+.image_gauche {
+    float: left;
+}
+
+.image_xl {
+    margin: 5px;
+    max-height: 700px;
+}
+
+.image_l {
+    margin: 5px;
+    max-height: 500px;
+}
+
+.image_m {
+    margin: 5px;
+    max-height: 300px;
+}
+
+.image_s {
+    margin: 5px;
+    max-height: 175px;
+}
+
+.image_xs {
+    margin: 5px;
+    max-height: 100px;
+}
+
+main ul {
+    list-style: circle;
+    margin-left: 4rem;
+}
+
+/*------------- définition du lien de retour sur le haut de la page -------------*/
+.retour_haut_page {
+    text-align: right;
+    margin: 1.2rem 0 0 0;
+}
+
+/* mise en forme du lien */
+.retour_haut_page a:link {
+    font: 1.2rem;
+    color: hsl(240, 100%, 50%);         /* 1 seule couleur */
+    text-decoration: none;
+    padding: 0.3rem;
+    border: 1px solid;
+    border-color: hsl(240, 100%, 50%);  /* 1 seule couleur */
+}
+
+/* après avoir cliqué sur le lien, il n'apparait pas comme étant un lien déjà visité */
+.retour_haut_page a:visited {
+    font: 1.2rem;
+    color: hsl(240, 100%, 50%);         /* 1 seule couleur */
+    text-decoration: none;
+    padding: 0.3rem;
+    border: 1px solid ;
+    border-color: hsl(240, 100%, 50%);  /* 1 seule couleur */
+}
+/*-------------------------------------------------------------------------------*/
+
+
+/* ========== MAIN CONTAINER end ========== */
