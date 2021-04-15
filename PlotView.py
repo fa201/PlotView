@@ -612,6 +612,7 @@ class Application(tk.Tk):
         self.ax.set_title(self.main_title.get())
         self.ax.set_xlabel(self.x_title.get())
         self.ax.set_ylabel(self.y_title.get())
+        self.ax.grid(self.grid_state.get())
         self.fig.tight_layout()
         self.canvas.draw()
         self.set_status('Plot is updated.')
@@ -773,10 +774,8 @@ class Application(tk.Tk):
         self.legend_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
         temp = "'Best' lets matplotlib decide the position."
-        tk.Label(self.legend_frame,
-                text=temp).grid(row=0,
-                        column=0, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        
+        tk.Label(self.legend_frame, text=temp).grid(row=0, column=0, 
+                columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Legend position
         self.legend = tk.IntVar()
         self.legend.set(4)
@@ -802,11 +801,22 @@ class Application(tk.Tk):
                           '4': 'best'
                          }
 
-
+        # CUSTOMIZE PANEL
+        self.custom_frame = tk.LabelFrame(self.plot_tab, text='Customize')
+        self.custom_frame.grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        self.grid_state = tk.IntVar()
+        self.grid_state.set(1)
+        tk.Checkbutton(self.custom_frame,
+                text='Show grid',
+                variable=self.grid_state,
+                indicatoron=1,
+                command=self.show_check_update).grid(row=0,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # APPLY BUTTON
         tk.Button(self.plot_tab, text='Apply all',
                   command=self.plot_curves, width=6).grid(
-                  row=3, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+                  row=4, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.plot_tab, text='Plot area')
