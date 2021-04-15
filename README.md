@@ -1,11 +1,10 @@
 # PlotView
-PlotView is a **curve plotter** using CSV files containing each 1 curve (X and Y coordinates for each curve point). The CSV file will be prepared using pandas into a strict CSV format (delimiter is comma). The first row should contain the type of value for X and Y and possibly the units.
+PlotView is a **curve plotter** using CSV files. Each file contain 1 curve (X and Y coordinates for each point of the curve). The CSV file will be prepared beforehand using pandas for example to produce a strict CSV format (delimiter is comma). The first row should contain the type of value for X and Y and possibly the units.
 The appearance of curves and axis scales can be customized in PlotView.
-
-It is my first program written in Python so I learn while I code.
+![PlotView_example](./image/PlotView_example.png)
 
 ## My goals
-* Application to learn the basics of Python.
+* Application to learn the basics of Python and simple GUI programming.
 * Hopefully make a tool which will be useable to plot test data at work.
 
 ## Useful informations
@@ -15,10 +14,8 @@ The GUI will be make with **Tkinter** due to:
 * *portability* to Linux & Windows
 * *ease of programming* for a beginner
 
-matplotlib will be used to handle the plotting part. The Figure will be embedded in tkinter window.
-
 ### test/
-This folder will contain my test data: CSV files.
+This folder will contain a few test curves.
 
 # Required Python packages.
 PlotView needs the following packages to run.
@@ -29,4 +26,7 @@ PlotView needs the following packages to run.
 Note that the above versions are those used for the development. If you have a lower version for a package, it may work. In case of trouble, please update the packages to these versions at least.
 
 # Limitations of PlotView
-The size of the window is 1280 x 720 pixels so your screen has to be bigger than this.
+* the size of the window is 1280 x 720 pixels so your screen has to be bigger than this.
+* extensive tests are not yet done, so there is probably some bugs.
+
+Enjoy !
