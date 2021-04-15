@@ -26,7 +26,7 @@ except ModuleNotFoundError as e:
 
 
 # Constants for curve styling properties.
-my_colors = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
+my_colors_white = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
              'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
              'peru', 'limegreen', 'turquoise', 'royalblue'
              ]
@@ -73,7 +73,7 @@ class Curve:
         self.data_type = {'x_type': self.data_in.columns[0], 'y_type': self.data_in.columns[1]}
         self.data_out = self.data_in.copy()
         self.visibility = True
-        self.color = my_colors[0]
+        self.color = my_colors_white[0]
         self.width = 1.0
         self.style = my_linestyles[0]
         self.marker = my_markers[0]
@@ -128,7 +128,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.6'
+        self.PV_VERSION = '0.7'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -170,6 +170,7 @@ class Application(tk.Tk):
         self.create_plot_area()
         self.create_notebook()
         self.curve_tab()
+        self.plot_tab()
 
     def create_underscores(self):
         """Creates a string with underscores to fill the 'work_dir' labels when empty."""
@@ -335,9 +336,15 @@ class Application(tk.Tk):
         tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=24).grid(
                  row=1, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve create widget
-        tk.Button(self.create_curve_frame, text='Create',
-                  command=self.curve_create, width=4).grid(
-                  row=0, column=3, rowspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Button(self.create_curve_frame,
+                  text='Create',
+                  command=self.curve_create,
+                  width=4).grid(row=0,
+                                column=3,
+                                rowspan=2,
+                                padx=self.WIDGET_PADX,
+                                pady=self.WIDGET_PADY,
+                                sticky=tk.E+tk.W+tk.N+tk.S)
 
         # CURVE PROPERTIES
         self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
@@ -376,11 +383,11 @@ class Application(tk.Tk):
                 text='Line color').grid(row=2,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
-                                                values=my_colors,
+                                                values=my_colors_white,
                                                 justify=tk.CENTER,
                                                 width=12
                                                 )
-        self.curve_color_combo.set(my_colors[0])
+        self.curve_color_combo.set(my_colors_white[0])
         self.curve_color_combo.grid(row=2, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
 
@@ -574,10 +581,20 @@ class Application(tk.Tk):
         self.plot_curves()
 
     def plot_curves(self):
-        """Plot all curves with visibility = True"""
-        # It is necessary to clear the Axes since the for loop starts from 1
-        # for every curve plot. Otherwise curve_01 get duplicated for each call.
+        """ Plot all curves with visibility = True
+
+            Each curve attribute is scanned and used in plot function.
+            It is necessary to clear the Axes since the for loop starts from 1 for every
+            curve plot. Otherwise the first curve get duplicated for each plot to this function.
+        """
         self.ax.clear()
+        # Set the plot windows with user-defined ranges.
+        if self.autoscale.get():
+            self.ax.axis([self.x_min_range.get(), 
+                          self.x_max_range.get(), 
+                          self.y_min_range.get(), 
+                          self.y_max_range.get()]
+                        )
         for i in range(1, Curve.count+1):
             if Curve.dic[str(i)].visibility:
                 self.ax.plot(Curve.dic[str(i)].data_out.iloc[:, 0],
@@ -590,7 +607,13 @@ class Application(tk.Tk):
                              markersize=Curve.dic[str(i)].marker_size
                              )
                 self.set_status(Curve.dic[str(i)].name+' is plotted.')
-        self.ax.legend(loc='lower right')
+        
+        self.ax.legend(loc=self.legend_var[str(self.legend.get())])
+        self.ax.set_title(self.main_title.get(), fontweight='bold')
+        self.ax.set_xlabel(self.x_title.get())
+        self.ax.set_ylabel(self.y_title.get())
+        self.ax.grid(self.grid_state.get())
+        self.fig.tight_layout()
         self.canvas.draw()
         self.set_status('Plot is updated.')
 
@@ -662,6 +685,141 @@ class Application(tk.Tk):
         except AttributeError:
             # TODO add a warning popup window.
             self.set_status('WARNING - There is no marker style defined.')
+
+    def plot_tab(self):
+        """ Second tab managing plot parameters creation."""
+        # Create plot tab
+        self.plot_tab = ttk.Frame(self.tool_notebook)
+
+        # TITLE PANEL
+        self.plot_frame = tk.LabelFrame(self.plot_tab, text='Plot titles')
+        self.plot_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        # Main title
+        tk.Label(self.plot_frame,
+                text='Main title').grid(row=0,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.main_title = tk.StringVar()
+        self.main_title.set('Title')
+        tk.Entry(self.plot_frame, textvariable=self.main_title, width=30, justify=tk.CENTER).grid(
+                  row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # X axis title
+        tk.Label(self.plot_frame,
+                text='X title').grid(row=1,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.x_title = tk.StringVar()
+        self.x_title.set('X')
+        tk.Entry(self.plot_frame, textvariable=self.x_title, width=30, justify=tk.CENTER).grid(
+                  row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # Y axis title
+        tk.Label(self.plot_frame,
+                text='Y title').grid(row=2,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.y_title = tk.StringVar()
+        self.y_title.set('Y')
+        tk.Entry(self.plot_frame, textvariable=self.y_title, width=30, justify=tk.CENTER).grid(
+                  row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # RANGE PANEL
+        self.range_frame = tk.LabelFrame(self.plot_tab, text='Plot ranges for X and Y')
+        self.range_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        # Auto-scale or user defined
+        self.autoscale = tk.IntVar()
+        self.autoscale.set(0)
+        tk.Radiobutton(self.range_frame, text='Auto scale', 
+                variable=self.autoscale, value=0).grid(row=0, 
+                column=0, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.range_frame, text='User defined', 
+                variable=self.autoscale, value=1).grid(row=0, 
+                column=2, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # User defined
+        tk.Label(self.range_frame,
+                text='User defined ranges:').grid(row=1,
+                        column=0, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # https://stackoverflow.com/questions/26333769/event-triggered-by-listbox-and-radiobutton-in-tkinter
+        # X min
+        tk.Label(self.range_frame,
+                text='X min').grid(row=2,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.x_min_range = tk.DoubleVar()
+        tk.Entry(self.range_frame, textvariable=self.x_min_range, width=8, justify=tk.CENTER).grid(
+                  row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # X max
+        tk.Label(self.range_frame,
+                text='X max').grid(row=2,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.x_max_range = tk.DoubleVar()
+        self.x_max_range.set(100)
+        tk.Entry(self.range_frame, textvariable=self.x_max_range, width=8, justify=tk.CENTER).grid(
+                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # Y min
+        tk.Label(self.range_frame,
+                text='Y min').grid(row=3,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.y_min_range = tk.DoubleVar()
+        tk.Entry(self.range_frame, textvariable=self.y_min_range, width=8, justify=tk.CENTER).grid(
+                  row=3, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # Y max
+        tk.Label(self.range_frame,
+                text='Y max').grid(row=3,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.y_max_range = tk.DoubleVar()
+        self.y_max_range.set(100)
+        tk.Entry(self.range_frame, textvariable=self.y_max_range, width=8, justify=tk.CENTER).grid(
+                  row=3, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # LEGEND PANEL
+        self.legend_frame = tk.LabelFrame(self.plot_tab, text='Legend position')
+        self.legend_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        temp = "'Best' lets matplotlib decide the position."
+        tk.Label(self.legend_frame, text=temp).grid(row=0, column=0, 
+                columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # Legend position
+        self.legend = tk.IntVar()
+        self.legend.set(4)
+        tk.Radiobutton(self.legend_frame, text='Upper left', 
+                variable=self.legend, value=0).grid(row=1, 
+                column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.legend_frame, text='Upper right', 
+                variable=self.legend, value=1).grid(row=1, 
+                column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.legend_frame, text='Lower left', 
+                variable=self.legend, value=2).grid(row=2, 
+                column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.legend_frame, text='Lower right', 
+                variable=self.legend, value=3).grid(row=2, 
+                column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.legend_frame, text='Best', 
+                variable=self.legend, value=4).grid(row=1, 
+                column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.legend_var ={'0': 'upper left',
+                          '1': 'upper right', 
+                          '2': 'lower left', 
+                          '3': 'lower right', 
+                          '4': 'best'
+                         }
+
+        # CUSTOMIZE PANEL
+        self.custom_frame = tk.LabelFrame(self.plot_tab, text='Customize')
+        self.custom_frame.grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        self.grid_state = tk.IntVar()
+        self.grid_state.set(1)
+        tk.Checkbutton(self.custom_frame,
+                text='Show grid',
+                variable=self.grid_state,
+                indicatoron=1,
+                command=self.show_check_update).grid(row=0,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # APPLY BUTTON
+        tk.Button(self.plot_tab, text='Apply all',
+                  command=self.plot_curves, width=6).grid(
+                  row=4, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # Add this tab to the notebook.
+        self.tool_notebook.add(self.plot_tab, text='Plot area')
 
 
 if __name__ == '__main__':
