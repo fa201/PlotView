@@ -607,7 +607,8 @@ class Application(tk.Tk):
                              markersize=Curve.dic[str(i)].marker_size
                              )
                 self.set_status(Curve.dic[str(i)].name+' is plotted.')
-        self.ax.legend(loc='lower right')
+        
+        self.ax.legend(loc=self.legend_var[str(self.legend.get())])
         self.ax.set_title(self.main_title.get())
         self.ax.set_xlabel(self.x_title.get())
         self.ax.set_ylabel(self.y_title.get())
@@ -689,7 +690,7 @@ class Application(tk.Tk):
         # Create plot tab
         self.plot_tab = ttk.Frame(self.tool_notebook)
 
-        # CREATE PLOT PANEL
+        # TITLE PANEL
         self.plot_frame = tk.LabelFrame(self.plot_tab, text='Plot titles')
         self.plot_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
@@ -718,7 +719,7 @@ class Application(tk.Tk):
         tk.Entry(self.plot_frame, textvariable=self.y_title, width=30, justify=tk.CENTER).grid(
                   row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
-        # CREATE RANGE PANEL
+        # RANGE PANEL
         self.range_frame = tk.LabelFrame(self.plot_tab, text='Plot ranges for X and Y')
         self.range_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
@@ -735,7 +736,6 @@ class Application(tk.Tk):
         tk.Label(self.range_frame,
                 text='User defined ranges:').grid(row=1,
                         column=0, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        # FIXME: find a way to get an event for this check to change the state automatically.
         # https://stackoverflow.com/questions/26333769/event-triggered-by-listbox-and-radiobutton-in-tkinter
         # X min
         tk.Label(self.range_frame,
@@ -768,10 +768,45 @@ class Application(tk.Tk):
         tk.Entry(self.range_frame, textvariable=self.y_max_range, width=8, justify=tk.CENTER).grid(
                   row=3, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
+        # LEGEND PANEL
+        self.legend_frame = tk.LabelFrame(self.plot_tab, text='Legend position')
+        self.legend_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        temp = "'Best' lets matplotlib decide the position."
+        tk.Label(self.legend_frame,
+                text=temp).grid(row=0,
+                        column=0, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        
+        # Legend position
+        self.legend = tk.IntVar()
+        self.legend.set(4)
+        tk.Radiobutton(self.legend_frame, text='Upper left', 
+                variable=self.legend, value=0).grid(row=1, 
+                column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.legend_frame, text='Upper right', 
+                variable=self.legend, value=1).grid(row=1, 
+                column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.legend_frame, text='Lower left', 
+                variable=self.legend, value=2).grid(row=2, 
+                column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.legend_frame, text='Lower right', 
+                variable=self.legend, value=3).grid(row=2, 
+                column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.legend_frame, text='Best', 
+                variable=self.legend, value=4).grid(row=1, 
+                column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.legend_var ={'0': 'upper left',
+                          '1': 'upper right', 
+                          '2': 'lower left', 
+                          '3': 'lower right', 
+                          '4': 'best'
+                         }
+
+
         # APPLY BUTTON
         tk.Button(self.plot_tab, text='Apply all',
                   command=self.plot_curves, width=6).grid(
-                  row=2, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+                  row=3, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.plot_tab, text='Plot area')
