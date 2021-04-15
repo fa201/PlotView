@@ -26,7 +26,7 @@ except ModuleNotFoundError as e:
 
 
 # Constants for curve styling properties.
-my_colors = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
+my_colors_white = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
              'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
              'peru', 'limegreen', 'turquoise', 'royalblue'
              ]
@@ -73,7 +73,7 @@ class Curve:
         self.data_type = {'x_type': self.data_in.columns[0], 'y_type': self.data_in.columns[1]}
         self.data_out = self.data_in.copy()
         self.visibility = True
-        self.color = my_colors[0]
+        self.color = my_colors_white[0]
         self.width = 1.0
         self.style = my_linestyles[0]
         self.marker = my_markers[0]
@@ -383,11 +383,11 @@ class Application(tk.Tk):
                 text='Line color').grid(row=2,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
-                                                values=my_colors,
+                                                values=my_colors_white,
                                                 justify=tk.CENTER,
                                                 width=12
                                                 )
-        self.curve_color_combo.set(my_colors[0])
+        self.curve_color_combo.set(my_colors_white[0])
         self.curve_color_combo.grid(row=2, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
 
