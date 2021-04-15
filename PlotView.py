@@ -609,7 +609,7 @@ class Application(tk.Tk):
                 self.set_status(Curve.dic[str(i)].name+' is plotted.')
         
         self.ax.legend(loc=self.legend_var[str(self.legend.get())])
-        self.ax.set_title(self.main_title.get())
+        self.ax.set_title(self.main_title.get(), fontweight='bold')
         self.ax.set_xlabel(self.x_title.get())
         self.ax.set_ylabel(self.y_title.get())
         self.ax.grid(self.grid_state.get())
