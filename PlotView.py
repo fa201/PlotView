@@ -581,10 +581,20 @@ class Application(tk.Tk):
         self.plot_curves()
 
     def plot_curves(self):
-        """Plot all curves with visibility = True"""
-        # It is necessary to clear the Axes since the for loop starts from 1
-        # for every curve plot. Otherwise curve_01 get duplicated for each call.
+        """ Plot all curves with visibility = True
+
+            Each curve attribute is scanned and used in plot function.
+            It is necessary to clear the Axes since the for loop starts from 1 for every
+            curve plot. Otherwise the first curve get duplicated for each plot to this function.
+        """
         self.ax.clear()
+        # Set the plot windows with user-defined ranges.
+        if self.autoscale.get():
+            self.ax.axis([self.x_min_range.get(), 
+                          self.x_max_range.get(), 
+                          self.y_min_range.get(), 
+                          self.y_max_range.get()]
+                        )
         for i in range(1, Curve.count+1):
             if Curve.dic[str(i)].visibility:
                 self.ax.plot(Curve.dic[str(i)].data_out.iloc[:, 0],
@@ -601,7 +611,6 @@ class Application(tk.Tk):
         self.ax.set_title(self.main_title.get())
         self.ax.set_xlabel(self.x_title.get())
         self.ax.set_ylabel(self.y_title.get())
-        self.ax.axis([self.x_min_range, self.x_max_range, self.y_min_range, self.y_max_range])
         self.fig.tight_layout()
         self.canvas.draw()
         self.set_status('Plot is updated.')
@@ -715,12 +724,12 @@ class Application(tk.Tk):
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
         # Auto-scale or user defined
         self.autoscale = tk.IntVar()
-        self.autoscale.set(1)
+        self.autoscale.set(0)
         tk.Radiobutton(self.range_frame, text='Auto scale', 
-                variable=self.autoscale, value=1).grid(row=0, 
+                variable=self.autoscale, value=0).grid(row=0, 
                 column=0, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         tk.Radiobutton(self.range_frame, text='User defined', 
-                variable=self.autoscale, value=0).grid(row=0, 
+                variable=self.autoscale, value=1).grid(row=0, 
                 column=2, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # User defined
         tk.Label(self.range_frame,
@@ -728,16 +737,12 @@ class Application(tk.Tk):
                         column=0, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # FIXME: find a way to get an event for this check to change the state automatically.
         # https://stackoverflow.com/questions/26333769/event-triggered-by-listbox-and-radiobutton-in-tkinter
-        if self.autoscale:
-            self.range_toggle = 'disabled'
-        else:
-            self.range_toggle = 'normal'
         # X min
         tk.Label(self.range_frame,
                 text='X min').grid(row=2,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.x_min_range = tk.DoubleVar()
-        tk.Entry(self.range_frame, textvariable=self.x_min_range, state=self.range_toggle, width=8, justify=tk.CENTER).grid(
+        tk.Entry(self.range_frame, textvariable=self.x_min_range, width=8, justify=tk.CENTER).grid(
                   row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # X max
         tk.Label(self.range_frame,
@@ -745,14 +750,14 @@ class Application(tk.Tk):
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.x_max_range = tk.DoubleVar()
         self.x_max_range.set(100)
-        tk.Entry(self.range_frame, textvariable=self.x_max_range, state=self.range_toggle, width=8, justify=tk.CENTER).grid(
+        tk.Entry(self.range_frame, textvariable=self.x_max_range, width=8, justify=tk.CENTER).grid(
                   row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Y min
         tk.Label(self.range_frame,
                 text='Y min').grid(row=3,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.y_min_range = tk.DoubleVar()
-        tk.Entry(self.range_frame, textvariable=self.y_min_range, state=self.range_toggle, width=8, justify=tk.CENTER).grid(
+        tk.Entry(self.range_frame, textvariable=self.y_min_range, width=8, justify=tk.CENTER).grid(
                   row=3, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Y max
         tk.Label(self.range_frame,
@@ -760,7 +765,7 @@ class Application(tk.Tk):
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.y_max_range = tk.DoubleVar()
         self.y_max_range.set(100)
-        tk.Entry(self.range_frame, textvariable=self.y_max_range, state=self.range_toggle, width=8, justify=tk.CENTER).grid(
+        tk.Entry(self.range_frame, textvariable=self.y_max_range, width=8, justify=tk.CENTER).grid(
                   row=3, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # APPLY BUTTON
