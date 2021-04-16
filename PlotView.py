@@ -128,7 +128,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.7'
+        self.PV_VERSION = '0.8'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -259,13 +259,13 @@ class Application(tk.Tk):
 
     def help_redirect(self):
         """ Plotview wiki is shown in web browser."""
-        webbrowser.open_new_tab('https://github.com/fa201/PlotView/wiki/Help')
+        webbrowser.open_new_tab('help/index.html')
         self.set_status('The PlotView wiki page is shown in your web browser.')
 
     def licence_redirect(self):
         """ PlotView licence is shown in the web browser."""
-        webbrowser.open_new_tab('https://github.com/fa201/PlotView/blob/master/LICENSE')
-        self.set_status('The page of GPL3 licence is shown in your web browser.')
+        webbrowser.open_new_tab('LICENSE')
+        self.set_status('The GPL3 licence is now opened.')
 
     def about_redirect(self):
         """ PlotView repository is shown in the web browser."""
