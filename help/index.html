@@ -22,7 +22,24 @@
     <article class="without_aside">
         <p>These HTML help files are located in the <code>help</code> directory, both in the local copy and in the <a href="http://github.com/fa201/PlotView" title="Github repository" target="_blank">Github repository</a>.</p>
 
-        <h1>GUI: Graphical User Interface</h1>
+        <h1>Welcome to PlotView help!</h1>
+
+        <h2>Installation pre-requisites</h2>
+        <h3>Python packages</h3>
+        <p>In order to use PlotView, you need to have installed Python3 installed along with the following packages:
+            <ul>
+                <li>pandas 1.0.1</li>
+                <li>matplotlib 3.2.0</li>
+                <li>tkinter 8.6</li>
+            </ul>
+        Note that the version of modules shown are those used for coding PlotView to lower versions <strong>may</strong> work.</p>
+        <p>Please refer to Python3 documentation to install Python3 and the modules on your system.</p>
+
+        <h3>Operating Systems</h3>
+        <p>PlotView was used on linux Ubuntu and Windows 10. It should also work on MacOS although I did not test it.</p>
+        <p>It should work on other systems provided Python and necessary packages were installed.</p>
+
+        <h2>GUI: Graphical User Interface</h2>
         <p>The GUI was designed to be:
             <ul>
                 <li>simple to code!</li>
@@ -30,8 +47,9 @@
                 <li>flow oriented: the order of <abbr title="window gadget: element of GUI">widgets</abbr> follows the order of operations</li>
             </ul>
         </p>
+        <p><img class="image_l" src="../image/PlotView_example.png" title="PlotView main window" alt="PlotView main window"></p>
 
-        <h2>Main window</h2>
+        <h3>Main window</h3>
         <p>The main window is divided in 2 parts:
             <ul>
                 <li><em>plot area</em> on the left: it is a <a href="https://matplotlib.org/" title="matplotlib" target="_blank">matplotlib</a> plot area embedded in the main window. The lower part is a <a href="https://matplotlib.org/3.2.2/users/navigation_toolbar.html#" title="help on matplotlib toolbar" target="_blank">matplotlib toolbar</a> with panning, zooming and picture export fonctions.</li>
