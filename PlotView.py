@@ -171,6 +171,7 @@ class Application(tk.Tk):
         self.create_notebook()
         self.curve_tab()
         self.plot_tab()
+        self.annotation_tab()
 
     def create_underscores(self):
         """Creates a string with underscores to fill the 'work_dir' labels when empty."""
@@ -821,6 +822,75 @@ class Application(tk.Tk):
         # Add this tab to the notebook.
         self.tool_notebook.add(self.plot_tab, text='Plot area')
 
+    def annotation_tab(self):
+        """ Third tab managing annotations."""
+        # Create annotation tab
+        self.annot_tab = ttk.Frame(self.tool_notebook)
+
+        # Comment
+        tk.Label(self.annot_tab,
+                text='Next elements are located in data coordinate system.').grid(row=0,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # TEXT PANEL
+        self.text_frame = tk.LabelFrame(self.annot_tab, text='Label of annotation')
+        self.text_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        # Label
+        tk.Label(self.text_frame,
+                text='Text').grid(row=0,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.annotation = tk.StringVar()
+        self.annotation.set('Label')
+        tk.Entry(self.text_frame, textvariable=self.annotation, width=30, justify=tk.CENTER).grid(
+                  row=0, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # Color
+        tk.Label(self.text_frame,
+                text='Color').grid(row=1,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.annot_color_combo = ttk.Combobox(self.text_frame,
+                                                values=my_colors_white,
+                                                justify=tk.CENTER,
+                                                width=12
+                                                )
+        self.annot_color_combo.set(my_colors_white[0])
+        self.annot_color_combo.grid(row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.annot_color_combo.bind('<<ComboboxSelected>>', self.change_annot_color)
+        
+        # Font size
+        tk.Label(self.text_frame,
+                text='Font size').grid(row=1,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.annot_size = tk.StringVar()
+        self.annot_size.set('6')
+        tk.Entry(self.text_frame, textvariable=self.annot_size, width=2, justify=tk.CENTER).grid(
+                  row=1, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # Show arrow
+        self.arrow_state = tk.IntVar()
+        self.arrow_state.set(0)
+        tk.Checkbutton(self.annot_tab,
+                text='Show arrow',
+                variable=self.arrow_state,
+                indicatoron=1,
+                command=self.annotation_update).grid(row=2,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+
+        # APPLY BUTTON
+        tk.Button(self.annot_tab, text='Apply',
+                  command=self.plot_curves, width=6).grid(
+                  row=4, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # Add this tab to the notebook.
+        self.tool_notebook.add(self.annot_tab, text='Annotation')
+
+    def annotation_update(self):
+        pass
+
+    def change_annot_color(self):
+        pass
 
 if __name__ == '__main__':
     app = Application()
