@@ -11,7 +11,7 @@ body {
     min-height: 100vh;      /* La hauteur du body est celle de la fenêtre du navigateur */
     max-width: 1400px;      /* Evite d'avoir un aspect trop aplati. Limite à 1200 / 1400 px ? */
     margin: 0 auto;         /* Centre le body en largeur */
-    background-color: hsl(60, 10%, 95%);
+    background-color: hsl(0, 0%, 100%);
     line-height: 1.8rem;   /* Hauteur de ligne augmentée des paragraphes augmentée pour améliorer la lisibilité */
 }
 
@@ -26,13 +26,22 @@ strong {
 
 em {
     font-style: normal;
-    color: hsl(30, 90%, 30%);
+    color: hsl(0, 90%, 45%);
     font-weight: bold;
     font-size: 1.4rem;      /* pour le détacher du texte normal et atténuer l'effet du bold */
 }
 
-abbr{
+abbr {
     text-decoration-style: dotted;
+}
+
+code {
+    display: inline-block;      /* permet d'avoir un block qui n'ocuppe pas la largeur de page */
+    font-size: 1.4rem;
+    border-radius: 0.4rem;
+    padding: 0.1rem 0.4rem;
+    color: hsl(225, 50%, 98%);      /* Couleur complémentaire au fond */
+    background-color: hsl(45, 10%, 45%);
 }
 
 /* ============= NAV start ============= */
@@ -84,18 +93,7 @@ nav a:hover{
     flex: 1 1 auto;         /* grow=1 permet au main d'occuper toute la hauteur disponible en poussant le footer en bas */
     justify-content: flex-start;
     align-items: stretch;       /* Etire en bas pour repossuer le footer en pied de page */
-}
-
-.with_aside {
-    box-sizing: border-box;   /* Inclut le padding dans la largeur exprimée */
-    width: 66vw;             /* % de la largeur du navigateur pour éviter les scroll */
-    padding: 0.5rem 2rem;         /* Identique à aside */
-    text-align: justify;
-}
-
-.without_aside {                    /* idem with_aside */
-    box-sizing: border-box;   /* Inclut le padding dans la largeur exprimée */
-    padding: 0.5rem 2rem;         /* Identique à aside */
+    padding: 0.5rem 2rem;
     text-align: justify;
 }
 
@@ -105,24 +103,10 @@ nav a:hover{
     margin: 1rem 0 1rem 1rem;   /* Pas besoin de rajouter de la marge à droite */
 }
 
-aside{
-    box-sizing: border-box;         /* Inclut le padding dans la largeur exprimée */
-    width: 34vw;            /* % de la largeur du navigateur pour éviter les scroll */
-    text-align: justify;
-    border-radius: 1.7rem;
-    margin: 0.3rem 0.3rem 0.3rem 0.3rem;       /* Pour voir les bords de aside */
-}
-
-.aside_image {
-    float: right;
-    width: 200px;
-    margin: 1rem 0 1rem 1rem;   /* Pas besoin de rajouter de la marge à droite */
-}
-
 /* Titres */
 h1 {
     font-size: 1.8rem;
-    padding: 1rem 0 1rem 2rem;
+    padding: 1rem 0;
     text-decoration: underline;
     font-weight: bold;
     margin-top: 1rem;
@@ -142,37 +126,6 @@ h3 {
     font-variant: small-caps;
     margin: 2rem auto 0.5rem auto;
     color: hsl(220, 90%, 50%);
-}
-
-/* Tableaux */
-table, th, td {
-    text-align: center;
-    vertical-align: middle;
-    border-collapse: collapse;
-    border: 1px solid grey;
-    caption-side: top;
-    margin: auto;               /* Centre le tableau en largeur */
-    background-color: hsl(180, 82%, 90%); /* Mettre la même couleur sur caption */
-}
-
-th {
-    font-weight: bold;
-    padding: 0.5rem;
-}
-
-td {
-    padding: 0.3rem 0.6rem;
-    margin: 0;
-}
-
-caption {
-    font-weight: bold;
-    padding: 0.5rem;
-    border-collapse: collapse;
-    border: 1px solid grey;
-    border-bottom: none;        /* supprime la bordure inf de la dernière case qui fait doublon avec le tableau */
-    margin-top: 0.3rem;         /* crée un espace avec le paragraphe précédent */
-    background-color: hsl(180, 82%, 90%); /* Mettre la même couleur sur que pour table */
 }
 
 .en_ligne {

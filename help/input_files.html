@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="fa201">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css_reset.css">   <!-- Reset du CSS avant d'utiliser mon CSS -->
+<link rel="stylesheet" href="style.css">
+<title>PlotView help - input files</title>
+</head>
+
+<body>
+<nav>
+    <ul class="nav_first">
+        <li><a href="index.html" title="Home">Home</a></li>
+        <li><a class="nav_current1" href="input_files.html" title="Input files">Input files</a></li>
+        <li><a href="limitations.html" title="Limitations">Limitations</a></li>
+        <li><a href="repository.html" title="Github repository">Github repository</a></li>
+    </ul>
+</nav>
+
+<main class="main_container">
+    <article class="without_aside">
+
+        <h1>Input files format</h1>
+        <p>The expected input file format is <abbr title="Comma Separated Values">CSV</abbr>.</p>
+        <p>The first line should be the only line with strings to describe the data shown in each column. All the remaining lines should contain numbers with a decimal point '.' separated by comma ','.</p>
+        <p>PlotView expects 2 column of data: the first one is X data and the second one is Y data.</p>
+        <p>Below is an example of valid CSV file:<br>
+            <code>x,y<br>
+            0,0<br>
+            0.1,0.03<br>
+            0.2,0.06<br>
+            0.3,0.09</code>
+        </p>
+        <p>Theare can be spaces around the central comma as shown in the example <code>test/xpower_with_spaces.csv</code>.</p>
+
+        <p class="retour_haut_page"><a href="#">Haut de page</a></p>
+    </article>
+</main>
+</body>
+</html>

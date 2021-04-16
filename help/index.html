@@ -1,43 +1,65 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-    <meta charset="utf-8">        <!-- type de caractère utilisés sur la page -->
-    <meta name="author" content="fa201">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Nécdessaire pour la bonne prise en compte de la résolution réelle de l'écran du téléphone -->
-    <link rel="stylesheet" href="css_reset.css">   <!-- Reset du CSS avant d'utiliser mon CSS -->
-    <link rel="stylesheet" href="style.css">
-    <title>Home - PlotView help</title>
-    </head>
+<head>
+<meta charset="utf-8">
+<meta name="author" content="fa201">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css_reset.css">   <!-- Reset du CSS avant d'utiliser mon CSS -->
+<link rel="stylesheet" href="style.css">
+<title>PlotView help - home</title>
+</head>
 
-    <body>
-        <nav>
-            <ul class="nav_first">
-                <li><a class="nav_current1" href="index.html" title="Home">Home</a></li>
-                <li><a href="2-avant-projet_depart.html" title="Menus"></a></li>
-                <li><a href="3-conception_aerodynamique.html" title="Input files">Input files</a></li>
-                <li><a href="4-construction_general.html" title="Limitations">Limitations</a></li>
-                <li><a href="4-construction_general.html" title="Github repository">Github repository</a></li>
+<body>
+<nav>
+    <ul class="nav_first">
+        <li><a class="nav_current1" href="index.html" title="Home">Home</a></li>
+        <li><a href="input_files.html" title="Input files">Input files</a></li>
+        <li><a href="limitations.html" title="Limitations">Limitations</a></li>
+        <li><a href="repository.html" title="Github repository">Github repository</a></li>    </ul>
+</nav>
 
+<main class="main_container">
+    <article class="without_aside">
+        <p>These HTML help files are located in the <code>help</code> directory, both in the local copy and in the <a href="http://github.com/fa201/PlotView" title="Github repository" target="_blank">Github repository</a>.</p>
+
+        <h1>GUI: Graphical User Interface</h1>
+        <p>The GUI was designed to be:
+            <ul>
+                <li>simple to code!</li>
+                <li>simple to use</li>
+                <li>flow oriented: the order of <abbr title="window gadget: element of GUI">widgets</abbr> follows the order of operations</li>
             </ul>
-        </nav>
+        </p>
 
-        <h1>PlotView GUI</h1>
+        <h2>Main window</h2>
+        <p>The main window is divided in 2 parts:
+            <ul>
+                <li><em>plot area</em> on the left: it is a <a href="https://matplotlib.org/" title="matplotlib" target="_blank">matplotlib</a> plot area embedded in the main window. The lower part is a <a href="https://matplotlib.org/3.2.2/users/navigation_toolbar.html#" title="help on matplotlib toolbar" target="_blank">matplotlib toolbar</a> with panning, zooming and picture export fonctions.</li>
+                <li><em>function area</em> on the right: it is divided in tab panels which gather function link to 3 groups of function: <em>curve creation</em>, <em>plot information</em> and <em>annotations</em>.</li>
+            </ul>
+        </p>
 
-        <main class="main_container">
-            <article class="without_aside">
-                <p>Ce site web a été créé pour partager l'aventure de la conception et de la construction de mon avion que vous soyez pilote, constructeur, concepteur ou simplement curieux. Vous y trouverez la démarche que j'ai suivie, des astuces, des connaissances, des références à des ouvrages et mes erreurs !</p>
+        <h3>Curve tab</h3>
+        <p>The <em>working directory</em> allows to process several files without losing time navigating in folders.</p>
+        <p>Next to the <em>CSV file</em> button, the entry field allow to give a name to the curve before it is created. If you skip this entry field, the default name "Curve_label" will be given to the curve.</p>
+        <p><strong>For all created curves, the properties can be modified by first selecting the curve ID and then modifying the properties. It is necessary to apply these changes before selecting another curve !</strong>.</p>
+        <p>At the bottom, you can offset and scale the X and Y data of the selected curve. Note that you can <em>revert back these changes</em> by resetting offset values to 0 and resetting scale values to 1.</p>
+        <p><em>Apply</em> will update the plot with all the changes made for the selected curve. For example, if you want to change the color of all curves, you have to select each curve, change the color and apply the change before selecting another curve and so on.</p>
 
-                <h2>Plot area (LH panel)</h2>
+        <h3>Plot area tab</h3>
+        <p>The <em>titles</em> of plot, X label and Y label are defined by default and shown on the plot. Of course, they can be changed.</p>
+        <p>The plot <em>ranges</em> for X and Y axis are automatically computed by matplotlib by default with the <em>Autoscale</em> selected. You can change these values by selecting <em>User defined</em> and input more appropriate values.</p>
+        <p><em>Apply all</em> allows to take into accound all the modifications done in the Plot area tab to update the plot.</p>
 
-                <h2>Tool area (RH panel)</h2>
+        <h3>Status bar</h3>
+        <p>At the bottom of the main window, a <em>status</em> bar shows message on performed operation, warnings, etc.</p>
+        <p>It is recommended to <em>look at the status bar after each function</em> to check the status of PlotView.</p>
 
-                <h2>Status bar</h2>
 
-                <p><a class="image_droite" href="images/D119.JPG" title="Jodel D-119 du CLAP 73"><img class="image_xs" src="images/D119.JPG" alt="Jodel D-119 ayant appartenu au CLAP 73" /></a>Après réflexion, cette idée d'avion de voyage ne semblait pas être la réponse à notre besoin. En effet, mon père et moi voyagions assez peu sur les avions de notre aéroclub situé à Challes-Les-Eaux. Nos vols se limitaient souvent à rendre visite aux terrains environnants ayant une piste herbe ou une piste courte. Il est agréable de pouvoir évoluer dans les vallées alpines ce qui ne nécessite pas un avion de voyage mais plutôt un <em>avion de ballade</em> performant pouvant décoller rapidement de terrains en herbe. Mon père et moi sommes également attirés par les vols en montagne. La flotte de notre aéroclub se composait à l'époque de Jodel D-112, D-119 et DR-221. Le D-119 avait notre préférence pour sa vitesse de croisière et sa capacité à décoller de terrains relativement courts.</p>
 
-                <p class="retour_haut_page"><a href="#">Haut de page</a></p>
-            </article>
 
-        </main>
-    </body>
+        <p class="retour_haut_page"><a href="#">Haut de page</a></p>
+    </article>
+</main>
+</body>
 </html>
