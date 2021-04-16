@@ -106,10 +106,9 @@ nav a:hover{
 /* Titres */
 h1 {
     font-size: 1.8rem;
-    padding: 1rem 0;
     text-decoration: underline;
     font-weight: bold;
-    margin-top: 1rem;
+    margin-top: 5rem;
     color: hsl(210, 80%, 0%);
 }
 
@@ -117,15 +116,15 @@ h2 {
     font-size: 2rem;
     font-style: italic;
     border-bottom: 1px solid darkgrey;
-    margin: 3.5rem auto 0.7rem auto;
+    margin-top: 3rem;
 }
 
 h3 {
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-variant: small-caps;
-    margin: 2rem auto 0.5rem auto;
     color: hsl(220, 90%, 50%);
+    margin-top: 1.8rem;
 }
 
 .en_ligne {
