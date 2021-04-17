@@ -352,7 +352,6 @@ class Application(tk.Tk):
         self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
         self.curve_prop_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                    padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-
         # Active curve
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
         tk.Label(self.curve_prop_frame, text='Select curve').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
@@ -379,7 +378,6 @@ class Application(tk.Tk):
         tk.Entry(self.curve_prop_frame,
                 textvariable=self.active_curve_name, width=30).grid(row=1,
                         column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-
         # Curve color
         tk.Label(self.curve_prop_frame,
                 text='Line color').grid(row=2,
@@ -392,7 +390,6 @@ class Application(tk.Tk):
         self.curve_color_combo.set(my_colors_white[0])
         self.curve_color_combo.grid(row=2, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
-
         # Line width
         tk.Label(self.curve_prop_frame,
                 text='Line width').grid(row=3,
@@ -401,7 +398,6 @@ class Application(tk.Tk):
         self.curve_width.set('1')
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_width, width=4, justify=tk.CENTER).grid(
                   row=3, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-
         # Line style
         tk.Label(self.curve_prop_frame,
                 text='Line style').grid(row=3,
@@ -414,7 +410,6 @@ class Application(tk.Tk):
         self.curve_style_combo.set(my_linestyles[0])
         self.curve_style_combo.grid(row=3, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_style_combo.bind('<<ComboboxSelected>>', self.change_curve_style)
-
         # Marker type
         tk.Label(self.curve_prop_frame,
                 text='Marker style').grid(row=5,
@@ -427,7 +422,6 @@ class Application(tk.Tk):
         self.marker_style_combo.set(my_markers[0])
         self.marker_style_combo.grid(row=5, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.marker_style_combo.bind('<<ComboboxSelected>>', self.change_marker_style)
-
         # Marker size
         tk.Label(self.curve_prop_frame,
                 text='Marker size').grid(row=5,
@@ -436,7 +430,6 @@ class Application(tk.Tk):
         self.marker_size.set('0')
         tk.Entry(self.curve_prop_frame, textvariable=self.marker_size, width=4, justify=tk.CENTER).grid(
                   row=5, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-
         # X scale
         tk.Label(self.curve_prop_frame,
                 text='Scale X axis').grid(row=6,
@@ -445,7 +438,6 @@ class Application(tk.Tk):
         self.curve_x_scale.set(1.0)
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_x_scale, width=8, justify=tk.CENTER).grid(
                   row=6, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-
         # Y scale
         tk.Label(self.curve_prop_frame,
                 text='Scale Y axis').grid(row=6,
@@ -454,7 +446,6 @@ class Application(tk.Tk):
         self.curve_y_scale.set(1.0)
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_y_scale, width=8, justify=tk.CENTER).grid(
                   row=6, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-
         # X offset
         tk.Label(self.curve_prop_frame,
                 text='Offset X axis').grid(row=7,
@@ -463,7 +454,6 @@ class Application(tk.Tk):
         self.curve_x_offset.set(0)
         tk.Entry(self.curve_prop_frame, textvariable=self.curve_x_offset, width=8, justify=tk.CENTER).grid(
                   row=7, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-
         # Y offset
         tk.Label(self.curve_prop_frame,
                 text='Offset Y axis').grid(row=7,
@@ -597,6 +587,7 @@ class Application(tk.Tk):
                           self.y_min_range.get(), 
                           self.y_max_range.get()]
                         )
+        # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
             if Curve.dic[str(i)].visibility:
                 self.ax.plot(Curve.dic[str(i)].data_out.iloc[:, 0],
@@ -609,7 +600,14 @@ class Application(tk.Tk):
                              markersize=Curve.dic[str(i)].marker_size
                              )
                 self.set_status(Curve.dic[str(i)].name+' is plotted.')
-        
+
+        # Draw the annotation only
+        if self.annot_state.get():
+            self.ax.annotate(self.annotation.get(),
+                    xy=(float(self.arrow_tip_x.get()), float(self.arrow_tip_y.get())), 
+                    xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())))
+
+        # Set plot area parameters
         self.ax.legend(loc=self.legend_var[str(self.legend.get())])
         self.ax.set_title(self.main_title.get(), fontweight='bold')
         self.ax.set_xlabel(self.x_title.get())
@@ -845,10 +843,26 @@ class Application(tk.Tk):
         self.annotation.set('Annotation_text')
         tk.Entry(self.text_frame, textvariable=self.annotation, width=30, justify=tk.CENTER).grid(
                   row=0, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # X position of annotation
+        tk.Label(self.text_frame,
+                text='Tip X pos.').grid(row=1,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.annotation_x = tk.StringVar()
+        self.annotation_x.set('0')
+        tk.Entry(self.text_frame, textvariable=self.annotation_x, width=6, justify=tk.CENTER).grid(
+                  row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # Y position of annotation
+        tk.Label(self.text_frame,
+                text='Tip Y pos.').grid(row=1,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.annotation_y = tk.StringVar()
+        self.annotation_y.set('0')
+        tk.Entry(self.text_frame, textvariable=self.annotation_y, width=6, justify=tk.CENTER).grid(
+                  row=1, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Color
         tk.Label(self.text_frame,
-                text='Color').grid(row=1,
+                text='Color').grid(row=2,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.annot_color_combo = ttk.Combobox(self.text_frame,
                                                 values=my_colors_white,
@@ -856,28 +870,27 @@ class Application(tk.Tk):
                                                 width=10
                                                 )
         self.annot_color_combo.set(my_colors_white[0])
-        self.annot_color_combo.grid(row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.annot_color_combo.grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.annot_color_combo.bind('<<ComboboxSelected>>', self.change_annot_color)
-        
         # Font size
         tk.Label(self.text_frame,
-                text='Font size').grid(row=1,
+                text='Font size').grid(row=2,
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.annot_size = tk.StringVar()
         self.annot_size.set('6')
         tk.Entry(self.text_frame, textvariable=self.annot_size, width=2, justify=tk.CENTER).grid(
-                  row=1, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-
+                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Show annotation
         self.annot_state = tk.IntVar()
         self.annot_state.set(0)
+        # No callback since 'Apply all' redraw the plot with or without the annotation.
         tk.Checkbutton(self.text_frame,
                 text='Show the annotation alone',
                 variable=self.annot_state,
-                indicatoron=1,
-                command=self.annotation_update).grid(row=2,
+                indicatoron=1).grid(row=3,
                         column=0, columnspan=4, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W+tk.N+tk.S)
-        # TIP OF ARROW PANEL
+        
+        # ARROW PANEL
         self.arrow_frame = tk.LabelFrame(self.annot_tab, text='Arrow properties')
         self.arrow_frame.grid(row=3, column=0,  columnspan=2,sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
@@ -932,23 +945,24 @@ class Application(tk.Tk):
         self.arrow_width.set('1')
         tk.Entry(self.arrow_frame, textvariable=self.arrow_width, width=6, justify=tk.CENTER).grid(
                   row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        # show arrow
+        # Show arrow. 
         self.arrow_state = tk.IntVar()
         self.arrow_state.set(0)
+        # No callback since 'Apply all' redraw the plot with or without the annotation.
         tk.Checkbutton(self.arrow_frame,
                 text='Show the arrow connected to the annotation',
                 variable=self.arrow_state,
-                indicatoron=1,
-                command=self.annotation_update).grid(row=5,
+                indicatoron=1).grid(row=5,
                         column=0, columnspan=4, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+
+        # APPLY BUTTON
+        tk.Button(self.annot_tab, text='Apply all',
+                  command=self.plot_curves, width=6).grid(
+                  row=4, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.annot_tab, text='Annotation')
-
-    def annotation_update(self):
-        """ A conserver ?"""
-        pass
 
     def change_annot_color(self, event):
         pass
