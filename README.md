@@ -1,7 +1,7 @@
 # PlotView
 PlotView is a **curve plotter** using CSV files. Each file contain 1 curve (X and Y coordinates for each point of the curve). The CSV file will be prepared beforehand, using pandas for example, to produce a strict CSV format with a comma as delimiter between both columns. The first row should contain the type of value for X and Y.
-The appearance of curves and axis scales can be customized in PlotView.
-![PlotView_example](./image/PlotView_example.png)
+The appearance of curves can be customized in PlotView. One annotation can also be added.
+![PlotView_example](./image/PlotView_example_1.png)
 
 ## My goals
 * Application to learn the basics of Python and simple GUI programming.
@@ -14,11 +14,11 @@ The GUI will be make with **Tkinter** due to:
 * *portability* to Linux & Windows
 * *ease of programming* for a beginner
 
-### test/
-This folder contains a few test curves.
+### Folders
+* 'help' gathers HTML help files launched through the *help* menu.
+* 'image' contains a few pictures of plot examples.
+* 'test' contains a few test curves.
 
-### help/
-This folder contains HTML help files launched through the *help* menu.
 
 # Required Python packages.
 PlotView needs the following packages to run.
