@@ -745,21 +745,22 @@ class Application(tk.Tk):
         self.x_min_range = tk.DoubleVar()
         tk.Entry(self.range_frame, textvariable=self.x_min_range, width=8, justify=tk.CENTER).grid(
                   row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # Y min
+        tk.Label(self.range_frame,
+                text='Y min').grid(row=2,
+                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.y_min_range = tk.DoubleVar()
+        tk.Entry(self.range_frame, textvariable=self.y_min_range, width=8, justify=tk.CENTER).grid(
+                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # X max
         tk.Label(self.range_frame,
-                text='X max').grid(row=2,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+                text='X max').grid(row=3,
+                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.x_max_range = tk.DoubleVar()
         self.x_max_range.set(100)
         tk.Entry(self.range_frame, textvariable=self.x_max_range, width=8, justify=tk.CENTER).grid(
-                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        # Y min
-        tk.Label(self.range_frame,
-                text='Y min').grid(row=3,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        self.y_min_range = tk.DoubleVar()
-        tk.Entry(self.range_frame, textvariable=self.y_min_range, width=8, justify=tk.CENTER).grid(
                   row=3, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        
         # Y max
         tk.Label(self.range_frame,
                 text='Y max').grid(row=3,
