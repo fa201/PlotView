@@ -26,6 +26,7 @@ except ModuleNotFoundError as e:
 
 
 # Constants for curve styling properties.
+# Set of color for a white background. Change the set for a black background.
 my_colors_white = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
              'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
              'peru', 'limegreen', 'turquoise', 'royalblue'
@@ -829,19 +830,19 @@ class Application(tk.Tk):
 
         # Comment
         tk.Label(self.annot_tab,
-                text='Next elements are located in data coordinate system.').grid(row=0,
+                text='Below elements are located in data coordinate system!').grid(row=0,
                         column=0, padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # TEXT PANEL
-        self.text_frame = tk.LabelFrame(self.annot_tab, text='Label of annotation')
+        self.text_frame = tk.LabelFrame(self.annot_tab, text='Annotation')
         self.text_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-        # Label
+        # Text
         tk.Label(self.text_frame,
                 text='Text').grid(row=0,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.annotation = tk.StringVar()
-        self.annotation.set('Label')
+        self.annotation.set('Annotation_text')
         tk.Entry(self.text_frame, textvariable=self.annotation, width=30, justify=tk.CENTER).grid(
                   row=0, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
@@ -852,7 +853,7 @@ class Application(tk.Tk):
         self.annot_color_combo = ttk.Combobox(self.text_frame,
                                                 values=my_colors_white,
                                                 justify=tk.CENTER,
-                                                width=12
+                                                width=10
                                                 )
         self.annot_color_combo.set(my_colors_white[0])
         self.annot_color_combo.grid(row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
@@ -867,113 +868,93 @@ class Application(tk.Tk):
         tk.Entry(self.text_frame, textvariable=self.annot_size, width=2, justify=tk.CENTER).grid(
                   row=1, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
-        # SHOW ARROW
-        self.arrow_state = tk.IntVar()
-        self.arrow_state.set(0)
-        tk.Checkbutton(self.annot_tab,
-                text='Show annotation arrow. Properties below.',
-                variable=self.arrow_state,
+        # Show annotation
+        self.annot_state = tk.IntVar()
+        self.annot_state.set(0)
+        tk.Checkbutton(self.text_frame,
+                text='Show the annotation alone',
+                variable=self.annot_state,
                 indicatoron=1,
                 command=self.annotation_update).grid(row=2,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+                        column=0, columnspan=4, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W+tk.N+tk.S)
         # TIP OF ARROW PANEL
-        self.arrow_tip_frame = tk.LabelFrame(self.annot_tab, text='Properties - tip of arrow')
-        self.arrow_tip_frame.grid(row=3, column=0,  columnspan=2,sticky=tk.E+tk.W+tk.N+tk.S,
+        self.arrow_frame = tk.LabelFrame(self.annot_tab, text='Arrow properties')
+        self.arrow_frame.grid(row=3, column=0,  columnspan=2,sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
         # X position of arrow tip
-        tk.Label(self.arrow_tip_frame,
-                text='Position X axis').grid(row=0,
+        tk.Label(self.arrow_frame,
+                text='Tip X pos.').grid(row=0,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.arrow_tip_x = tk.StringVar()
         self.arrow_tip_x.set('0')
-        tk.Entry(self.arrow_tip_frame, textvariable=self.arrow_tip_x, width=6, justify=tk.CENTER).grid(
+        tk.Entry(self.arrow_frame, textvariable=self.arrow_tip_x, width=6, justify=tk.CENTER).grid(
                   row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Y position of arrow tip
-        tk.Label(self.arrow_tip_frame,
-                text='Position Y axis').grid(row=0,
+        tk.Label(self.arrow_frame,
+                text='Tip Y pos.').grid(row=0,
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.arrow_tip_y = tk.StringVar()
         self.arrow_tip_y.set('0')
-        tk.Entry(self.arrow_tip_frame, textvariable=self.arrow_tip_y, width=6, justify=tk.CENTER).grid(
+        tk.Entry(self.arrow_frame, textvariable=self.arrow_tip_y, width=6, justify=tk.CENTER).grid(
                   row=0, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Length of arrow tip 
-        tk.Label(self.arrow_tip_frame,
+        tk.Label(self.arrow_frame,
                 text='Tip length').grid(row=1,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.arrow_tip_length = tk.StringVar()
         self.arrow_tip_length.set('6')
-        tk.Entry(self.arrow_tip_frame, textvariable=self.arrow_tip_length, width=6, justify=tk.CENTER).grid(
+        tk.Entry(self.arrow_frame, textvariable=self.arrow_tip_length, width=6, justify=tk.CENTER).grid(
                   row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Width of arrow tip
-        tk.Label(self.arrow_tip_frame,
+        tk.Label(self.arrow_frame,
                 text='Tip width').grid(row=1,
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.arrow_tip_width = tk.StringVar()
         self.arrow_tip_width.set('2')
-        tk.Entry(self.arrow_tip_frame, textvariable=self.arrow_tip_width, width=6, justify=tk.CENTER).grid(
+        tk.Entry(self.arrow_frame, textvariable=self.arrow_tip_width, width=6, justify=tk.CENTER).grid(
                   row=1, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-
-        # ROOT OF ARROW PANEL
-        self.arrow_root_frame = tk.LabelFrame(self.annot_tab, text='Properties - root of arrow')
-        self.arrow_root_frame.grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-        # X position of root
-        tk.Label(self.arrow_root_frame,
-                text='Position X axis').grid(row=0,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        self.arrow_root_x = tk.StringVar()
-        self.arrow_root_x.set('10')
-        tk.Entry(self.arrow_root_frame, textvariable=self.arrow_root_x, width=6, justify=tk.CENTER).grid(
-                  row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        # Y position of root
-        tk.Label(self.arrow_root_frame,
-                text='Position Y axis').grid(row=0,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        self.arrow_root_y = tk.StringVar()
-        self.arrow_root_y.set('10')
-        tk.Entry(self.arrow_root_frame, textvariable=self.arrow_root_y, width=6, justify=tk.CENTER).grid(
-                  row=0, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Color of arrow
-        tk.Label(self.arrow_root_frame, text='Color of arrow').grid(row=1,
+        tk.Label(self.arrow_frame, text='Color').grid(row=2,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        self.arrow_color_combo = ttk.Combobox(self.arrow_root_frame,
+        self.arrow_color_combo = ttk.Combobox(self.arrow_frame,
                                                 values=my_colors_white,
                                                 justify=tk.CENTER,
-                                                width=12
+                                                width=8
                                                 )
         self.arrow_color_combo.set(my_colors_white[0])
-        self.arrow_color_combo.grid(row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.arrow_color_combo.grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.arrow_color_combo.bind('<<ComboboxSelected>>', self.change_arrow_color)
-
         # Width of arrow
-        tk.Label(self.arrow_root_frame,
-                text='Arrow width').grid(row=1,
+        tk.Label(self.arrow_frame,
+                text='Width').grid(row=2,
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.arrow_width = tk.StringVar()
         self.arrow_width.set('1')
-        tk.Entry(self.arrow_root_frame, textvariable=self.arrow_width, width=6, justify=tk.CENTER).grid(
-                  row=1, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.arrow_frame, textvariable=self.arrow_width, width=6, justify=tk.CENTER).grid(
+                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        # show arrow
+        self.arrow_state = tk.IntVar()
+        self.arrow_state.set(0)
+        tk.Checkbutton(self.arrow_frame,
+                text='Show the arrow connected to the annotation',
+                variable=self.arrow_state,
+                indicatoron=1,
+                command=self.annotation_update).grid(row=5,
+                        column=0, columnspan=4, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
-        # HIDE BUTTON
-        tk.Button(self.annot_tab, text='Hide annotation',
-                  command=self.plot_curves, width=6).grid(
-                  row=5, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-
-        # SHOW BUTTON
-        tk.Button(self.annot_tab, text='Show annotation',
-                  command=self.plot_curves, width=6).grid(
-                  row=6, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.annot_tab, text='Annotation')
 
     def annotation_update(self):
+        """ A conserver ?"""
         pass
 
-    def change_annot_color(self):
+    def change_annot_color(self, event):
         pass
 
-    def change_arrow_color(self):
+
+    def change_arrow_color(self, event):
         pass
 
 if __name__ == '__main__':
