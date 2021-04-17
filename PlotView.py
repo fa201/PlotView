@@ -605,7 +605,11 @@ class Application(tk.Tk):
         if self.annot_state.get():
             self.ax.annotate(self.annotation.get(),
                     xy=(float(self.arrow_tip_x.get()), float(self.arrow_tip_y.get())), 
-                    xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())))
+                    xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
+                    color=self.annot_color_combo.get(), 
+                    fontsize=float(self.annot_size.get()),
+                    #arrowprops=dict(facecolor=, width)
+                    )
 
         # Set plot area parameters
         self.ax.legend(loc=self.legend_var[str(self.legend.get())])
@@ -966,7 +970,8 @@ class Application(tk.Tk):
 
     def change_annot_color(self, event):
         pass
-
+        """self.annot_color = event.widget.get()
+        print('Couleur annot', self.annot_color)"""
 
     def change_arrow_color(self, event):
         pass
