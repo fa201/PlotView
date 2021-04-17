@@ -601,15 +601,30 @@ class Application(tk.Tk):
                              )
                 self.set_status(Curve.dic[str(i)].name+' is plotted.')
 
-        # Draw the annotation only
-        if self.annot_state.get():
+        # Draw the annotation and the arrow
+        if self.annot_state.get() & self.arrow_state.get():
             self.ax.annotate(self.annotation.get(),
                     xy=(float(self.arrow_tip_x.get()), float(self.arrow_tip_y.get())), 
                     xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
                     color=self.annot_color_combo.get(), 
                     fontsize=float(self.annot_size.get()),
-                    #arrowprops=dict(facecolor=, width)
+                    arrowprops=dict(color=self.arrow_color_combo.get(), 
+                                    width=float(self.arrow_width.get()),
+                                    headwidth=float(self.arrow_tip_width.get()),
+                                    headlength=float(self.arrow_tip_length.get())
+                                   )
                     )
+        # Draw the annotation only. The arrowprops is removed to avoid drawing it
+        elif self.annot_state.get() & (not self.arrow_state.get()):
+            self.ax.annotate(self.annotation.get(),
+                    xy=(float(self.arrow_tip_x.get()), float(self.arrow_tip_y.get())), 
+                    xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
+                    color=self.annot_color_combo.get(), 
+                    fontsize=float(self.annot_size.get()),
+                    )
+        # Draw no annotation and no arrow
+        else:
+            pass
 
         # Set plot area parameters
         self.ax.legend(loc=self.legend_var[str(self.legend.get())])
@@ -875,7 +890,7 @@ class Application(tk.Tk):
                                                 )
         self.annot_color_combo.set(my_colors_white[0])
         self.annot_color_combo.grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        self.annot_color_combo.bind('<<ComboboxSelected>>', self.change_annot_color)
+        # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
         # Font size
         tk.Label(self.text_frame,
                 text='Font size').grid(row=2,
@@ -919,7 +934,7 @@ class Application(tk.Tk):
                 text='Tip length').grid(row=1,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.arrow_tip_length = tk.StringVar()
-        self.arrow_tip_length.set('6')
+        self.arrow_tip_length.set('10')
         tk.Entry(self.arrow_frame, textvariable=self.arrow_tip_length, width=6, justify=tk.CENTER).grid(
                   row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Width of arrow tip
@@ -927,7 +942,7 @@ class Application(tk.Tk):
                 text='Tip width').grid(row=1,
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.arrow_tip_width = tk.StringVar()
-        self.arrow_tip_width.set('2')
+        self.arrow_tip_width.set('4')
         tk.Entry(self.arrow_frame, textvariable=self.arrow_tip_width, width=6, justify=tk.CENTER).grid(
                   row=1, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Color of arrow
@@ -940,13 +955,13 @@ class Application(tk.Tk):
                                                 )
         self.arrow_color_combo.set(my_colors_white[0])
         self.arrow_color_combo.grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        self.arrow_color_combo.bind('<<ComboboxSelected>>', self.change_arrow_color)
+        # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
         # Width of arrow
         tk.Label(self.arrow_frame,
                 text='Width').grid(row=2,
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.arrow_width = tk.StringVar()
-        self.arrow_width.set('1')
+        self.arrow_width.set('0.5')
         tk.Entry(self.arrow_frame, textvariable=self.arrow_width, width=6, justify=tk.CENTER).grid(
                   row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Show arrow. 
@@ -967,11 +982,6 @@ class Application(tk.Tk):
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.annot_tab, text='Annotation')
-
-    def change_annot_color(self, event):
-        pass
-        """self.annot_color = event.widget.get()
-        print('Couleur annot', self.annot_color)"""
 
     def change_arrow_color(self, event):
         pass
