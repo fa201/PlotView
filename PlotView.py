@@ -866,7 +866,7 @@ class Application(tk.Tk):
         self.annot_state.set(0)
         # No callback since 'Apply all' redraw the plot with or without the annotation.
         tk.Checkbutton(self.text_frame,
-                text='Show the annotation alone',
+                text='Show the annotation',
                 variable=self.annot_state,
                 indicatoron=1).grid(row=3,
                         column=0, columnspan=4, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W+tk.N+tk.S)
