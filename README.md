@@ -10,7 +10,8 @@ My goals are:
 The GUI will be make with **Tkinter** due to:
 * *portability* to Linux & Windows
 * *ease of programming* for a beginner
-Matplotlib Figure and Navigation Tool Bar will be embedded in tkinter GUI since it is not possible to update the matplotlib window in an interactive way.
+pandas and matplotlib allow to **process a lot of data points much faster than spreadsheet applications** (MS-Excel, LibreOffice Calc, etc.).
+matplotlib *Figure* and *Navigation Tool Bar* will be embedded in tkinter GUI since it is not possible to update the matplotlib window in an interactive way.
 
 ## Expected CSV format
 **Each file contain 1 curve** (X and Y coordinates for each point of the curve). The CSV file will be prepared beforehand, using pandas for example, to produce a **strict CSV format with a comma as delimiter between both columns**. The first row should contain the type of value for X and Y.
