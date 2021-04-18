@@ -13,66 +13,80 @@
 <nav>
     <ul class="nav_first">
         <li><a class="nav_current1" href="index.html" title="Home">Home</a></li>
+        <li><a href="repository.html" title="Get PlotView">Get PlotView</a></li>
         <li><a href="input_files.html" title="Input files">Input files</a></li>
         <li><a href="limitations.html" title="Limitations">Limitations</a></li>
-        <li><a href="repository.html" title="Github repository">Github repository</a></li>    </ul>
+    </ul>
 </nav>
 
 <main class="main_container">
     <article class="without_aside">
-        <p>These HTML help files are located in the <code>help</code> directory, both in the local copy and in the <a href="http://github.com/fa201/PlotView" title="Github repository" target="_blank">Github repository</a>.</p>
 
         <h1>Welcome to PlotView help!</h1>
-
-        <h2>Installation pre-requisites</h2>
-        <h3>Python packages</h3>
-        <p>In order to use PlotView, you need to have installed Python3 installed along with the following packages:
-            <ul>
-                <li>pandas 1.0.1</li>
-                <li>matplotlib 3.2.0</li>
-                <li>tkinter 8.6</li>
-            </ul>
-        Note that the version of modules shown are those used for coding PlotView to lower versions <strong>may</strong> work.</p>
-        <p>Please refer to Python3 documentation to install Python3 and the modules on your system.</p>
-
-        <h3>Operating Systems</h3>
-        <p>PlotView was used on linux Ubuntu and Windows 10. It should also work on MacOS although I did not test it.</p>
-        <p>It should work on other systems provided Python and necessary packages were installed.</p>
+        <p>PlotView plots curves from CSV data file. It is licensed under GPL3. The appearance of curves (color, line width, etc.) can be customized and one annotation can also be added if you need to highlight a point of interest.</p>
+        <p>These HTML help files are located in the <code>help</code> directory, both in the local copy and in the <a href="http://github.com/fa201/PlotView" title="Github repository" target="_blank">Github repository</a>.</p>
+        <h2>Launch PlotView</h2>
+        <p>After downloading and unzipping the source zip file, open a terminal in the directory of the file PlotView.py. Then type: <code>python3 PlotView.py</code>.</p>
 
         <h2>GUI: Graphical User Interface</h2>
         <p>The GUI was designed to be:
             <ul>
                 <li>simple to code!</li>
                 <li>simple to use</li>
-                <li>flow oriented: the order of <abbr title="window gadget: element of GUI">widgets</abbr> follows the order of operations</li>
+                <li>flow oriented: the order of <abbr title="window gadgets: elements of GUI as button, entry field, label, etc.">widgets</abbr> follows the order of operations</li>
             </ul>
         </p>
-        <p><img class="image_l" src="../image/PlotView_example.png" title="PlotView main window" alt="PlotView main window"></p>
+        <p><img class="image_l" src="../image/PlotView_example_1.png" title="PlotView main window" alt="PlotView main window"></p>
 
         <h3>Main window</h3>
-        <p>The main window is divided in 2 parts:
+        <p>The main window is divided in 3 parts:
             <ul>
                 <li><em>plot area</em> on the left: it is a <a href="https://matplotlib.org/" title="matplotlib" target="_blank">matplotlib</a> plot area embedded in the main window. The lower part is a <a href="https://matplotlib.org/3.2.2/users/navigation_toolbar.html#" title="help on matplotlib toolbar" target="_blank">matplotlib toolbar</a> with panning, zooming and picture export fonctions.</li>
-                <li><em>function area</em> on the right: it is divided in tab panels which gather function link to 3 groups of function: <em>curve creation</em>, <em>plot information</em> and <em>annotations</em>.</li>
+                <li><em>function area</em> on the right: it is divided in tab panels which gather function link to 3 groups of functions:
+                <ul>
+                    <li><em>curve creation</em></li>
+                    <li><em>plot information</em></li>
+                    <li><em>annotations</em></li>
+                </ul>
+                <li><em>status bar</em> at the bottom of the main window: a messages on performed operation, warnings, etc. are shown.</li>
             </ul>
         </p>
 
+        <h3>Status bar</h3>
+        <p>It is recommended to <strong>look at the status bar after each function</strong> to check the status of PlotView.</p>
+
         <h3>Curve tab</h3>
-        <p>The <em>working directory</em> allows to process several files without losing time navigating in folders.</p>
-        <p>Next to the <em>CSV file</em> button, the entry field allow to give a name to the curve before it is created. If you skip this entry field, the default name "Curve_label" will be given to the curve.</p>
-        <p><strong>For all created curves, the properties can be modified by first selecting the curve ID and then modifying the properties. It is necessary to apply these changes before selecting another curve !</strong>.</p>
-        <p>At the bottom, you can offset and scale the X and Y data of the selected curve. Note that you can <em>revert back these changes</em> by resetting offset values to 0 and resetting scale values to 1.</p>
-        <p><em>Apply</em> will update the plot with all the changes made for the selected curve. For example, if you want to change the color of all curves, you have to select each curve, change the color and apply the change before selecting another curve and so on.</p>
+        <p>In the <em>Create curve</em> panel, the <em>working dir.</em> button selects the working directory allowing to process several files without losing time navigating in folders. At the right, the end of the working directory is shown.</p>
+        <p>The <em>CSV file</em> button selects the CSV file to be processed. At the right, the end of the selected CSV file name is shown.</p>
+        <p>The entry field allows to give a name to the curve before it is created. If you skip this entry field, the default name "Curve_label" will be given to the curve. this curve can be renamed after. Tip: double-click on the default name to replace it by a more relevant name.</p>
+        <p>The <em>Create</em> button create the plot of the selected CSV file with the entered curve name (if any). This plot also considers some default values for color, type of line, etc. These default values can be changed in the <em>curve properties</em> area just below. Each curve is referenced by a curve ID.</p>
+        <p>In the <em>Curve properties</em> panel, you can modify the properties of all created by first selecting the curve ID in the list and then modifying the properties. This also applies to the <em>Show curve</em> check button.</p>
+        <p>The <em>type of line</em> is chose through a drop down list of symbol:
+            <ul>
+                <li>'-' means solid line</li>
+                <li>'--' means dashed line</li>
+                <li>':' means dotted line</li>
+            </ul>
+        </p>
+        <p>Next, you can offset and scale the X and Y data of the selected curve. Note that you can <em>revert back these changes</em> by resetting offset values to 0 and resetting scale values to 1.</p>
+        <p><em>Apply</em> will update the plot with all the changes made for the selected curve. For example, if you want to change the color of all curves, you have to select the first curve, change the color and <strong>apply the change before selecting another curve</strong> and so on.</p>
 
         <h3>Plot area tab</h3>
-        <p>The <em>titles</em> of plot, X label and Y label are defined by default and shown on the plot. Of course, they can be changed.</p>
-        <p>The plot <em>ranges</em> for X and Y axis are automatically computed by matplotlib by default with the <em>Autoscale</em> selected. You can change these values by selecting <em>User defined</em> and input more appropriate values.</p>
+        <p>The <em>titles</em> of plot, X label and Y label are defined by default and shown on the plot. Of course, they can be changed. Tip: double-click on the default title to replace it by a more relevant title.</p>
+        <p>The plot <em>ranges</em> for X and Y axis are automatically computed by matplotlib by default when <em>Autoscale</em> choice is selected. You can change these values by selecting <em>User defined</em> and input more appropriate values.</p>
+        <p>The legend position can be set in each of 4 corners of the plot area. <em>Best</em> lets matplotlib decide the position.</p>
+        <p><em>Show grid</em> allows to trace grids on major axis values.</p>
         <p><em>Apply all</em> allows to take into accound all the modifications done in the Plot area tab to update the plot.</p>
 
-        <h3>Status bar</h3>
-        <p>At the bottom of the main window, a <em>status</em> bar shows message on performed operation, warnings, etc.</p>
-        <p>It is recommended to <em>look at the status bar after each function</em> to check the status of PlotView.</p>
-
+        <h3>Annotation tab</h3>
+        <p>It is possible to annotate in the plot area. This is usually to show a point of interest (change of slope on a curve, maxima, etc.).</p>
+        <p><img class="image_l" src="../image/PlotView_example_2.png" title="PlotView main window" alt="PlotView main window"></p>
+        <p><strong>The positions of annotation and the head of arrow are defined in the data coordinate system !</strong></p>
+        <p>In the <em>Annotation</em> panel, enter the text of the annotation. Tip: double-click on the default text to replace it by a more relevant text.</p>
+        <p>Tick 'Show the annotation' to plot only the annotatation without the arrow.</p>
+        In the <em>Arrow properties</em> panel, enter the position of the arrow head. You can change the arrow head length and widt to make it look more or less sharp.
+        <p>Tick 'Show the arrow connected to the annotation' to add the arrow. It is not possible to draw only the arrow.</p>
+        <p></p>
 
 
 
