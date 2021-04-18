@@ -366,7 +366,7 @@ class Application(tk.Tk):
                 variable=self.show_state,
                 indicatoron=1,
                 command=self.show_check_update).grid(row=0,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+                        column=2, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.active_curve_name = tk.StringVar()
         self.active_curve_name.set(' ')
         tk.Label(self.curve_prop_frame,
