@@ -808,8 +808,8 @@ class Application(tk.Tk):
 
         # Comment
         tk.Label(self.annot_tab,
-                text='The annotation and the head of arrow are located in data coordinate system.',
-                wraplength=295, justify=tk.LEFT).grid(row=0,
+                text='X and Y positions refer to data coordinate system.',
+                justify=tk.LEFT).grid(row=0,
                         column=0, padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY, sticky=tk.W+tk.N+tk.S)
 
         # TEXT PANEL
