@@ -150,8 +150,6 @@ class Application(tk.Tk):
         self.work_file = ''
         self.work_file_txt = tk.StringVar(self)
         self.work_file_txt.set(self.create_underscores())
-        # Displayed working file path (only last characters.)
-        # self.work_file_txt.set(self.work_file[-35:-1])
         # Curve creation label showing the curve name
         self.curve_label = tk.StringVar(self)
         self.curve_label.set('No CSV files selected.')
@@ -168,7 +166,7 @@ class Application(tk.Tk):
         self.annotation_tab()
 
     def create_underscores(self):
-        """Creates a string with underscores to fill the 'work_dir' labels when empty."""
+        """Creates a string with underscores to fill the 'work_dir' and 'work file' labels when empty."""
         underscores = list()
         for i in range(0, self.MAX_STR_CREATE_CURVE):
             underscores.append('_')
@@ -309,34 +307,40 @@ class Application(tk.Tk):
         self.create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
         # Working directory widgets
-        tk.Button(self.create_curve_frame, text='Work directory',
+        tk.Button(self.create_curve_frame, text='Work dir.',
                   command=self.choose_dir, width=9).grid(
                   row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         tk.Label(self.create_curve_frame,
                  textvariable=self.work_dir_txt
                  ).grid(row=0,
                         column=1,
-                        columnspan=2,
                         padx=self.WIDGET_PADX,
-                        pady=self.WIDGET_PADY,
-                        sticky=tk.W)
+                        pady=self.WIDGET_PADY)
         # CSV file widget
         tk.Button(self.create_curve_frame, text='CSV file',
                   command=self.choose_file, width=9).grid(
                   row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Label(self.create_curve_frame, textvariable=self.work_file_txt).grid(
+                 row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve name widget
-        # TODO: when the widget has the focus, deleted the 'curve_label' to modify quicker the name.
+        tk.Label(self.create_curve_frame,
+                 text='Curve name'
+                 ).grid(row=2,
+                        column=0,
+                        padx=self.WIDGET_PADX,
+                        pady=self.WIDGET_PADY,
+                        sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_label = tk.StringVar()
-        self.curve_label.set('Curve_label')
-        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=24).grid(
-                 row=1, column=1, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        self.curve_label.set('Curve_name')
+        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=25, justify=tk.CENTER).grid(
+                 row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve create widget
         tk.Button(self.create_curve_frame,
                   text='Create',
                   command=self.curve_create,
-                  width=4).grid(row=0,
-                                column=3,
-                                rowspan=2,
+                  width=4).grid(row=3,
+                                column=0,
+                                columnspan=2,
                                 padx=self.WIDGET_PADX,
                                 pady=self.WIDGET_PADY,
                                 sticky=tk.E+tk.W+tk.N+tk.S)
@@ -476,7 +480,12 @@ class Application(tk.Tk):
         """
         self.work_file = filedialog.askopenfilename(
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
-        if self.work_file:
+        if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
+            temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE+3:]
+            self.work_file_txt.set(temp)
+            self.set_status('CSV file selected: '+self.work_file)
+        elif 0 < len(self.work_file) < (self.MAX_STR_CREATE_CURVE-3):
+            self.work_file_txt.set(self.work_file)
             self.set_status('CSV file selected: '+self.work_file)
         else:
             # CANCEL return empty string. So I reaffect the initial value to keep the layout.
