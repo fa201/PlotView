@@ -686,7 +686,7 @@ class Application(tk.Tk):
                 text='X title').grid(row=1,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.x_title = tk.StringVar()
-        self.x_title.set('X')
+        self.x_title.set('X_data (units)')
         tk.Entry(self.plot_frame, textvariable=self.x_title, width=30, justify=tk.CENTER).grid(
                   row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Y axis title
@@ -694,7 +694,7 @@ class Application(tk.Tk):
                 text='Y title').grid(row=2,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.y_title = tk.StringVar()
-        self.y_title.set('Y')
+        self.y_title.set('X_data (units)')
         tk.Entry(self.plot_frame, textvariable=self.y_title, width=30, justify=tk.CENTER).grid(
                   row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
