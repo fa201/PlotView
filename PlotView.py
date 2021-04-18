@@ -138,7 +138,7 @@ class Application(tk.Tk):
         self.WIDGET_PADY = 2
         # Max length of string showed by 'Create curve' labels.
         # This is related to window width, font, and font size.
-        self.MAX_STR_CREATE_CURVE = 32
+        self.MAX_STR_CREATE_CURVE = 35
 
         # Working directory variables.
         # 'work_dir_set' defines the directory for the CSV filedialog.
@@ -332,7 +332,7 @@ class Application(tk.Tk):
                         sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_label = tk.StringVar()
         self.curve_label.set('Curve_name')
-        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=25, justify=tk.CENTER).grid(
+        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=27, justify=tk.CENTER).grid(
                  row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve create widget
         tk.Button(self.create_curve_frame,
