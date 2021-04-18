@@ -88,7 +88,6 @@ class Curve:
                 - delete unused data and headers: header should be on the first line
                 - rename column headers if necessary
                 - only 2 columns of data
-                - strip unwanted spaces
                 - make sure that comma is the delimiter
                 - decimal character is the point '.'
         """
@@ -117,12 +116,14 @@ class Application(tk.Tk):
             - work_dir_txt: string -> end of directory path showing working directory.
             - work_file: string -> file path to CSV file.
             - work_file_txt: string -> end of file path.
+
+            Methods: they launch the window layout setup, and create the tab on the RH side for tools.
         """
         super().__init__()
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.11'
+        self.PV_VERSION = '0.12'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -157,16 +158,20 @@ class Application(tk.Tk):
         # METHODS
         # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
+        # Setup the loayout of the main window.
         self.window_setup()
-        self.create_menus()
-        self.create_plot_area()
-        self.create_notebook()
+        # Create the tool 'Curve' tab on the RH side
         self.curve_tab()
+        # Create the tool 'Plot' tab on the RH side
         self.plot_tab()
+        # Create the tool 'Annotation' tab on the RH side
         self.annotation_tab()
 
     def create_underscores(self):
-        """Creates a string with underscores to fill the 'work_dir' and 'work file' labels when empty."""
+        """ Creates a string with underscores to fill the 'work_dir' and 'work file' labels when empty.
+            Empty label and filled label are both limited to 'MAX_STR_CREATE_CURVE' characters.
+            This way, the label layout is visually more consistent.
+        """
         underscores = list()
         for i in range(0, self.MAX_STR_CREATE_CURVE):
             underscores.append('_')
@@ -180,6 +185,9 @@ class Application(tk.Tk):
             The size cannot be changed at the moment because it is simpler.
             A font is used with a lower size to pack more widgets and fixed sapcing.
             A status bar is created at the bottom. It shows text message through 'set_status'.
+            The matplotlib area is draw on the left side.
+            The tool widgets on the right side will be in a notebook to have tabs to save room on layout.
+            The menu is created at top with disabled buttons when functions are not implemented.
         """
         # WINDOW
         self.title('PlotView ' + self.PV_VERSION)
@@ -199,7 +207,27 @@ class Application(tk.Tk):
         # Apply previous change to all widgets created since now.
         self.option_add("*Font", my_font)
 
-        # STATUS BAR
+        # MENUS
+        menu_main = tk.Menu(self)
+        # Menu tear off is disabled.
+        menu_file = tk.Menu(menu_main, tearoff='False')
+        menu_help = tk.Menu(menu_main, tearoff='False')
+        # Add menu_file in menu_main
+        menu_main.add_cascade(label='File', menu=menu_file)
+        menu_main.add_cascade(label='Help', menu=menu_help)
+        # Link of main menu to root window
+        self.config(menu=menu_main)  
+        # File Menu
+        menu_file.add_command(label='Load session', state='disabled')
+        menu_file.add_command(label='Save session as', state='disabled')
+        menu_file.add_command(label='Export image', state='disabled')
+        menu_file.add_command(label='Quit', command=self.app_quit)
+        # Help Menu
+        menu_help.add_command(label='Help on PlotView', command=self.help_redirect)
+        menu_help.add_command(label='Licence GPLv3', command=self.licence_redirect)
+        menu_help.add_command(label='About', command=self.about_redirect)
+
+        # CREATE STATUS BAR AT BOTTOM
         self.status_frame = tk.Frame(self)
         # The status frame should extend on all width of the main window.
         self.status_frame.pack(expand=False, fill=tk.X, side=tk.BOTTOM)
@@ -215,48 +243,40 @@ class Application(tk.Tk):
         # The label shoul expand on the total window width.
         self.status.pack(fill=tk.BOTH, expand=False)
 
+        # CREATE PLOT AREA ON THE LEFT
+        # Tip: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
+        self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
+        self.ax = self.fig.add_subplot(111)
+        self.mat_frame = tk.Frame(self)
+        self.mat_frame.pack(expand=False, side=tk.LEFT)
+        # Creates a drawing area to put the Figure
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
+        self.canvas.draw()
+        # Creates the Matplotlib navigation tool bar for figures.
+        self.toolbar = NavigationToolbar2Tk(self.canvas, self.mat_frame)
+        self.toolbar.draw()
+        self.canvas.get_tk_widget().pack()
+
+        # CREATE A NOTEBOOK ON THE RIGHT FOR TOOL WIDGETS
+        # Frame for RH panel. It contains the ttk.notebook.
+        self.tool_frame = tk.Frame(self)
+        self.tool_frame.pack(expand=True, fill=tk.BOTH)
+        # Notebook
+        self.tool_notebook = ttk.Notebook(self.tool_frame)
+        self.tool_notebook.pack(expand=True, fill=tk.BOTH)
+
     def app_quit(self):
-        """ Quit the application."""
-        # Destroy the main window.
+        """ Quit the application and free the stack."""
         self.destroy()
-        # Normal termination and free the stack.
         sys.exit(0)
 
-    def create_menus(self):
-        """ Create the menus and sub-menus of the main GUI.
-            Non-functional sub-menus are disabled.
-        """
-        # Main menu
-        menu_main = tk.Menu(self)
-        # Menu tear off is disabled.
-        menu_file = tk.Menu(menu_main, tearoff='False')
-        # menu_pref = tk.Menu(menu_main, tearoff='False')
-        menu_help = tk.Menu(menu_main, tearoff='False')
-        # Add menu_file in menu_main
-        menu_main.add_cascade(label='File', menu=menu_file)
-        # TODO: customize picture format and size for export
-        # menu_main.add_cascade(label='Preferences', menu=menu_pref)
-        menu_main.add_cascade(label='Help', menu=menu_help)
-        self.config(menu=menu_main)  # Link of main menu to root window
-        # File Menu
-        menu_file.add_command(label='Load session', state='disabled')
-        menu_file.add_command(label='Save session as', state='disabled')
-        menu_file.add_command(label='Export image', state='disabled')
-        menu_file.add_command(label='Quit', command=self.app_quit)
-        # Preferences Menu
-        # menu_pref.add_command(label='Type of export image', state='disabled')
-        # Help Menu
-        menu_help.add_command(label='Help on PlotView', command=self.help_redirect)
-        menu_help.add_command(label='Licence GPLv3', command=self.licence_redirect)
-        menu_help.add_command(label='About', command=self.about_redirect)
-
     def help_redirect(self):
-        """ Plotview wiki is shown in web browser."""
+        """ Plotview HTML help is shown in web browser."""
         webbrowser.open_new_tab('help/index.html')
-        self.set_status('The PlotView wiki page is shown in your web browser.')
+        self.set_status('The PlotView help page is shown in your web browser.')
 
     def licence_redirect(self):
-        """ PlotView licence is shown in the web browser."""
+        """ PlotView licence is shown in the text editor."""
         webbrowser.open_new_tab('LICENSE')
         self.set_status('The GPL3 licence is now opened.')
 
@@ -272,101 +292,86 @@ class Application(tk.Tk):
         """
         self.status.config(text=' '+string)
 
-    def create_plot_area(self):
-        # Tip: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
-        self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
-        self.ax = self.fig.add_subplot(111)
-        self.mat_frame = tk.Frame(self)
-        # mat_frame.grid(row=0, column=0, sticky=tk.W+tk.E+tk.N+tk.S)
-        self.mat_frame.pack(expand=False, side=tk.LEFT)
-        # Creates a drawing area to put the Figure
-        self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
-        self.canvas.draw()
-        # Creates the Matplotlib navigation tool bar for figures.
-        self.toolbar = NavigationToolbar2Tk(self.canvas, self.mat_frame)
-        self.toolbar.draw()
-        self.canvas.get_tk_widget().pack()
-
-    def create_notebook(self):
-        """ Notebook on RH panel containing all the tool tabs."""
-        # Frame for RH panel. It contains the ttk.notebook.
-        self.tool_frame = tk.Frame(self)
-        self.tool_frame.pack(expand=True, fill=tk.BOTH)
-        # Notebook
-        self.tool_notebook = ttk.Notebook(self.tool_frame)
-        self.tool_notebook.pack(expand=True, fill=tk.BOTH)
-
     def curve_tab(self):
         """ First tab managing curve creation."""
         # Create curve tab
         self.curve_tab = ttk.Frame(self.tool_notebook)
 
-        # FIXME: layout should not be dependant of length of strings for curve name, path, etc.
         # CREATE CURVE PANEL
         self.create_curve_frame = tk.LabelFrame(self.curve_tab, text='Create curve')
-        self.create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+        self.create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
+                                    )
         # Working directory widgets
-        tk.Button(self.create_curve_frame, text='Work dir.',
-                  command=self.choose_dir, width=9).grid(
-                  row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Button(self.create_curve_frame, text='Work dir.', 
+                  command=self.choose_dir, width=9
+                  ).grid(row=0, column=0, 
+                         padx=self.WIDGET_PADX, 
+                         pady=self.WIDGET_PADY
+                        )
         tk.Label(self.create_curve_frame,
                  textvariable=self.work_dir_txt
-                 ).grid(row=0,
-                        column=1,
+                 ).grid(row=0, column=1,
                         padx=self.WIDGET_PADX,
                         pady=self.WIDGET_PADY)
         # CSV file widget
         tk.Button(self.create_curve_frame, text='CSV file',
-                  command=self.choose_file, width=9).grid(
-                  row=1, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
-        tk.Label(self.create_curve_frame, textvariable=self.work_file_txt).grid(
-                 row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                  command=self.choose_file, width=9
+                 ).grid(row=1, column=0, 
+                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                       )
+        tk.Label(self.create_curve_frame, textvariable=self.work_file_txt
+                ).grid(row=1, column=1, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         # Curve name widget
-        tk.Label(self.create_curve_frame,
-                 text='Curve name'
-                 ).grid(row=2,
-                        column=0,
-                        padx=self.WIDGET_PADX,
-                        pady=self.WIDGET_PADY,
-                        sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.create_curve_frame, text='Curve name'
+                ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.curve_label = tk.StringVar()
         self.curve_label.set('Curve_name')
-        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=27, justify=tk.CENTER).grid(
-                 row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        tk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=27,
+                 justify=tk.CENTER).grid(row=2, column=1, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Curve create widget
-        tk.Button(self.create_curve_frame,
-                  text='Create',
-                  command=self.curve_create,
-                  width=4).grid(row=3,
-                                column=0,
-                                columnspan=2,
-                                padx=self.WIDGET_PADX,
-                                pady=self.WIDGET_PADY,
-                                sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Button(self.create_curve_frame, text='Create',
+                  command=self.curve_create, width=4
+                 ).grid(row=3, column=0, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S,
+                                padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                       )
 
         # CURVE PROPERTIES
         self.curve_prop_frame = tk.LabelFrame(self.curve_tab, text='Curve properties')
         self.curve_prop_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                                   padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
-        # Active curve
+                                   padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
+                                  )
+        # Active curve selection
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
-        tk.Label(self.curve_prop_frame, text='Select curve').grid(row=0, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.curve_prop_frame, text='Select curve'
+                ).grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
+
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
                                                values=list(Curve.dic.keys()),
                                                justify=tk.CENTER,
                                                width=4
                                                )
-        self.active_curve_combo.grid(row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.active_curve_combo.grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                     padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                    )
         self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
+        # Show curve
         self.show_state = tk.IntVar()
         self.show_state.set(1)
-        tk.Checkbutton(self.curve_prop_frame,
-                text='Show curve',
-                variable=self.show_state,
-                indicatoron=1,
-                command=self.show_check_update).grid(row=0,
-                        column=2, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Checkbutton(self.curve_prop_frame, text='Show curve',
+                       variable=self.show_state, indicatoron=1,
+                       command=self.show_check_update
+                      ).grid(row=0, column=2, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                            )
         # Curve Name
         self.active_curve_name = tk.StringVar()
         self.active_curve_name.set(' ')
