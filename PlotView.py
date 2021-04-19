@@ -543,6 +543,9 @@ class Application(tk.Tk):
             # TODO add a warning popup window.
             print('The name of curve', Curve.dic[str(self.selected_curve)].name, 'is missing.')
 
+        # Update curve visibility
+        Curve.dic[str(self.selected_curve)].visibility = self.show_state.get()
+
         # Update curve width
         if float(self.curve_width.get()) != 0:
             Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
@@ -590,6 +593,7 @@ class Application(tk.Tk):
                         )
         # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
+            print('Visibility ', Curve.dic[str(i)].name, Curve.dic[str(i)].visibility)
             if Curve.dic[str(i)].visibility:
                 self.ax.plot(Curve.dic[str(i)].data_out.iloc[:, 0],
                              Curve.dic[str(i)].data_out.iloc[:, 1],
@@ -705,105 +709,136 @@ class Application(tk.Tk):
         self.plot_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
         # Main title
-        tk.Label(self.plot_frame,
-                text='Main title').grid(row=0,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.plot_frame, text='Main title'
+                ).grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.main_title = tk.StringVar()
         self.main_title.set('Title')
-        tk.Entry(self.plot_frame, textvariable=self.main_title, width=30, justify=tk.CENTER).grid(
-                  row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.plot_frame, textvariable=self.main_title, width=30,
+                 justify=tk.CENTER).grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # X axis title
-        tk.Label(self.plot_frame,
-                text='X title').grid(row=1,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.plot_frame, text='X title'
+                ).grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.x_title = tk.StringVar()
         self.x_title.set('X_data (units)')
-        tk.Entry(self.plot_frame, textvariable=self.x_title, width=30, justify=tk.CENTER).grid(
-                  row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.plot_frame, textvariable=self.x_title, width=30, 
+                 justify=tk.CENTER).grid(row=1, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Y axis title
-        tk.Label(self.plot_frame,
-                text='Y title').grid(row=2,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.plot_frame, text='Y title'
+                ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.y_title = tk.StringVar()
         self.y_title.set('X_data (units)')
-        tk.Entry(self.plot_frame, textvariable=self.y_title, width=30, justify=tk.CENTER).grid(
-                  row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.plot_frame, textvariable=self.y_title, width=30, 
+                 justify=tk.CENTER).grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
 
         # RANGE PANEL
         self.range_frame = tk.LabelFrame(self.plot_tab, text='Plot ranges for X and Y')
         self.range_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                              padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
+                             )
         # Auto-scale or user defined
         self.autoscale = tk.IntVar()
         self.autoscale.set(0)
-        tk.Radiobutton(self.range_frame, text='Auto scale', 
-                variable=self.autoscale, value=0).grid(row=0, 
-                column=0, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        tk.Radiobutton(self.range_frame, text='User defined', 
-                variable=self.autoscale, value=1).grid(row=0, 
-                column=2, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.range_frame, text='Auto scale', variable=self.autoscale,
+                       value=0).grid(row=0, column=0, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                     padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                    )
+        tk.Radiobutton(self.range_frame, text='User defined', variable=self.autoscale, 
+                       value=1).grid(row=0, column=2, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                     padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                    )
         # User defined
-        tk.Label(self.range_frame,
-                text='User defined ranges:').grid(row=1,
-                        column=0, columnspan=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.range_frame, text='User defined ranges:'
+                ).grid(row=1, column=0, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         # https://stackoverflow.com/questions/26333769/event-triggered-by-listbox-and-radiobutton-in-tkinter
         # X min
-        tk.Label(self.range_frame,
-                text='X min').grid(row=2,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.range_frame, text='X min'
+                ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.x_min_range = tk.DoubleVar()
-        tk.Entry(self.range_frame, textvariable=self.x_min_range, width=10, justify=tk.CENTER).grid(
-                  row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.range_frame, textvariable=self.x_min_range, width=10, 
+                 justify=tk.CENTER).grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Y min
-        tk.Label(self.range_frame,
-                text='Y min').grid(row=2,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.range_frame, text='Y min'
+                ).grid(row=2, column=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.y_min_range = tk.DoubleVar()
-        tk.Entry(self.range_frame, textvariable=self.y_min_range, width=10, justify=tk.CENTER).grid(
-                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.range_frame, textvariable=self.y_min_range, width=10, 
+                 justify=tk.CENTER).grid(row=2, column=3, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # X max
-        tk.Label(self.range_frame,
-                text='X max').grid(row=3,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.range_frame, text='X max'
+                ).grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.x_max_range = tk.DoubleVar()
         self.x_max_range.set(100)
-        tk.Entry(self.range_frame, textvariable=self.x_max_range, width=10, justify=tk.CENTER).grid(
-                  row=3, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        
+        tk.Entry(self.range_frame, textvariable=self.x_max_range, width=10, 
+                 justify=tk.CENTER).grid(row=3, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Y max
-        tk.Label(self.range_frame,
-                text='Y max').grid(row=3,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.range_frame, text='Y max'
+                ).grid(row=3, column=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.y_max_range = tk.DoubleVar()
         self.y_max_range.set(100)
-        tk.Entry(self.range_frame, textvariable=self.y_max_range, width=10, justify=tk.CENTER).grid(
-                  row=3, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.range_frame, textvariable=self.y_max_range, width=10, 
+                 justify=tk.CENTER).grid(row=3, column=3, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
 
         # LEGEND PANEL
         self.legend_frame = tk.LabelFrame(self.plot_tab, text='Legend position')
         self.legend_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
+                              )
         temp = "'Best' lets matplotlib decide the position."
-        tk.Label(self.legend_frame, text=temp).grid(row=0, column=0, 
-                columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.legend_frame, text=temp
+                ).grid(row=0, column=0, columnspan=3, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         # Legend position
         self.legend = tk.IntVar()
         self.legend.set(4)
-        tk.Radiobutton(self.legend_frame, text='Upper left', 
-                variable=self.legend, value=0).grid(row=1, 
-                column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        tk.Radiobutton(self.legend_frame, text='Upper right', 
-                variable=self.legend, value=1).grid(row=1, 
-                column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        tk.Radiobutton(self.legend_frame, text='Lower left', 
-                variable=self.legend, value=2).grid(row=2, 
-                column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        tk.Radiobutton(self.legend_frame, text='Lower right', 
-                variable=self.legend, value=3).grid(row=2, 
-                column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-        tk.Radiobutton(self.legend_frame, text='Best', 
-                variable=self.legend, value=4).grid(row=1, 
-                column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Radiobutton(self.legend_frame, text='Upper left', variable=self.legend, value=0
+                      ).grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                            )
+        tk.Radiobutton(self.legend_frame, text='Upper right', variable=self.legend, value=1
+                      ).grid(row=1, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                            )
+        tk.Radiobutton(self.legend_frame, text='Lower left', variable=self.legend, value=2
+                      ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                            )
+        tk.Radiobutton(self.legend_frame, text='Lower right', variable=self.legend, value=3
+                      ).grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                            )
+        tk.Radiobutton(self.legend_frame, text='Best', variable=self.legend, value=4
+                      ).grid(row=1, column=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         self.legend_var ={'0': 'upper left',
                           '1': 'upper right', 
                           '2': 'lower left', 
@@ -814,16 +849,19 @@ class Application(tk.Tk):
         # CUSTOMIZE PANEL
         self.custom_frame = tk.LabelFrame(self.plot_tab, text='Customize')
         self.custom_frame.grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
+                              )
         self.grid_state = tk.IntVar()
         self.grid_state.set(1)
-        tk.Checkbutton(self.custom_frame, text='Show grid', variable=self.grid_state,
-                       indicatoron=1).grid(row=0,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Checkbutton(self.custom_frame, text='Show grid', variable=self.grid_state, indicatoron=1
+                      ).grid(row=0, column=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                            )
         # APPLY BUTTON
-        tk.Button(self.plot_tab, text='Apply all',
-                  command=self.plot_curves).grid(
-                  row=4, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Button(self.plot_tab, text='Apply all', command=self.plot_curves
+                 ).grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                       )
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.plot_tab, text='Plot area')
@@ -834,106 +872,133 @@ class Application(tk.Tk):
         self.annot_tab = ttk.Frame(self.tool_notebook)
 
         # Comment
-        tk.Label(self.annot_tab,
-                text='X and Y positions refer to data coordinate system.',
-                justify=tk.LEFT).grid(row=0,
-                        column=0, padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY, sticky=tk.W+tk.N+tk.S)
+        tk.Label(self.annot_tab, text='X and Y positions refer to data coordinate system.',
+                 justify=tk.LEFT).grid(row=0, column=0, sticky=tk.W+tk.N+tk.S, 
+                                       padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
+                                      )
 
         # TEXT PANEL
         self.text_frame = tk.LabelFrame(self.annot_tab, text='Annotation')
         self.text_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                             padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
+                            )
         # Text
-        tk.Label(self.text_frame,
-                text='Text').grid(row=0,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.text_frame, text='Text'
+                ).grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.annotation = tk.StringVar()
         self.annotation.set('Annotation_text')
-        tk.Entry(self.text_frame, textvariable=self.annotation, width=32, justify=tk.CENTER).grid(
-                  row=0, column=1, columnspan=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.text_frame, textvariable=self.annotation, width=32, 
+                 justify=tk.CENTER).grid(row=0, column=1, columnspan=3, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # X position of annotation
-        tk.Label(self.text_frame,
-                text='X position').grid(row=1,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.text_frame, text='X position'
+                ).grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.annotation_x = tk.StringVar()
         self.annotation_x.set('0')
-        tk.Entry(self.text_frame, textvariable=self.annotation_x, width=10, justify=tk.CENTER).grid(
-                  row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.text_frame, textvariable=self.annotation_x, width=10, 
+                 justify=tk.CENTER).grid(row=1, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Y position of annotation
-        tk.Label(self.text_frame,
-                text='Y position').grid(row=1,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.text_frame, text='Y position'
+                ).grid(row=1, column=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.annotation_y = tk.StringVar()
         self.annotation_y.set('0')
-        tk.Entry(self.text_frame, textvariable=self.annotation_y, width=10, justify=tk.CENTER).grid(
-                  row=1, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
-
+        tk.Entry(self.text_frame, textvariable=self.annotation_y, width=10, 
+                 justify=tk.CENTER).grid(row=1, column=3, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Color
-        tk.Label(self.text_frame,
-                text='Text color').grid(row=2,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.text_frame, text='Text color'
+                ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.annot_color_combo = ttk.Combobox(self.text_frame,
-                                                values=my_colors_white,
-                                                justify=tk.CENTER,
-                                                width=10
-                                                )
+                                              values=my_colors_white,
+                                              justify=tk.CENTER,
+                                              width=10
+                                             )
         self.annot_color_combo.set(my_colors_white[0])
-        self.annot_color_combo.grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.annot_color_combo.grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                    padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                   )
         # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
         # Font size
-        tk.Label(self.text_frame,
-                text='Font size').grid(row=2,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.text_frame, text='Font size'
+                ).grid(row=2, column=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.annot_size = tk.StringVar()
         self.annot_size.set('10')
-        tk.Entry(self.text_frame, textvariable=self.annot_size, width=10, justify=tk.CENTER).grid(
-                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.text_frame, textvariable=self.annot_size, width=10, 
+                 justify=tk.CENTER).grid(row=2, column=3, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Show annotation
         self.annot_state = tk.IntVar()
         self.annot_state.set(0)
         # No callback since 'Apply all' redraw the plot with or without the annotation.
-        tk.Checkbutton(self.text_frame,
-                text='Show the annotation',
-                variable=self.annot_state,
-                indicatoron=1).grid(row=3,
-                        column=0, columnspan=4, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W+tk.N+tk.S)
+        tk.Checkbutton(self.text_frame, text='Show the annotation', variable=self.annot_state,
+                       indicatoron=1).grid(row=3, column=0, columnspan=4, sticky=tk.W+tk.N+tk.S, 
+                                           padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                          )
         
         # ARROW PANEL
         self.arrow_frame = tk.LabelFrame(self.annot_tab, text='Arrow properties')
         self.arrow_frame.grid(row=3, column=0,  columnspan=2,sticky=tk.E+tk.W+tk.N+tk.S,
-                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                              padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
+                             )
         # X position of arrow head
-        tk.Label(self.arrow_frame,
-                text='Head X pos.').grid(row=0,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.arrow_frame, text='Head X pos.'
+                ).grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.arrow_head_x = tk.StringVar()
         self.arrow_head_x.set('0')
-        tk.Entry(self.arrow_frame, textvariable=self.arrow_head_x, width=10, justify=tk.CENTER).grid(
-                  row=0, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.arrow_frame, textvariable=self.arrow_head_x, width=10, 
+                 justify=tk.CENTER).grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Y position of arrow head
-        tk.Label(self.arrow_frame,
-                text='Head Y pos.').grid(row=0,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.arrow_frame, text='Head Y pos.'
+                ).grid(row=0, column=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.arrow_head_y = tk.StringVar()
         self.arrow_head_y.set('0')
-        tk.Entry(self.arrow_frame, textvariable=self.arrow_head_y, width=10, justify=tk.CENTER).grid(
-                  row=0, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.arrow_frame, textvariable=self.arrow_head_y, width=10, 
+                 justify=tk.CENTER).grid(row=0, column=3, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Length of arrow head 
-        tk.Label(self.arrow_frame,
-                text='Head length').grid(row=1,
-                        column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.arrow_frame, text='Head length'
+                ).grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.arrow_head_length = tk.StringVar()
         self.arrow_head_length.set('10')
-        tk.Entry(self.arrow_frame, textvariable=self.arrow_head_length, width=10, justify=tk.CENTER).grid(
-                  row=1, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.arrow_frame, textvariable=self.arrow_head_length, width=10, 
+                 justify=tk.CENTER).grid(row=1, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Width of arrow head
-        tk.Label(self.arrow_frame,
-                text='Head width').grid(row=1,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.arrow_frame, text='Head width'
+                ).grid(row=1, column=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.arrow_head_width = tk.StringVar()
         self.arrow_head_width.set('4')
-        tk.Entry(self.arrow_frame, textvariable=self.arrow_head_width, width=10, justify=tk.CENTER).grid(
-                  row=1, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.arrow_frame, textvariable=self.arrow_head_width, width=10, 
+                 justify=tk.CENTER).grid(row=1, column=3, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Color of arrow
         tk.Label(self.arrow_frame, text='Line color').grid(row=2,
                         column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
@@ -943,25 +1008,30 @@ class Application(tk.Tk):
                                                 width=10
                                                 )
         self.arrow_color_combo.set(my_colors_white[0])
-        self.arrow_color_combo.grid(row=2, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.arrow_color_combo.grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                    padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                   )
         # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
         # Width of arrow
-        tk.Label(self.arrow_frame,
-                text='Line width').grid(row=2,
-                        column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Label(self.arrow_frame, text='Line width'
+                ).grid(row=2, column=2, sticky=tk.E+tk.W+tk.N+tk.S, 
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
         self.arrow_width = tk.StringVar()
         self.arrow_width.set('0.5')
-        tk.Entry(self.arrow_frame, textvariable=self.arrow_width, width=10, justify=tk.CENTER).grid(
-                  row=2, column=3, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        tk.Entry(self.arrow_frame, textvariable=self.arrow_width, width=10, 
+                 justify=tk.CENTER).grid(row=2, column=3, sticky=tk.E+tk.W+tk.N+tk.S, 
+                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                                        )
         # Show arrow. 
         self.arrow_state = tk.IntVar()
         self.arrow_state.set(0)
         # No callback since 'Apply all' redraw the plot with or without the annotation.
-        tk.Checkbutton(self.arrow_frame,
-                text='Show the arrow connected to the annotation',
-                variable=self.arrow_state,
-                indicatoron=1).grid(row=5,
-                        column=0, columnspan=4, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.W+tk.N+tk.S)
+        tk.Checkbutton(self.arrow_frame, variable=self.arrow_state, 
+                       text='Show the arrow connected to the annotation',indicatoron=1
+                      ).grid(row=5, column=0, columnspan=4, sticky=tk.W+tk.N+tk.S, 
+                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                            )
 
         # APPLY BUTTON
         tk.Button(self.annot_tab, text='Apply all',
