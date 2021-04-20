@@ -357,6 +357,7 @@ class Application(tk.Tk):
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
                                                values=list(Curve.dic.keys()),
                                                justify=tk.CENTER,
+                                               state='readonly',
                                                width=4
                                                )
         self.active_curve_combo.grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S, 
@@ -390,6 +391,7 @@ class Application(tk.Tk):
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_colors_white,
                                                 justify=tk.CENTER,
+                                                state='readonly',
                                                 width=12
                                                 )
         self.curve_color_combo.set(my_colors_white[0])
@@ -413,6 +415,7 @@ class Application(tk.Tk):
         self.curve_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_linestyles,
                                                 justify=tk.CENTER,
+                                                state='readonly',
                                                 width=3
                                                 )
         self.curve_style_combo.set(my_linestyles[0])
@@ -923,6 +926,7 @@ class Application(tk.Tk):
         self.annot_color_combo = ttk.Combobox(self.text_frame,
                                               values=my_colors_white,
                                               justify=tk.CENTER,
+                                              state='readonly',
                                               width=10
                                              )
         self.annot_color_combo.set(my_colors_white[0])
@@ -1005,6 +1009,7 @@ class Application(tk.Tk):
         self.arrow_color_combo = ttk.Combobox(self.arrow_frame,
                                                 values=my_colors_white,
                                                 justify=tk.CENTER,
+                                                state='readonly',
                                                 width=10
                                                 )
         self.arrow_color_combo.set(my_colors_white[0])
