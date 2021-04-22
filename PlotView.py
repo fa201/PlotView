@@ -616,29 +616,34 @@ class Application(tk.Tk):
                 self.set_status(Curve.dic[str(i)].name+' is plotted.')
 
         # Draw the annotation and the arrow
-        if self.annot_state.get() & self.arrow_state.get():
-            self.ax.annotate(self.annotation.get(),
-                    xy=(float(self.arrow_head_x.get()), float(self.arrow_head_y.get())),
-                    xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
-                    color=self.annot_color_combo.get(),
-                    fontsize=float(self.annot_size.get()),
-                    arrowprops=dict(color=self.arrow_color_combo.get(),
-                                    width=float(self.arrow_width.get()),
-                                    headwidth=float(self.arrow_head_width.get()),
-                                    headlength=float(self.arrow_head_length.get())
-                                   )
-                    )
-        # Draw the annotation only. The arrowprops is removed to avoid drawing it
-        elif self.annot_state.get() & (not self.arrow_state.get()):
-            self.ax.annotate(self.annotation.get(),
-                    xy=(float(self.arrow_head_x.get()), float(self.arrow_head_y.get())),
-                    xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
-                    color=self.annot_color_combo.get(),
-                    fontsize=float(self.annot_size.get()),
-                    )
-        # Draw no annotation and no arrow
-        else:
-            pass
+        try:
+            if self.annot_state.get() & self.arrow_state.get():
+                self.ax.annotate(self.annotation.get(),
+                        xy=(float(self.arrow_head_x.get()), float(self.arrow_head_y.get())),
+                        xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
+                        color=self.annot_color_combo.get(),
+                        fontsize=float(self.annot_size.get()),
+                        arrowprops=dict(color=self.arrow_color_combo.get(),
+                                        width=float(self.arrow_width.get()),
+                                        headwidth=float(self.arrow_head_width.get()),
+                                        headlength=float(self.arrow_head_length.get())
+                                       )
+                        )
+            # Draw the annotation only. The arrowprops is removed to avoid drawing it
+            elif self.annot_state.get() & (not self.arrow_state.get()):
+                self.ax.annotate(self.annotation.get(),
+                        xy=(float(self.arrow_head_x.get()), float(self.arrow_head_y.get())),
+                        xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
+                        color=self.annot_color_combo.get(),
+                        fontsize=float(self.annot_size.get()),
+                        )
+            # Draw no annotation and no arrow
+            else:
+                pass
+        except ValueError:
+            message1 = 'For the annotation, the values of X and Y positions and the value of font size must be numbers.'
+            message2 = '\nFor the arrow, the values of X and Y positions, the length and width of head and the line width must be numbers.'
+            msg.showerror('Error', message1 + message2)
 
         # Set plot area parameters
         self.ax.legend(loc=self.legend_var[str(self.legend.get())])
