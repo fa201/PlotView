@@ -588,15 +588,19 @@ class Application(tk.Tk):
             It is necessary to clear the Axes since the for loop starts from 1 for every
             curve plot. Otherwise the first curve get duplicated for each plot to this function.
             Plot annotation if required and plot its arrow if required.
+            Empty main title, X title and Y titles are accepted.
         """
         self.ax.clear()
         # Set the plot windows with user-defined ranges if required.
         if self.autoscale.get():
-            self.ax.axis([self.x_min_range.get(),
-                          self.x_max_range.get(),
-                          self.y_min_range.get(),
-                          self.y_max_range.get()]
-                        )
+            try:
+                self.ax.axis([float(self.x_min_range.get()),
+                              float(self.x_max_range.get()),
+                              float(self.y_min_range.get()),
+                              float(self.y_max_range.get())]
+                            )
+            except ValueError:
+                msg.showerror('Error', 'The values of X min, X max, Y min and Y max must be numbers.')
         # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
             # print('Visibility ', Curve.dic[str(i)].name, Curve.dic[str(i)].visibility)
@@ -797,7 +801,8 @@ class Application(tk.Tk):
                 ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
-        self.x_min_range = tk.DoubleVar()
+        self.x_min_range = tk.StringVar()
+        self.x_min_range.set('0')
         ttk.Entry(self.range_frame, textvariable=self.x_min_range, width=10,
                  justify=tk.CENTER).grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
@@ -807,7 +812,8 @@ class Application(tk.Tk):
                 ).grid(row=2, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
-        self.y_min_range = tk.DoubleVar()
+        self.y_min_range = tk.StringVar()
+        self.y_min_range.set('0')
         ttk.Entry(self.range_frame, textvariable=self.y_min_range, width=10,
                  justify=tk.CENTER).grid(row=2, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
@@ -817,8 +823,8 @@ class Application(tk.Tk):
                 ).grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
-        self.x_max_range = tk.DoubleVar()
-        self.x_max_range.set(100)
+        self.x_max_range = tk.StringVar()
+        self.x_max_range.set('100')
         ttk.Entry(self.range_frame, textvariable=self.x_max_range, width=10,
                  justify=tk.CENTER).grid(row=3, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
@@ -828,8 +834,8 @@ class Application(tk.Tk):
                 ).grid(row=3, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
-        self.y_max_range = tk.DoubleVar()
-        self.y_max_range.set(100)
+        self.y_max_range = tk.StringVar()
+        self.y_max_range.set('100')
         ttk.Entry(self.range_frame, textvariable=self.y_max_range, width=10,
                  justify=tk.CENTER).grid(row=3, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
