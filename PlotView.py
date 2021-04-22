@@ -265,6 +265,7 @@ class Application(tk.Tk):
         self.tool_notebook = ttk.Notebook(self.tool_frame)
         self.tool_notebook.pack(expand=True, fill=tk.BOTH)
 
+
     def app_quit(self):
         """ Quit the application and free the stack."""
         self.destroy()
@@ -356,7 +357,8 @@ class Application(tk.Tk):
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
                                                values=list(Curve.dic.keys()),
                                                justify=tk.CENTER,
-                                               width=4
+                                               width=4,
+                                               state='readonly'
                                                )
         self.active_curve_combo.grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
@@ -391,7 +393,6 @@ class Application(tk.Tk):
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_colors_white,
                                                 justify=tk.CENTER,
-                                                state='readonly',
                                                 width=12
                                                 )
         self.curve_color_combo.set(my_colors_white[0])
@@ -415,7 +416,6 @@ class Application(tk.Tk):
         self.curve_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_linestyles,
                                                 justify=tk.CENTER,
-                                                state='readonly',
                                                 width=3
                                                 )
         self.curve_style_combo.set(my_linestyles[0])
@@ -950,7 +950,6 @@ class Application(tk.Tk):
         self.annot_color_combo = ttk.Combobox(self.text_frame,
                                               values=my_colors_white,
                                               justify=tk.CENTER,
-                                              state='readonly',
                                               width=10
                                              )
         self.annot_color_combo.set(my_colors_white[0])
@@ -1033,7 +1032,6 @@ class Application(tk.Tk):
         self.arrow_color_combo = ttk.Combobox(self.arrow_frame,
                                                 values=my_colors_white,
                                                 justify=tk.CENTER,
-                                                state='readonly',
                                                 width=10
                                                 )
         self.arrow_color_combo.set(my_colors_white[0])
