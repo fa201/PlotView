@@ -425,8 +425,8 @@ class Application(tk.Tk):
                 ).grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
-        self.curve_x_scale = tk.DoubleVar()
-        self.curve_x_scale.set(1.0)
+        self.curve_x_scale = tk.StringVar()
+        self.curve_x_scale.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_x_scale, width=8,
                  justify=tk.CENTER).grid(row=5, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
@@ -435,8 +435,8 @@ class Application(tk.Tk):
                 ).grid(row=5, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
-        self.curve_y_scale = tk.DoubleVar()
-        self.curve_y_scale.set(1.0)
+        self.curve_y_scale = tk.StringVar()
+        self.curve_y_scale.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_y_scale, width=8,
                  justify=tk.CENTER).grid(row=5, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
@@ -446,8 +446,8 @@ class Application(tk.Tk):
                 ).grid(row=6, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
-        self.curve_x_offset = tk.DoubleVar()
-        self.curve_x_offset.set(0)
+        self.curve_x_offset = tk.StringVar()
+        self.curve_x_offset.set('0')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_x_offset, width=8,
                  justify=tk.CENTER).grid(row=6, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
@@ -457,8 +457,8 @@ class Application(tk.Tk):
                 ).grid(row=6, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
-        self.curve_y_offset = tk.DoubleVar()
-        self.curve_y_offset.set(0)
+        self.curve_y_offset = tk.StringVar()
+        self.curve_y_offset.set('0')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_y_offset, width=8,
                  justify=tk.CENTER).grid(row=6, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
@@ -519,6 +519,9 @@ class Application(tk.Tk):
     def curve_create(self):
         """ Create the Curve instance from the CSV file given by 'work_file'
 
+            
+            First, check that the selected file exists. If not show an error message.
+            Second, check that curve label is not empty. If not show an error message.
             The curve is added in the Curve.dic. Index is Curve.count.
         """
         if self.work_file:
@@ -531,7 +534,7 @@ class Application(tk.Tk):
                 self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
                 self.plot_curves()
             else:
-                msg.showerror('Error', 'The name of the curve is not defined.')
+                msg.showerror('Error', 'The name of the curve is required.')
         else:
             msg.showerror('Error', 'No CSV file were selected.')
 
@@ -542,40 +545,40 @@ class Application(tk.Tk):
             Curve.dic[str(self.selected_curve)].name = self.active_curve_name.get()
         else:
             # status message will be replaced by the one from 'plot_curves'.
-            msg.showwarning('Warning', 'The name of curve' + 
-                                        Curve.dic[str(self.selected_curve)].name +
-                                        'is missing.')
+            msg.showerror('Error', 'The name of the curve is required.')
 
         # Update curve visibility
         Curve.dic[str(self.selected_curve)].visibility = self.show_state.get()
 
         # Update curve width
-        if float(self.curve_width.get()) != 0:
-            Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
-        else:
-            # status message will be replaced by the one from 'plot_curves'.
-            # TODO add a warning popup window.
-            print('The width of curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
+        try:
+            if float(self.curve_width.get()) != 0:
+                Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
+            else:
+                # status message will be replaced by the one from 'plot_curves'.
+                msg.showerror('Error', 'The width of curve line cannot be 0.')
+        except ValueError:
+            msg.showerror('Error', 'The width of curve line must be a number.')
 
         # Update scale and offset values for curve
-        # TODO: check for scale value different from 0.
-        if self.curve_x_scale != 0:
-            Curve.dic[str(self.selected_curve)].x_scale = self.curve_x_scale.get()
-            Curve.dic[str(self.selected_curve)].x_offset = self.curve_x_offset.get()
-            Curve.dic[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 0]* Curve.dic[str(self.selected_curve)].x_scale + Curve.dic[str(self.selected_curve)].x_offset
-        else:
-            # status message will be replaced by the one from 'plot_curves'.
-            # TODO add a warning popup window.
-            print('The value of X scale for curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
-        if self.curve_y_scale != 0:
-            Curve.dic[str(self.selected_curve)].y_scale = self.curve_y_scale.get()
-            Curve.dic[str(self.selected_curve)].y_offset = self.curve_y_offset.get()
-            Curve.dic[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 1]* Curve.dic[str(self.selected_curve)].y_scale + Curve.dic[str(self.selected_curve)].y_offset
-        else:
-            # status message will be replaced by the one from 'plot_curves'.
-            # TODO add a warning popup window.
-            print('The value of Y scale for curve', Curve.dic[str(self.selected_curve)].name, 'is 0!')
-
+        try:
+            if float(self.curve_x_scale.get()) != 0:
+                Curve.dic[str(self.selected_curve)].x_scale = float(self.curve_x_scale.get())
+                Curve.dic[str(self.selected_curve)].x_offset = float(self.curve_x_offset.get())
+                Curve.dic[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 0]* Curve.dic[str(self.selected_curve)].x_scale + Curve.dic[str(self.selected_curve)].x_offset
+            else:
+                # status message will be replaced by the one from 'plot_curves'.
+                msg.showerror('Error', 'The value of X scale cannot be 0.')
+            if float(self.curve_y_scale.get()) != 0:
+                Curve.dic[str(self.selected_curve)].y_scale = float(self.curve_y_scale.get())
+                Curve.dic[str(self.selected_curve)].y_offset = float(self.curve_y_offset.get())
+                Curve.dic[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 1]* Curve.dic[str(self.selected_curve)].y_scale + Curve.dic[str(self.selected_curve)].y_offset
+            else:
+                # status message will be replaced by the one from 'plot_curves'.
+                msg.showerror('Error', 'The value of Y scale cannot be 0.')
+        except ValueError:
+            msg.showerror('Error', 'The values of X scale, X offset, Y scale and Y offset must be numbers.')
+        
         self.plot_curves()
 
     def plot_curves(self):
