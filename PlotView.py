@@ -12,7 +12,7 @@ try:
     import sys
     import tkinter as tk
     from tkinter import font
-    # from tkinter import messagebox as msg
+    from tkinter import messagebox as msg
     from tkinter import filedialog
     import tkinter.ttk as ttk
     import webbrowser
@@ -522,16 +522,18 @@ class Application(tk.Tk):
             The curve is added in the Curve.dic. Index is Curve.count.
         """
         if self.work_file:
-            # Since instance is not yet created self.id does not exist. So 'count' is used.
-            Curve.dic[str(Curve.count)] = (Curve(self.work_file))
-            # Show the name of the created curve in 'curve_label'
-            Curve.dic[str(Curve.count)].name = self.curve_label.get()
-            # Update the list of curve for future modifications.
-            self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
-            self.plot_curves()
+            if len(self.curve_label.get()) != 0:
+                # Since instance is not yet created self.id does not exist. So 'count' is used.
+                Curve.dic[str(Curve.count)] = (Curve(self.work_file))
+                # Show the name of the created curve in 'curve_label'
+                Curve.dic[str(Curve.count)].name = self.curve_label.get()
+                # Update the list of curve for future modifications.
+                self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
+                self.plot_curves()
+            else:
+                msg.showerror('Error', 'The name of the curve is not defined.')
         else:
-            # TODO: add a modal window.
-            self.set_status('ERROR - No CSV file were selected.')
+            msg.showerror('Error', 'No CSV file were selected.')
 
     def update_curve(self):
         """ Update Curve instance attributes based on GUI input"""
@@ -540,8 +542,9 @@ class Application(tk.Tk):
             Curve.dic[str(self.selected_curve)].name = self.active_curve_name.get()
         else:
             # status message will be replaced by the one from 'plot_curves'.
-            # TODO add a warning popup window.
-            print('The name of curve', Curve.dic[str(self.selected_curve)].name, 'is missing.')
+            msg.showwarning('Warning', 'The name of curve' + 
+                                        Curve.dic[str(self.selected_curve)].name +
+                                        'is missing.')
 
         # Update curve visibility
         Curve.dic[str(self.selected_curve)].visibility = self.show_state.get()
