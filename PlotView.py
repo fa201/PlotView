@@ -33,7 +33,7 @@ my_colors_white = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold'
              'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
              'peru', 'limegreen', 'turquoise', 'royalblue'
              ]
-my_linestyles = ['-', '--', ':']
+my_linestyles = ['solid', 'dashed', 'dotted']
 
 
 class Curve:
@@ -69,7 +69,6 @@ class Curve:
         self.name = 'Name'
         self.path = path
         self.data_in = self.read_file(path)
-        # TODO: handle the reading with a function and exceptions if no column or 1 column
         self.data_type = {'x_type': self.data_in.columns[0], 'y_type': self.data_in.columns[1]}
         self.data_out = self.data_in.copy()
         self.visibility = True
@@ -95,6 +94,7 @@ class Curve:
         """
         df = pd.read_csv(self.path, delimiter=',', dtype=float)
         return df
+        # TODO: handle following exceptions: no column, 1 column, more than 2 columns, strings, missing values, etc.
 
 
 class Application(tk.Tk):
@@ -220,8 +220,8 @@ class Application(tk.Tk):
         # Link of main menu to root window
         self.config(menu=menu_main)
         # File Menu
-        menu_file.add_command(label='Load session', state='disabled')
-        menu_file.add_command(label='Save session as', command=self.save_cfg)
+        menu_file.add_command(label='Load PV_session.ini', state='disabled')
+        menu_file.add_command(label='Save PV_session.ini', command=self.save_session)
         menu_file.add_command(label='Quit', command=self.app_quit)
         # Help Menu
         menu_help.add_command(label='Help on PlotView', command=self.help_redirect)
@@ -293,13 +293,14 @@ class Application(tk.Tk):
         """
         self.status.config(text=' '+string)
 
-    def save_cfg(self):
-        """Save session as a config file"""
+    def save_session(self):
+        """ Save session as a config file
+        
+            Curve data are exported.
+            Plot data are exported.
+            The session file will be created each time so the previous one is erased.
+        """
         config = configparser.ConfigParser()
-        # Session info
-        config['session'] = {'working directory': self.work_file,
-                             'curve count 1': Curve.count,
-                            }
         # Plot data
         config['plot'] = {'main title': self.main_title.get(),
                           'x title': self.x_title.get(),
@@ -312,6 +313,7 @@ class Application(tk.Tk):
                           'legend position': self.legend.get(),
                           'display grid': self.grid_state.get()
                           }
+        
         # Annotation and arrow data
         config['annotation'] = {'text': self.annotation.get(),
                                 'text X pos.': self.annotation_x.get(),
@@ -327,8 +329,29 @@ class Application(tk.Tk):
                                 'arrow line width': self.arrow_width.get(),
                                 'arrow state': self.arrow_state.get(),
                                }
+        
+        # Session info
+        config['session'] = {'working directory': self.work_dir,
+                             'curve count': Curve.count,
+                            }
+
+        # Curve data
+        for i in range(1, Curve.count+1):
+            config[i] = {'name': Curve.dic[str(i)].name,
+                         'CSV file path': Curve.dic[str(i)].path,
+                         'visibility': Curve.dic[str(i)].visibility,
+                         'line color': Curve.dic[str(i)].color,
+                         'line width': Curve.dic[str(i)].width,
+                         'line style': Curve.dic[str(i)].style,
+                         'offset in X': Curve.dic[str(i)].x_offset,
+                         'offset in Y': Curve.dic[str(i)].y_offset,
+                         'scale in X': Curve.dic[str(i)].x_scale,
+                         'scale in Y': Curve.dic[str(i)].y_scale
+                        }
+        # Write the file and erase existing file.
         with open('PV_session.ini', 'w') as file:
             config.write(file)
+        self.set_status('Session file "PV_session.ini" is written where PlotView.py file is located.')
 
     def curve_tab(self):
         """ First tab managing curve creation."""
