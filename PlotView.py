@@ -9,6 +9,11 @@
 
 try:
     from collections import OrderedDict
+    import configparser
+    import matplotlib.pyplot as plt
+    from matplotlib.backends.backend_tkagg import (
+        FigureCanvasTkAgg, NavigationToolbar2Tk)
+    import pandas as pd
     import sys
     import tkinter as tk
     from tkinter import font
@@ -16,10 +21,7 @@ try:
     from tkinter import filedialog
     import tkinter.ttk as ttk
     import webbrowser
-    import matplotlib.pyplot as plt
-    from matplotlib.backends.backend_tkagg import (
-        FigureCanvasTkAgg, NavigationToolbar2Tk)
-    import pandas as pd
+
 except ModuleNotFoundError as e:
         print('The necessary Python packages are not installed.\n' + str(e))
         print('Please check the required packages at https://github.com/fa201/PlotView.')
@@ -123,7 +125,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.12'
+        self.PV_VERSION = '0.13'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -219,8 +221,7 @@ class Application(tk.Tk):
         self.config(menu=menu_main)
         # File Menu
         menu_file.add_command(label='Load session', state='disabled')
-        menu_file.add_command(label='Save session as', state='disabled')
-        menu_file.add_command(label='Export image', state='disabled')
+        menu_file.add_command(label='Save session as', command=self.save_cfg)
         menu_file.add_command(label='Quit', command=self.app_quit)
         # Help Menu
         menu_help.add_command(label='Help on PlotView', command=self.help_redirect)
@@ -291,6 +292,25 @@ class Application(tk.Tk):
             A space is added on the left to give more room relative to the window border.
         """
         self.status.config(text=' '+string)
+
+    def save_cfg(self):
+        """Save session as a config file"""
+        config = configparser.ConfigParser()
+        # Plot data
+        config['PLOT'] = { 'main title': self.main_title.get(),
+                        'x title': self.x_title.get(),
+                        'y title': self.y_title.get(),
+                        'auto scale': self.autoscale.get(),
+                        'x min user range': self.x_min_range.get(), 
+                        'x max user range': self.x_max_range.get(), 
+                        'y min user range': self.y_min_range.get(), 
+                        'y max user range': self.y_max_range.get(), 
+                        'legend position': self.legend.get(),
+                        'display grid': self.grid_state.get()
+                      }
+        with open('PV_session.ini', 'w') as file:
+            config.write(file)
+
 
     def curve_tab(self):
         """ First tab managing curve creation."""
