@@ -296,21 +296,39 @@ class Application(tk.Tk):
     def save_cfg(self):
         """Save session as a config file"""
         config = configparser.ConfigParser()
+        # Session info
+        config['session'] = {'working directory': self.work_file,
+                             'curve count 1': Curve.count,
+                            }
         # Plot data
-        config['PLOT'] = { 'main title': self.main_title.get(),
-                        'x title': self.x_title.get(),
-                        'y title': self.y_title.get(),
-                        'auto scale': self.autoscale.get(),
-                        'x min user range': self.x_min_range.get(), 
-                        'x max user range': self.x_max_range.get(), 
-                        'y min user range': self.y_min_range.get(), 
-                        'y max user range': self.y_max_range.get(), 
-                        'legend position': self.legend.get(),
-                        'display grid': self.grid_state.get()
-                      }
+        config['plot'] = {'main title': self.main_title.get(),
+                          'x title': self.x_title.get(),
+                          'y title': self.y_title.get(),
+                          'auto scale': self.autoscale.get(),
+                          'x min user range': self.x_min_range.get(), 
+                          'x max user range': self.x_max_range.get(), 
+                          'y min user range': self.y_min_range.get(), 
+                          'y max user range': self.y_max_range.get(), 
+                          'legend position': self.legend.get(),
+                          'display grid': self.grid_state.get()
+                          }
+        # Annotation and arrow data
+        config['annotation'] = {'text': self.annotation.get(),
+                                'text X pos.': self.annotation_x.get(),
+                                'text Y pos.': self.annotation_y.get(),
+                                'text color': self.annot_color_combo.get(),
+                                'text size': self.annot_size.get(),
+                                'text state': self.annot_state.get(),
+                                'arrow head X pos.': self.arrow_head_x.get(),
+                                'arrow head Y pos.': self.arrow_head_y.get(),
+                                'arrow head length': self.arrow_head_length.get(),
+                                'arrow head width': self.arrow_head_width.get(),
+                                'arrow color': self.arrow_color_combo.get(),
+                                'arrow line width': self.arrow_width.get(),
+                                'arrow state': self.arrow_state.get(),
+                               }
         with open('PV_session.ini', 'w') as file:
             config.write(file)
-
 
     def curve_tab(self):
         """ First tab managing curve creation."""
