@@ -30,6 +30,7 @@ PlotView needs the following packages to run.
 * pandas 1.0.1
 * matplotlib 3.2.0
 * tkinter 8.6
+
 Note that the above versions are those used for the development. If you have a lower version for a package, it may work. In case of trouble, please update the packages to these versions at least.
 
 # Limitations of PlotView
