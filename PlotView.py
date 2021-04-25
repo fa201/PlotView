@@ -379,6 +379,21 @@ class Application(tk.Tk):
         self.main_title.set(config.get('plot', 'main title'))
         self.main_title.set(config.get('plot', 'main title'))
 
+        # Process Annotation section
+        self.annotation.set(config.get('annotation', 'text'))
+        self.annotation_x.set(config.getfloat('annotation', 'text X pos.'))
+        self.annotation_y.set(config.getfloat('annotation', 'text Y pos.'))
+        self.annot_color_combo.set(config.get('annotation', 'text color'))
+        self.annot_size.set(config.get('annotation', 'text size'))
+        self.annot_state.set(config.getboolean('annotation', 'text state'))
+        self.arrow_head_x.set(config.getfloat('annotation', 'arrow head X pos.'))
+        self.arrow_head_y.set(config.getfloat('annotation', 'arrow head Y pos.'))
+        self.arrow_head_length.set(config.get('annotation', 'arrow head length'))
+        self.arrow_head_width.set(config.get('annotation', 'arrow head width'))
+        self.arrow_color_combo.set(config.get('annotation', 'arrow color'))
+        self.arrow_width.set(config.get('annotation', 'arrow line width'))
+        self.arrow_state.set(config.getboolean('annotation', 'arrow state'))
+
 
 
     def curve_tab(self):
