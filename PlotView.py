@@ -220,7 +220,7 @@ class Application(tk.Tk):
         # Link of main menu to root window
         self.config(menu=menu_main)
         # File Menu
-        menu_file.add_command(label='Load PV_session.ini', state='disabled')
+        menu_file.add_command(label='Load PV_session.ini', command=self.load_session)
         menu_file.add_command(label='Save PV_session.ini', command=self.save_session)
         menu_file.add_command(label='Quit', command=self.app_quit)
         # Help Menu
@@ -352,6 +352,34 @@ class Application(tk.Tk):
         with open('PV_session.ini', 'w') as file:
             config.write(file)
         self.set_status('Session file "PV_session.ini" is written where PlotView.py file is located.')
+
+    def load_session(self):
+        """ Load session file
+        
+            Curve data are read.
+            Plot data are read.
+        """
+        config = configparser.ConfigParser()
+        # TODO: Show a warning or ask a permission since the work will be lost ?
+        # Read the file
+        config.read('PV_session.ini')
+        # Process Plot section
+        self.main_title.set(config.get('plot', 'main title'))
+        self.x_title.set(config.get('plot', 'x title'))
+        self.y_title.set(config.get('plot', 'y title'))
+        self.autoscale.set(config.getboolean('plot', 'auto scale'))
+        self.x_min_range.set(config.get('plot', 'x min user range'))
+        self.x_max_range.set(config.get('plot', 'x max user range'))
+        self.y_min_range.set(config.get('plot', 'y min user range'))
+        self.y_max_range.set(config.get('plot', 'y max user range'))
+        self.legend.set(config.getint('plot', 'legend position'))
+        self.grid_state.set(config.getboolean('plot', 'display grid'))
+        self.main_title.set(config.get('plot', 'main title'))
+        self.main_title.set(config.get('plot', 'main title'))
+        self.main_title.set(config.get('plot', 'main title'))
+        self.main_title.set(config.get('plot', 'main title'))
+
+
 
     def curve_tab(self):
         """ First tab managing curve creation."""
