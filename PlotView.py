@@ -66,6 +66,10 @@ class Curve:
     dic = OrderedDict()
 
     def __init__(self, path):
+        """ Create a Curve instance based on CSV file path.
+
+            TODO: add all attributes in parameter to create a Curve when reading session file
+        """
         self.name = 'Name'
         self.path = path
         self.data_in = self.read_file(path)
@@ -394,7 +398,41 @@ class Application(tk.Tk):
         self.arrow_width.set(config.get('annotation', 'arrow line width'))
         self.arrow_state.set(config.getboolean('annotation', 'arrow state'))
 
+        # Process session data
+        self.work_dir = config.get('session', 'working directory')
+        # Display the working directory
+        if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
+            temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE+3:]
+            self.work_dir_txt.set(temp)
+            self.set_status('Working directory is set at:'+self.work_dir)
+        elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
+            self.work_dir_txt.set(self.work_dir)
+            self.set_status('Working directory is set at:'+self.work_dir)
+        
+        Curve.count = config.getint('session', 'curve count')
 
+        # Process Curve data
+        for i in range(1, Curve.count+1):
+            if config.get(str(i), 'csv file path'):
+                Curve.dic[str(i)] = Curve(config.get(str(i), 'csv file path'))
+                # Since Curve.count is incremented after curve creation, it needs to be decremented.
+                Curve.count -= 1
+                Curve.dic[str(i)].name = config.get(str(i), 'name')
+                Curve.dic[str(i)].visibility = config.get(str(i), 'visibility')
+                Curve.dic[str(i)].color = config.get(str(i), 'line color')
+                Curve.dic[str(i)].width = config.get(str(i), 'line width')
+                Curve.dic[str(i)].style = config.get(str(i), 'line style')
+                Curve.dic[str(i)].x_offset = config.get(str(i), 'offset in X')
+                Curve.dic[str(i)].y_offset = config.get(str(i), 'offset in Y')
+                Curve.dic[str(i)].x_scale = config.get(str(i), 'scale in X')
+                Curve.dic[str(i)].y_scale = config.get(str(i), 'scale in Y')
+            else:
+                msg.showerror('Error', 'No CSV file were selected for curve'+str(i))
+        
+        # Update curve ID list to be able to continue working on curves.
+        self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
+        self.set_status('Data in session file "PV_session.ini" are read.')
+        self.plot_curves()
 
     def curve_tab(self):
         """ First tab managing curve creation."""
