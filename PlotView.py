@@ -129,7 +129,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.13'
+        self.PV_VERSION = '0.14'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -524,9 +524,31 @@ class Application(tk.Tk):
                  width=30, justify=tk.CENTER
                 ).grid(row=1, column=1, columnspan=3, sticky=tk.E+tk.W+tk.N+tk.S,
                 padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        # Curve X data type.
+        self.active_curve_x_data = tk.StringVar()
+        self.active_curve_x_data.set(' ')
+        ttk.Label(self.curve_prop_frame, text='X data'
+                ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
+        ttk.Entry(self.curve_prop_frame, textvariable=self.active_curve_x_data,
+                 width=30, justify=tk.CENTER
+                ).grid(row=2, column=1, columnspan=3, sticky=tk.E+tk.W+tk.N+tk.S,
+                padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+        # Curve Y data type.
+        self.active_curve_y_data = tk.StringVar()
+        self.active_curve_y_data.set(' ')
+        ttk.Label(self.curve_prop_frame, text='Y data'
+                ).grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                      )
+        ttk.Entry(self.curve_prop_frame, textvariable=self.active_curve_y_data,
+                 width=30, justify=tk.CENTER
+                ).grid(row=3, column=1, columnspan=3, sticky=tk.E+tk.W+tk.N+tk.S,
+                padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve color
         ttk.Label(self.curve_prop_frame, text='Line color'
-                ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                ).grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
@@ -535,22 +557,22 @@ class Application(tk.Tk):
                                                 width=12
                                                 )
         self.curve_color_combo.set(my_colors_white[0])
-        self.curve_color_combo.grid(row=2, column=1, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.curve_color_combo.grid(row=4, column=1, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S,
                                     padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                    )
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
         # Line width
         ttk.Label(self.curve_prop_frame, text='Line width'
-                ).grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                ).grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
         self.curve_width = tk.StringVar()
         self.curve_width.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_width, width=4, justify=tk.CENTER).grid(
-                  row=3, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+                  row=5, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Line style
         ttk.Label(self.curve_prop_frame,
-                text='Line style').grid(row=3,
+                text='Line style').grid(row=5,
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         self.curve_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_linestyles,
@@ -558,58 +580,58 @@ class Application(tk.Tk):
                                                 width=3
                                                 )
         self.curve_style_combo.set(my_linestyles[0])
-        self.curve_style_combo.grid(row=3, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.curve_style_combo.grid(row=5, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                     padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                    )
         self.curve_style_combo.bind('<<ComboboxSelected>>', self.change_curve_style)
         # X scale
         ttk.Label(self.curve_prop_frame, text='Scale X axis'
-                ).grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                ).grid(row=6, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
         self.curve_x_scale = tk.StringVar()
         self.curve_x_scale.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_x_scale, width=8,
-                 justify=tk.CENTER).grid(row=5, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
+                 justify=tk.CENTER).grid(row=6, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Y scale
         ttk.Label(self.curve_prop_frame, text='Scale Y axis'
-                ).grid(row=5, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
+                ).grid(row=6, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
         self.curve_y_scale = tk.StringVar()
         self.curve_y_scale.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_y_scale, width=8,
-                 justify=tk.CENTER).grid(row=5, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
+                 justify=tk.CENTER).grid(row=6, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
         # X offset
         ttk.Label(self.curve_prop_frame, text='Offset X axis'
-                ).grid(row=6, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+                ).grid(row=7, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
         self.curve_x_offset = tk.StringVar()
         self.curve_x_offset.set('0')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_x_offset, width=8,
-                 justify=tk.CENTER).grid(row=6, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
+                 justify=tk.CENTER).grid(row=7, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                          )
         # Y offset
         ttk.Label(self.curve_prop_frame, text='Offset Y axis'
-                ).grid(row=6, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
+                ).grid(row=7, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
         self.curve_y_offset = tk.StringVar()
         self.curve_y_offset.set('0')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_y_offset, width=8,
-                 justify=tk.CENTER).grid(row=6, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
+                 justify=tk.CENTER).grid(row=7, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
 
         # APPLY BUTTON
         ttk.Button(self.curve_prop_frame, text='Apply',
                   command=self.update_curve, width=6
-                 ).grid(row=7, column=0, columnspan=4, sticky=tk.E+tk.W+tk.N+tk.S,
+                 ).grid(row=8, column=0, columnspan=4, sticky=tk.E+tk.W+tk.N+tk.S,
                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                        )
 
@@ -688,6 +710,10 @@ class Application(tk.Tk):
         else:
             # status message will be replaced by the one from 'plot_curves'.
             msg.showerror('Error', 'The name of the curve is required.')
+
+        # Update curve data types
+        self.active_curve_x_data.set(Curve.dic[str(self.selected_curve)].data_type['x_type'])
+        self.active_curve_y_data.set(Curve.dic[str(self.selected_curve)].data_type['y_type'])
 
         # Update curve visibility
         Curve.dic[str(self.selected_curve)].visibility = self.show_state.get()
