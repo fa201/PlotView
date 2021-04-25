@@ -824,7 +824,6 @@ class Application(tk.Tk):
 
         # Get the curve ID through event.
         self.selected_curve = event.widget.get()
-        print('Selected curve :', self.active_curve_combo.get())
         # check for input error on curve ID
         if self.selected_curve in Curve.dic.keys():
             # Update the active curve attributes.
