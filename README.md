@@ -1,5 +1,6 @@
 # PlotView
 PlotView plots curves from CSV data file. The appearance of curves (color, line width, etc.) can be customized and one annotation can also be added if you need to highlight a point of interest.
+ttk is used to have a more modern look at least on Windows platorms. Note that the below picture was taken on linux Xubuntu.
 My goals are:
 * Application to learn the basics of Python and simple GUI programming.
 * Hopefully make a tool which will be useable to plot test data at work.
@@ -16,10 +17,12 @@ matplotlib *Figure* and *Navigation Tool Bar* will be embedded in tkinter GUI si
 ## Expected CSV format
 **Each file contain 1 curve** (X and Y coordinates for each point of the curve). The CSV file will be prepared beforehand, using pandas for example, to produce a **strict CSV format with a comma as delimiter between both columns**. The first row should contain the type of value for X and Y.
 
-## Folders
-* 'help' gathers HTML help files launched through the *help* menu.
-* 'image' contains a few pictures of plot examples.
-* 'test' contains a few test curves.
+## Folders and files
+* 'help' folder gathers HTML help files launched through the *help* menu.
+* 'image' folder contains a few pictures of plot examples.
+* 'test' folder contains a few test curves.
+* PlotView.py is the python script.
+* PV_session.ini is a session file which enables to bring back a saved session: curves will be load, colors, titles and annotation are updated.
 
 # Required Python packages.
 PlotView needs the following packages to run.

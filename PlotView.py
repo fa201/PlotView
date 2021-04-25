@@ -9,6 +9,11 @@
 
 try:
     from collections import OrderedDict
+    import configparser
+    import matplotlib.pyplot as plt
+    from matplotlib.backends.backend_tkagg import (
+        FigureCanvasTkAgg, NavigationToolbar2Tk)
+    import pandas as pd
     import sys
     import tkinter as tk
     from tkinter import font
@@ -16,10 +21,7 @@ try:
     from tkinter import filedialog
     import tkinter.ttk as ttk
     import webbrowser
-    import matplotlib.pyplot as plt
-    from matplotlib.backends.backend_tkagg import (
-        FigureCanvasTkAgg, NavigationToolbar2Tk)
-    import pandas as pd
+
 except ModuleNotFoundError as e:
         print('The necessary Python packages are not installed.\n' + str(e))
         print('Please check the required packages at https://github.com/fa201/PlotView.')
@@ -31,7 +33,7 @@ my_colors_white = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold'
              'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
              'peru', 'limegreen', 'turquoise', 'royalblue'
              ]
-my_linestyles = ['-', '--', ':']
+my_linestyles = ['solid', 'dashed', 'dotted']
 
 
 class Curve:
@@ -64,10 +66,13 @@ class Curve:
     dic = OrderedDict()
 
     def __init__(self, path):
+        """ Create a Curve instance based on CSV file path.
+
+            TODO: add all attributes in parameter to create a Curve when reading session file
+        """
         self.name = 'Name'
         self.path = path
         self.data_in = self.read_file(path)
-        # TODO: handle the reading with a function and exceptions if no column or 1 column
         self.data_type = {'x_type': self.data_in.columns[0], 'y_type': self.data_in.columns[1]}
         self.data_out = self.data_in.copy()
         self.visibility = True
@@ -93,6 +98,7 @@ class Curve:
         """
         df = pd.read_csv(self.path, delimiter=',', dtype=float)
         return df
+        # TODO: handle following exceptions: no column, 1 column, more than 2 columns, strings, missing values, etc.
 
 
 class Application(tk.Tk):
@@ -123,7 +129,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.12'
+        self.PV_VERSION = '0.13'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -218,9 +224,8 @@ class Application(tk.Tk):
         # Link of main menu to root window
         self.config(menu=menu_main)
         # File Menu
-        menu_file.add_command(label='Load session', state='disabled')
-        menu_file.add_command(label='Save session as', state='disabled')
-        menu_file.add_command(label='Export image', state='disabled')
+        menu_file.add_command(label='Load PV_session.ini', command=self.load_session)
+        menu_file.add_command(label='Save PV_session.ini', command=self.save_session)
         menu_file.add_command(label='Quit', command=self.app_quit)
         # Help Menu
         menu_help.add_command(label='Help on PlotView', command=self.help_redirect)
@@ -291,6 +296,143 @@ class Application(tk.Tk):
             A space is added on the left to give more room relative to the window border.
         """
         self.status.config(text=' '+string)
+
+    def save_session(self):
+        """ Save session as a config file
+        
+            Curve data are exported.
+            Plot data are exported.
+            The session file will be created each time so the previous one is erased.
+        """
+        config = configparser.ConfigParser()
+        # Plot data
+        config['plot'] = {'main title': self.main_title.get(),
+                          'x title': self.x_title.get(),
+                          'y title': self.y_title.get(),
+                          'auto scale': self.autoscale.get(),
+                          'x min user range': self.x_min_range.get(), 
+                          'x max user range': self.x_max_range.get(), 
+                          'y min user range': self.y_min_range.get(), 
+                          'y max user range': self.y_max_range.get(), 
+                          'legend position': self.legend.get(),
+                          'display grid': self.grid_state.get()
+                          }
+        
+        # Annotation and arrow data
+        config['annotation'] = {'text': self.annotation.get(),
+                                'text X pos.': self.annotation_x.get(),
+                                'text Y pos.': self.annotation_y.get(),
+                                'text color': self.annot_color_combo.get(),
+                                'text size': self.annot_size.get(),
+                                'text state': self.annot_state.get(),
+                                'arrow head X pos.': self.arrow_head_x.get(),
+                                'arrow head Y pos.': self.arrow_head_y.get(),
+                                'arrow head length': self.arrow_head_length.get(),
+                                'arrow head width': self.arrow_head_width.get(),
+                                'arrow color': self.arrow_color_combo.get(),
+                                'arrow line width': self.arrow_width.get(),
+                                'arrow state': self.arrow_state.get(),
+                               }
+        
+        # Session info
+        config['session'] = {'working directory': self.work_dir,
+                             'curve count': Curve.count,
+                            }
+
+        # Curve data
+        for i in range(1, Curve.count+1):
+            config[i] = {'name': Curve.dic[str(i)].name,
+                         'CSV file path': Curve.dic[str(i)].path,
+                         'visibility': Curve.dic[str(i)].visibility,
+                         'line color': Curve.dic[str(i)].color,
+                         'line width': Curve.dic[str(i)].width,
+                         'line style': Curve.dic[str(i)].style,
+                         'offset in X': Curve.dic[str(i)].x_offset,
+                         'offset in Y': Curve.dic[str(i)].y_offset,
+                         'scale in X': Curve.dic[str(i)].x_scale,
+                         'scale in Y': Curve.dic[str(i)].y_scale
+                        }
+        # Write the file and erase existing file.
+        with open('PV_session.ini', 'w') as file:
+            config.write(file)
+        self.set_status('Session file "PV_session.ini" is written where PlotView.py file is located.')
+
+    def load_session(self):
+        """ Load session file
+        
+            Curve data are read.
+            Plot data are read.
+        """
+        config = configparser.ConfigParser()
+        # TODO: Show a warning or ask a permission since the work will be lost ?
+        # Read the file
+        config.read('PV_session.ini')
+        # Process Plot section
+        self.main_title.set(config.get('plot', 'main title'))
+        self.x_title.set(config.get('plot', 'x title'))
+        self.y_title.set(config.get('plot', 'y title'))
+        self.autoscale.set(config.getboolean('plot', 'auto scale'))
+        self.x_min_range.set(config.get('plot', 'x min user range'))
+        self.x_max_range.set(config.get('plot', 'x max user range'))
+        self.y_min_range.set(config.get('plot', 'y min user range'))
+        self.y_max_range.set(config.get('plot', 'y max user range'))
+        self.legend.set(config.getint('plot', 'legend position'))
+        self.grid_state.set(config.getboolean('plot', 'display grid'))
+        self.main_title.set(config.get('plot', 'main title'))
+        self.main_title.set(config.get('plot', 'main title'))
+        self.main_title.set(config.get('plot', 'main title'))
+        self.main_title.set(config.get('plot', 'main title'))
+
+        # Process Annotation section
+        self.annotation.set(config.get('annotation', 'text'))
+        self.annotation_x.set(config.getfloat('annotation', 'text X pos.'))
+        self.annotation_y.set(config.getfloat('annotation', 'text Y pos.'))
+        self.annot_color_combo.set(config.get('annotation', 'text color'))
+        self.annot_size.set(config.get('annotation', 'text size'))
+        self.annot_state.set(config.getboolean('annotation', 'text state'))
+        self.arrow_head_x.set(config.getfloat('annotation', 'arrow head X pos.'))
+        self.arrow_head_y.set(config.getfloat('annotation', 'arrow head Y pos.'))
+        self.arrow_head_length.set(config.get('annotation', 'arrow head length'))
+        self.arrow_head_width.set(config.get('annotation', 'arrow head width'))
+        self.arrow_color_combo.set(config.get('annotation', 'arrow color'))
+        self.arrow_width.set(config.get('annotation', 'arrow line width'))
+        self.arrow_state.set(config.getboolean('annotation', 'arrow state'))
+
+        # Process session data
+        self.work_dir = config.get('session', 'working directory')
+        # Display the working directory
+        if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
+            temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE+3:]
+            self.work_dir_txt.set(temp)
+            self.set_status('Working directory is set at:'+self.work_dir)
+        elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
+            self.work_dir_txt.set(self.work_dir)
+            self.set_status('Working directory is set at:'+self.work_dir)
+        
+        Curve.count = config.getint('session', 'curve count')
+
+        # Process Curve data
+        for i in range(1, Curve.count+1):
+            if config.get(str(i), 'csv file path'):
+                Curve.dic[str(i)] = Curve(config.get(str(i), 'csv file path'))
+                # Since Curve.count is incremented after curve creation, it needs to be decremented.
+                Curve.count -= 1
+                Curve.dic[str(i)].name = config.get(str(i), 'name')
+                Curve.dic[str(i)].visibility = config.get(str(i), 'visibility')
+                Curve.dic[str(i)].color = config.get(str(i), 'line color')
+                Curve.dic[str(i)].width = config.get(str(i), 'line width')
+                Curve.dic[str(i)].style = config.get(str(i), 'line style')
+                Curve.dic[str(i)].x_offset = config.get(str(i), 'offset in X')
+                Curve.dic[str(i)].y_offset = config.get(str(i), 'offset in Y')
+                Curve.dic[str(i)].x_scale = config.get(str(i), 'scale in X')
+                Curve.dic[str(i)].y_scale = config.get(str(i), 'scale in Y')
+            else:
+                msg.showerror('Error', 'No CSV file were selected for curve'+str(i))
+        
+        # Update curve ID list to be able to continue working on curves.
+        self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
+        self.set_status('Data in session file "PV_session.ini" are read.')
+        self.plot_curves()
 
     def curve_tab(self):
         """ First tab managing curve creation."""
@@ -682,7 +824,6 @@ class Application(tk.Tk):
 
         # Get the curve ID through event.
         self.selected_curve = event.widget.get()
-        print('Selected curve :', self.active_curve_combo.get())
         # check for input error on curve ID
         if self.selected_curve in Curve.dic.keys():
             # Update the active curve attributes.

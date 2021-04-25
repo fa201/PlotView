@@ -39,8 +39,9 @@
         <p><img class="image_l" src="../image/PlotView_example_1.png" title="PlotView main window" alt="PlotView main window"></p>
 
         <h3>Main window</h3>
-        <p>The main window is divided in 3 parts:
+        <p>The main window is divided in 4 parts:
             <ul>
+                <li>menus on top</li>
                 <li><em>plot area</em> on the left: it is a <a href="https://matplotlib.org/" title="matplotlib" target="_blank">matplotlib</a> plot area embedded in the main window. The lower part is a <a href="https://matplotlib.org/3.2.2/users/navigation_toolbar.html#" title="help on matplotlib toolbar" target="_blank">matplotlib toolbar</a> with panning, zooming and picture export fonctions.</li>
                 <li><em>function area</em> on the right: it is divided in tab panels which gather function link to 3 groups of functions:
                 <ul>
@@ -52,6 +53,10 @@
             </ul>
         </p>
 
+        <h3>Menus</h3>
+        <p><em>File / Load PV_session.ini</em> opens the previously saved session file. This restores curves, titles and annotation as they were at the moment of saving.</p>
+        <p><em>File / Save PV_session.ini</em> saves curves, titles and annotation as they are in the ini file. This file is located in the same folder as the PlotView.py script. <strong>It is possible to edit this file yet it is not recommended to do so</strong> since the error processing is not coded (so any error or missing data will cause the application to raise an error).</p>
+
         <h3>Status bar</h3>
         <p>It is recommended to <strong>look at the status bar after each function</strong> to check the status of PlotView.</p>
 
@@ -61,12 +66,7 @@
         <p>The entry field allows to give a name to the curve before it is created. If you skip this entry field, the default name "Curve_label" will be given to the curve. this curve can be renamed after. Tip: double-click on the default name to replace it by a more relevant name.</p>
         <p>The <em>Create</em> button create the plot of the selected CSV file with the entered curve name (if any). This plot also considers some default values for color, type of line, etc. These default values can be changed in the <em>curve properties</em> area just below. Each curve is referenced by a curve ID.</p>
         <p>In the <em>Curve properties</em> panel, you can modify the properties of all created by first selecting the curve ID in the list and then modifying the properties. This also applies to the <em>Show curve</em> check button.</p>
-        <p>The <em>type of line</em> is chose through a drop down list of symbol:
-            <ul>
-                <li>'-' means solid line</li>
-                <li>'--' means dashed line</li>
-                <li>':' means dotted line</li>
-            </ul>
+        <p>The <em>type of line</em> is chose through a drop down list: solid, dashed or dotted.
         </p>
         <p>Next, you can offset and scale the X and Y data of the selected curve. Note that you can <em>revert back these changes</em> by resetting offset values to 0 and resetting scale values to 1.</p>
         <p><em>Apply</em> will update the plot with all the changes made for the selected curve. For example, if you want to change the color of all curves, you have to select the first curve, change the color and <strong>apply the change before selecting another curve</strong> and so on.</p>
