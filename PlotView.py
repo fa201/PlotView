@@ -343,6 +343,8 @@ class Application(tk.Tk):
         for i in range(1, Curve.count+1):
             config[i] = {'name': Curve.dic[str(i)].name,
                          'CSV file path': Curve.dic[str(i)].path,
+                         'X data': Curve.dic[str(i)].data_type['x_type'],
+                         'Y data': Curve.dic[str(i)].data_type['y_type'],
                          'visibility': Curve.dic[str(i)].visibility,
                          'line color': Curve.dic[str(i)].color,
                          'line width': Curve.dic[str(i)].width,
@@ -432,6 +434,9 @@ class Application(tk.Tk):
         # Update curve ID list to be able to continue working on curves.
         self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
         self.set_status('Data in session file "PV_session.ini" are read.')
+        # FIXME: the GUI is not updated with offset and scale so the plot is not updated either;
+        # Work around: select each curve and launch apply.
+        # Code should do the same just after loading before plotting.
         self.plot_curves()
 
     def curve_tab(self):
@@ -729,6 +734,7 @@ class Application(tk.Tk):
             msg.showerror('Error', 'The width of curve line must be a number.')
 
         # Update scale and offset values for curve
+        # FIXME: this should be done in curve so that the plot is updated after reading the session file.
         try:
             if float(self.curve_x_scale.get()) != 0:
                 Curve.dic[str(self.selected_curve)].x_scale = float(self.curve_x_scale.get())
