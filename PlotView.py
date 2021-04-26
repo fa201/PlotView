@@ -420,23 +420,23 @@ class Application(tk.Tk):
                 # Since Curve.count is incremented after curve creation, it needs to be decremented.
                 Curve.count -= 1
                 Curve.dic[str(i)].name = config.get(str(i), 'name')
+                Curve.dic[str(i)].data_type['x_type'] = config.get(str(i), 'x data')
+                Curve.dic[str(i)].data_type['y_type'] = config.get(str(i), 'y data')
                 Curve.dic[str(i)].visibility = config.get(str(i), 'visibility')
                 Curve.dic[str(i)].color = config.get(str(i), 'line color')
                 Curve.dic[str(i)].width = config.get(str(i), 'line width')
                 Curve.dic[str(i)].style = config.get(str(i), 'line style')
-                Curve.dic[str(i)].x_offset = config.get(str(i), 'offset in X')
-                Curve.dic[str(i)].y_offset = config.get(str(i), 'offset in Y')
-                Curve.dic[str(i)].x_scale = config.get(str(i), 'scale in X')
-                Curve.dic[str(i)].y_scale = config.get(str(i), 'scale in Y')
+                Curve.dic[str(i)].x_offset = config.getfloat(str(i), 'offset in X')
+                Curve.dic[str(i)].y_offset = config.getfloat(str(i), 'offset in Y')
+                Curve.dic[str(i)].x_scale = config.getfloat(str(i), 'scale in X')
+                Curve.dic[str(i)].y_scale = config.getfloat(str(i), 'scale in Y')
             else:
                 msg.showerror('Error', 'No CSV file were selected for curve'+str(i))
         
         # Update curve ID list to be able to continue working on curves.
         self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
         self.set_status('Data in session file "PV_session.ini" are read.')
-        # FIXME: the GUI is not updated with offset and scale so the plot is not updated either;
-        # Work around: select each curve and launch apply.
-        # Code should do the same just after loading before plotting.
+        # FIXME: the GUI is not updated with offset and scale so the plot is not updated either
         self.plot_curves()
 
     def curve_tab(self):
@@ -734,7 +734,6 @@ class Application(tk.Tk):
             msg.showerror('Error', 'The width of curve line must be a number.')
 
         # Update scale and offset values for curve
-        # FIXME: this should be done in curve so that the plot is updated after reading the session file.
         try:
             if float(self.curve_x_scale.get()) != 0:
                 Curve.dic[str(self.selected_curve)].x_scale = float(self.curve_x_scale.get())
@@ -778,6 +777,9 @@ class Application(tk.Tk):
         # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
             # print('Visibility ', Curve.dic[str(i)].name, Curve.dic[str(i)].visibility)
+            # Curve data is computed again in case the curve are plot after reading a session file.
+            Curve.dic[str(i)].data_out.iloc[:, 0] = Curve.dic[str(i)].data_in.iloc[:, 0]* Curve.dic[str(i)].x_scale + Curve.dic[str(i)].x_offset
+            Curve.dic[str(i)].data_out.iloc[:, 1] = Curve.dic[str(i)].data_in.iloc[:, 1]* Curve.dic[str(i)].y_scale + Curve.dic[str(i)].y_offset
             if Curve.dic[str(i)].visibility:
                 self.ax.plot(Curve.dic[str(i)].data_out.iloc[:, 0],
                              Curve.dic[str(i)].data_out.iloc[:, 1],
@@ -835,25 +837,6 @@ class Application(tk.Tk):
 
             This allows the user to see the curve attributes after selecting the curve ID.
         """
-        try:
-            # Get the curve ID through event.
-            self.selected_curve = event.widget.get()
-            # Update the active curve attributes.
-            self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
-            self.show_state.set(Curve.dic[str(self.selected_curve)].visibility)
-            self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
-            self.curve_color_combo.set(Curve.dic[str(self.selected_curve)].color)
-            self.curve_width.set(Curve.dic[str(self.selected_curve)].width)
-            self.curve_style_combo.set(Curve.dic[str(self.selected_curve)].style)
-            self.curve_x_scale.set(Curve.dic[str(self.selected_curve)].x_scale)
-            self.curve_y_scale.set(Curve.dic[str(self.selected_curve)].y_scale)
-            self.curve_x_offset.set(Curve.dic[str(self.selected_curve)].x_offset)
-            self.curve_y_offset.set(Curve.dic[str(self.selected_curve)].y_offset)
-            self.set_status('Selected curve: '+Curve.dic[str(self.selected_curve)].name)
-        except AttributeError:
-            # TODO add a warning popup window.
-            self.set_status('ERROR - There is no curve defined.')
-
         # Get the curve ID through event.
         self.selected_curve = event.widget.get()
         # check for input error on curve ID
@@ -862,6 +845,8 @@ class Application(tk.Tk):
             self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
             self.show_state.set(Curve.dic[str(self.selected_curve)].visibility)
             self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
+            self.active_curve_x_data.set(Curve.dic[str(self.selected_curve)].data_type['x_type'])
+            self.active_curve_y_data.set(Curve.dic[str(self.selected_curve)].data_type['y_type'])
             self.curve_color_combo.set(Curve.dic[str(self.selected_curve)].color)
             self.curve_width.set(Curve.dic[str(self.selected_curve)].width)
             self.curve_style_combo.set(Curve.dic[str(self.selected_curve)].style)
