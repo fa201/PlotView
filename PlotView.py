@@ -232,8 +232,8 @@ class Application(tk.Tk):
         menu_file.add_command(label='Save PV_session.ini', command=self.save_session)
         menu_file.add_command(label='Quit', command=self.app_quit)
         # Help Menu
-        menu_help.add_command(label='Help on PlotView', command=self.help_redirect)
-        menu_help.add_command(label='Licence GPLv3', command=self.licence_redirect)
+        menu_help.add_command(label='Help files', command=self.help_message)
+        menu_help.add_command(label='Licence', command=self.licence_message)
         menu_help.add_command(label='About', command=self.about_redirect)
 
         # CREATE STATUS BAR AT BOTTOM
@@ -279,15 +279,19 @@ class Application(tk.Tk):
         self.destroy()
         sys.exit(0)
 
-    def help_redirect(self):
-        """ Plotview HTML help is shown in web browser."""
-        webbrowser.open_new_tab('help/index.html')
-        self.set_status('The PlotView help page is shown in your web browser.')
+    def help_message(self):
+        """ Give directions to help files."""
+        m1 = 'Help is available in the "test" folder with the "index.html" file. '
+        m2 = 'In case you have not downloaded this folder, it is available at:\n'
+        m3 = 'https://github.com/fa201/PlotView'
+        msg.showinfo('Help', m1+m2+m3)
 
-    def licence_redirect(self):
-        """ PlotView licence is shown in the text editor."""
-        webbrowser.open_new_tab('LICENSE')
-        self.set_status('The GPL3 licence is now opened.')
+    def licence_message(self):
+        """ Give directions to the licence file."""
+        m1 = 'PlotView is licensed under GNU GPL-3.0. '
+        m2 = 'In case you have not downloaded the "LICENSE" file, it is available at:\n'
+        m3 = 'https://github.com/fa201/PlotView'
+        msg.showinfo('License', m1+m2+m3)
 
     def about_redirect(self):
         """ PlotView repository is shown in the web browser."""
