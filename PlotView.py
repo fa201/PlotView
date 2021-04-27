@@ -106,6 +106,10 @@ class Application(tk.Tk):
     def __init__(self):
         """ Initialize the main window.
 
+            The window is launched with a size of 1280 x 720 but it can be resized.
+            The matplotlib are is defined 16 x 12 in which is bigger than the available space.
+            Yet it is not a problem because it is handled by tk window manager.
+
             Constants:
             - PV_VERSION: string -> plot view version as shown by git tag.
             - WIN_RESIZABLE: boolean -> prevents the user from resizing the root window.
@@ -129,13 +133,12 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.14'
-        self.WIN_RESIZABLE = False
-        self.WIN_SIZE_POS = '1280x720+0+0'
+        self.PV_VERSION = '0.15'
+        self.WIN_SIZE_POS = '800x600+0+0'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
-        self.PLOT_WIDTH = 8.9
-        self.PLOT_HEIGHT = 6.68
+        self.PLOT_WIDTH = 16
+        self.PLOT_HEIGHT = 12
         # Parameters for widgets on RH tool panel.
         # Padding for all containers to uniformize the look
         self.CONTAINER_PADX = 6
@@ -160,6 +163,10 @@ class Application(tk.Tk):
         # Curve creation label showing the curve name
         self.curve_label = tk.StringVar(self)
         self.curve_label.set('No CSV files selected.')
+
+        s = ttk.Style()
+        # Options: default, clam, alt, classic
+        s.theme_use('alt')
 
         # METHODS
         # Allows root window to be closed by the closing icon.
@@ -197,14 +204,8 @@ class Application(tk.Tk):
         """
         # WINDOW
         self.title('PlotView ' + self.PV_VERSION)
-        # TODO: Exception if size > size of screen and quit.
         self.geometry(self.WIN_SIZE_POS)
-        if self.WIN_RESIZABLE:
-            print('Warning: the main window cannot be resized.')
-        else:
-            self.resizable(0, 0)
-            # TODO: to be replaced by minsize() & maxsize() if I can handle
-            # properly the change of size in the GUI.
+
 
         # FONT
         # https://stackoverflow.com/questions/31918073/tkinter-how-to-set-font-for-text
@@ -228,32 +229,38 @@ class Application(tk.Tk):
         menu_file.add_command(label='Save PV_session.ini', command=self.save_session)
         menu_file.add_command(label='Quit', command=self.app_quit)
         # Help Menu
-        menu_help.add_command(label='Help on PlotView', command=self.help_redirect)
-        menu_help.add_command(label='Licence GPLv3', command=self.licence_redirect)
+        menu_help.add_command(label='Help files', command=self.help_message)
+        menu_help.add_command(label='Licence', command=self.licence_message)
         menu_help.add_command(label='About', command=self.about_redirect)
 
         # CREATE STATUS BAR AT BOTTOM
-        self.status_frame = tk.Frame(self)
+        self.status_frame = ttk.Frame(self)
         # The status frame should extend on all width of the main window.
         self.status_frame.pack(expand=False, fill=tk.X, side=tk.BOTTOM)
         # The status is initialized with empty message left aligned.
-        self.status = tk.Label(self.status_frame,
+        self.status = ttk.Label(self.status_frame,
                                text=' Ready.',
-                               bd=1,
                                relief=tk.SUNKEN,
                                anchor=tk.W,
-                               padx=self.WIDGET_PADX,
-                               pady=self.WIDGET_PADY
                                )
         # The label shoul expand on the total window width.
         self.status.pack(fill=tk.BOTH, expand=False)
+
+        # CREATE A NOTEBOOK ON THE RIGHT FOR TOOL WIDGETS
+        # Frame for RH panel. It contains the ttk.notebook.
+        # This panel needs to be defined before the matplotlib frame.
+        self.tool_frame = ttk.Frame(self)
+        self.tool_frame.pack(expand=False, fill=tk.BOTH, side=tk.RIGHT)
+        # Notebook
+        self.tool_notebook = ttk.Notebook(self.tool_frame)
+        self.tool_notebook.pack(expand=True, fill=tk.BOTH)
 
         # CREATE PLOT AREA ON THE LEFT
         # Tip: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
         self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
         self.ax = self.fig.add_subplot(111)
         self.mat_frame = ttk.Frame(self)
-        self.mat_frame.pack(expand=False, side=tk.LEFT)
+        self.mat_frame.pack(expand=True, fill=tk.BOTH, side=tk.LEFT)
         # Creates a drawing area to put the Figure
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
         self.canvas.draw()
@@ -262,28 +269,24 @@ class Application(tk.Tk):
         self.toolbar.draw()
         self.canvas.get_tk_widget().pack()
 
-        # CREATE A NOTEBOOK ON THE RIGHT FOR TOOL WIDGETS
-        # Frame for RH panel. It contains the ttk.notebook.
-        self.tool_frame = ttk.Frame(self)
-        self.tool_frame.pack(expand=True, fill=tk.BOTH)
-        # Notebook
-        self.tool_notebook = ttk.Notebook(self.tool_frame)
-        self.tool_notebook.pack(expand=True, fill=tk.BOTH)
-
     def app_quit(self):
         """ Quit the application and free the stack."""
         self.destroy()
         sys.exit(0)
 
-    def help_redirect(self):
-        """ Plotview HTML help is shown in web browser."""
-        webbrowser.open_new_tab('help/index.html')
-        self.set_status('The PlotView help page is shown in your web browser.')
+    def help_message(self):
+        """ Give directions to help files."""
+        m1 = 'Help is available in the "test" folder with the "index.html" file. '
+        m2 = 'In case you have not downloaded this folder, it is available at:\n'
+        m3 = 'https://github.com/fa201/PlotView'
+        msg.showinfo('Help', m1+m2+m3)
 
-    def licence_redirect(self):
-        """ PlotView licence is shown in the text editor."""
-        webbrowser.open_new_tab('LICENSE')
-        self.set_status('The GPL3 licence is now opened.')
+    def licence_message(self):
+        """ Give directions to the licence file."""
+        m1 = 'PlotView is licensed under GNU GPL-3.0. '
+        m2 = 'In case you have not downloaded the "LICENSE" file, it is available at:\n'
+        m3 = 'https://github.com/fa201/PlotView'
+        msg.showinfo('License', m1+m2+m3)
 
     def about_redirect(self):
         """ PlotView repository is shown in the web browser."""
@@ -1241,5 +1244,12 @@ class Application(tk.Tk):
 
 if __name__ == '__main__':
     app = Application()
+    # Show the screen dimensions at start-up.
+    screen_height = app.winfo_screenheight()
+    screen_width = app.winfo_width()
+    print('Screen height', screen_height)
+    print('Screen width', screen_width)
+    # Define the min size for the window. It should enough even for old screens.
+    app.minsize(800, 600)
     # Launch the GUI mainloop which should always be the last instruction!
     app.mainloop()
