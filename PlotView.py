@@ -129,7 +129,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.14'
+        self.PV_VERSION = '0.15'
         self.WIN_RESIZABLE = False
         self.WIN_SIZE_POS = '1280x720+0+0'
         self.FONT_SIZE = 9
@@ -160,6 +160,10 @@ class Application(tk.Tk):
         # Curve creation label showing the curve name
         self.curve_label = tk.StringVar(self)
         self.curve_label.set('No CSV files selected.')
+
+        s = ttk.Style()
+        # Options: default, clam, alt, classic
+        s.theme_use('alt')
 
         # METHODS
         # Allows root window to be closed by the closing icon.
@@ -233,17 +237,17 @@ class Application(tk.Tk):
         menu_help.add_command(label='About', command=self.about_redirect)
 
         # CREATE STATUS BAR AT BOTTOM
-        self.status_frame = tk.Frame(self)
+        self.status_frame = ttk.Frame(self)
         # The status frame should extend on all width of the main window.
         self.status_frame.pack(expand=False, fill=tk.X, side=tk.BOTTOM)
         # The status is initialized with empty message left aligned.
-        self.status = tk.Label(self.status_frame,
+        self.status = ttk.Label(self.status_frame,
                                text=' Ready.',
-                               bd=1,
+                               #bd=1,
                                relief=tk.SUNKEN,
                                anchor=tk.W,
-                               padx=self.WIDGET_PADX,
-                               pady=self.WIDGET_PADY
+                               #padx=self.WIDGET_PADX,
+                               #pady=self.WIDGET_PADY
                                )
         # The label shoul expand on the total window width.
         self.status.pack(fill=tk.BOTH, expand=False)
