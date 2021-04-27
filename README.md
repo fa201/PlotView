@@ -34,7 +34,6 @@ PlotView needs the following packages to run.
 Note that the above versions are those used for the development. If you have a lower version for a package, it may work. In case of trouble, please update the packages to these versions at least.
 
 # Limitations of PlotView
-* the size of the window is 1280 x 720 pixels so your screen has to be bigger than this.
 * extensive tests are not yet done, so there is probably some bugs.
 * one annotation can be created.
 
