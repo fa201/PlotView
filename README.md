@@ -21,7 +21,7 @@ matplotlib *Figure* and *Navigation Tool Bar* will be embedded in tkinter GUI si
 * 'help' folder gathers HTML help files launched through the *help* menu.
 * 'image' folder contains a few pictures of plot examples.
 * 'test' folder contains a few test curves.
-* PlotView.py is the python script.
+* plotview.py is the python script.
 * PV_session.ini is a session file which enables to bring back a saved session: curves will be load, colors, titles and annotation are updated.
 
 # Required Python packages.
