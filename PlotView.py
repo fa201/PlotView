@@ -153,10 +153,10 @@ class Application(tk.Tk):
         # Parameters for widgets on RH tool panel.
         # Padding for all containers to uniformize the look
         self.CONTAINER_PADX = 6
-        self.CONTAINER_PADY = 6
+        self.CONTAINER_PADY = 6.5
         # Padding for all widgets inside a container
         self.WIDGET_PADX = 2
-        self.WIDGET_PADY = 2
+        self.WIDGET_PADY = 2.3
         # Max length of string showed by 'Create curve' labels.
         # This is related to window width, font, and font size.
         self.MAX_STR_CREATE_CURVE = 39
@@ -1035,7 +1035,7 @@ class Application(tk.Tk):
         x_min_label.configure(anchor='center')
         self.x_min_range = tk.StringVar()
         self.x_min_range.set('0')
-        ttk.Entry(self.range_frame, textvariable=self.x_min_range, width=10,
+        ttk.Entry(self.range_frame, textvariable=self.x_min_range, width=8,
                  justify=tk.CENTER).grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1048,7 +1048,7 @@ class Application(tk.Tk):
         y_min_label.configure(anchor='center')
         self.y_min_range = tk.StringVar()
         self.y_min_range.set('0')
-        ttk.Entry(self.range_frame, textvariable=self.y_min_range, width=10,
+        ttk.Entry(self.range_frame, textvariable=self.y_min_range, width=8,
                  justify=tk.CENTER).grid(row=2, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1061,7 +1061,7 @@ class Application(tk.Tk):
         x_max_label.configure(anchor='center')
         self.x_max_range = tk.StringVar()
         self.x_max_range.set('100')
-        ttk.Entry(self.range_frame, textvariable=self.x_max_range, width=10,
+        ttk.Entry(self.range_frame, textvariable=self.x_max_range, width=8,
                  justify=tk.CENTER).grid(row=3, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1074,7 +1074,7 @@ class Application(tk.Tk):
         y_max_label.configure(anchor='center')
         self.y_max_range = tk.StringVar()
         self.y_max_range.set('100')
-        ttk.Entry(self.range_frame, textvariable=self.y_max_range, width=10,
+        ttk.Entry(self.range_frame, textvariable=self.y_max_range, width=8,
                  justify=tk.CENTER).grid(row=3, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1133,9 +1133,10 @@ class Application(tk.Tk):
                              padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                             )
         # APPLY BUTTON
+        # Padding for apply needs to be the same for containers for layout consistency
         ttk.Button(self.plot_tab, text='Apply all', command=self.plot_curves
                  ).grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
+                        padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
                        )
 
         # Add this tab to the notebook.
@@ -1174,7 +1175,7 @@ class Application(tk.Tk):
         text_label.configure(anchor='center')
         self.annotation = tk.StringVar()
         self.annotation.set('Annotation_text')
-        ttk.Entry(self.text_frame, textvariable=self.annotation, width=32,
+        ttk.Entry(self.text_frame, textvariable=self.annotation, width=30,
                  justify=tk.CENTER).grid(row=0, column=1, columnspan=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1187,7 +1188,7 @@ class Application(tk.Tk):
         text_x_pos_label.configure(anchor='center')
         self.annotation_x = tk.StringVar()
         self.annotation_x.set('0')
-        ttk.Entry(self.text_frame, textvariable=self.annotation_x, width=10,
+        ttk.Entry(self.text_frame, textvariable=self.annotation_x, width=8,
                  justify=tk.CENTER).grid(row=1, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1200,7 +1201,7 @@ class Application(tk.Tk):
         text_y_pos_label.configure(anchor='center')
         self.annotation_y = tk.StringVar()
         self.annotation_y.set('0')
-        ttk.Entry(self.text_frame, textvariable=self.annotation_y, width=10,
+        ttk.Entry(self.text_frame, textvariable=self.annotation_y, width=8,
                  justify=tk.CENTER).grid(row=1, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1214,7 +1215,7 @@ class Application(tk.Tk):
         self.annot_color_combo = ttk.Combobox(self.text_frame,
                                               values=my_colors_white,
                                               justify=tk.CENTER,
-                                              width=10
+                                              width=8
                                              )
         self.annot_color_combo.set(my_colors_white[0])
         self.annot_color_combo.grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
@@ -1230,7 +1231,7 @@ class Application(tk.Tk):
         font_size_label.configure(anchor='center')
         self.annot_size = tk.StringVar()
         self.annot_size.set('10')
-        ttk.Entry(self.text_frame, textvariable=self.annot_size, width=10,
+        ttk.Entry(self.text_frame, textvariable=self.annot_size, width=8,
                  justify=tk.CENTER).grid(row=2, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1260,7 +1261,7 @@ class Application(tk.Tk):
         head_x_pos_label.configure(anchor='center')
         self.arrow_head_x = tk.StringVar()
         self.arrow_head_x.set('0')
-        ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_x, width=10,
+        ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_x, width=8,
                  justify=tk.CENTER).grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1273,7 +1274,7 @@ class Application(tk.Tk):
         head_y_pos_label.configure(anchor='center')
         self.arrow_head_y = tk.StringVar()
         self.arrow_head_y.set('0')
-        ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_y, width=10,
+        ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_y, width=8,
                  justify=tk.CENTER).grid(row=0, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1286,7 +1287,7 @@ class Application(tk.Tk):
         head_length_label.configure(anchor='center')
         self.arrow_head_length = tk.StringVar()
         self.arrow_head_length.set('10')
-        ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_length, width=10,
+        ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_length, width=8,
                  justify=tk.CENTER).grid(row=1, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1299,7 +1300,7 @@ class Application(tk.Tk):
         head_width_label.configure(anchor='center')
         self.arrow_head_width = tk.StringVar()
         self.arrow_head_width.set('4')
-        ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_width, width=10,
+        ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_width, width=8,
                  justify=tk.CENTER).grid(row=1, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1311,7 +1312,7 @@ class Application(tk.Tk):
         self.arrow_color_combo = ttk.Combobox(self.arrow_frame,
                                                 values=my_colors_white,
                                                 justify=tk.CENTER,
-                                                width=10
+                                                width=8
                                                 )
         self.arrow_color_combo.set(my_colors_white[0])
         self.arrow_color_combo.grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
@@ -1327,7 +1328,7 @@ class Application(tk.Tk):
         line_width_label.configure(anchor='center')
         self.arrow_width = tk.StringVar()
         self.arrow_width.set('0.5')
-        ttk.Entry(self.arrow_frame, textvariable=self.arrow_width, width=10,
+        ttk.Entry(self.arrow_frame, textvariable=self.arrow_width, width=8,
                  justify=tk.CENTER).grid(row=2, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
@@ -1342,9 +1343,10 @@ class Application(tk.Tk):
                             )
 
         # APPLY BUTTON
+        # Padding for apply needs to be the same for containers for layout consistency
         ttk.Button(self.annot_tab, text='Apply all',
                   command=self.plot_curves, width=6).grid(
-                  row=4, column=0, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+                  row=4, column=0, padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.annot_tab, text='Annotation')
