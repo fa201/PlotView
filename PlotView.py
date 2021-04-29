@@ -159,7 +159,7 @@ class Application(tk.Tk):
         self.WIDGET_PADY = 2
         # Max length of string showed by 'Create curve' labels.
         # This is related to window width, font, and font size.
-        self.MAX_STR_CREATE_CURVE = 35
+        self.MAX_STR_CREATE_CURVE = 39
 
         # Working directory variables.
         # 'work_dir_set' defines the directory for the CSV filedialog.
@@ -463,7 +463,10 @@ class Application(tk.Tk):
         self.create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
                                     )
-        
+        # Allow the column to expand for children
+        for i in range(0, 2):
+            self.create_curve_frame.columnconfigure(index=i, weight=1)
+
         # Working directory widgets
         ttk.Button(self.create_curve_frame, text='Work dir.',
                   command=self.choose_dir, width=9
@@ -475,7 +478,9 @@ class Application(tk.Tk):
                  textvariable=self.work_dir_txt
                  ).grid(row=0, column=1,
                         padx=self.WIDGET_PADX,
-                        pady=self.WIDGET_PADY)
+                        pady=self.WIDGET_PADY
+                        )
+        
         # CSV file widget
         ttk.Button(self.create_curve_frame, text='CSV file',
                   command=self.choose_file, width=9
@@ -487,13 +492,15 @@ class Application(tk.Tk):
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
         # Curve name widget
-        ttk.Label(self.create_curve_frame, text='Curve name'
-                ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.curve_name_label = ttk.Label(self.create_curve_frame, text='Curve name'
+                )
+        self.curve_name_label.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.curve_name_label.configure(anchor='center')
         self.curve_label = tk.StringVar()
         self.curve_label.set('Curve_name')
-        ttk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=27,
+        ttk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=30,
                  justify=tk.CENTER).grid(row=2, column=1,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
