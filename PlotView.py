@@ -508,7 +508,7 @@ class Application(tk.Tk):
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
         # Curve create widget
-        ttk.Button(self.create_curve_frame, text='Create',
+        ttk.Button(self.create_curve_frame, text='Create curve',
                   command=self.curve_create, width=4
                  ).grid(row=3, column=0, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S,
                                 padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
@@ -685,7 +685,7 @@ class Application(tk.Tk):
                                         )
 
         # APPLY BUTTON
-        ttk.Button(self.curve_prop_frame, text='Apply',
+        ttk.Button(self.curve_prop_frame, text='Apply curve properties',
                   command=self.update_curve, width=6
                  ).grid(row=8, column=0, columnspan=4, sticky=tk.E+tk.W+tk.N+tk.S,
                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
@@ -1134,7 +1134,7 @@ class Application(tk.Tk):
                             )
         # APPLY BUTTON
         # Padding for apply needs to be the same for containers for layout consistency
-        ttk.Button(self.plot_tab, text='Apply all', command=self.plot_curves
+        ttk.Button(self.plot_tab, text='Apply plot properties', command=self.plot_curves
                  ).grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                         padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
                        )
@@ -1344,7 +1344,7 @@ class Application(tk.Tk):
 
         # APPLY BUTTON
         # Padding for apply needs to be the same for containers for layout consistency
-        ttk.Button(self.annot_tab, text='Apply all',
+        ttk.Button(self.annot_tab, text='Apply annotation and arrow properties',
                   command=self.plot_curves, width=6).grid(
                   row=4, column=0, padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
 
