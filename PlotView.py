@@ -516,13 +516,18 @@ class Application(tk.Tk):
         self.curve_prop_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                    padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
                                   )
+        # Allow the column to expand for children
+        for i in range(0, 5):
+            self.curve_prop_frame.columnconfigure(index=i, weight=1)
     
         # Active curve selection
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
-        ttk.Label(self.curve_prop_frame, text='Select curve'
-                ).grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.select_curve_label = ttk.Label(self.curve_prop_frame, text='Select curve'
+                )
+        self.select_curve_label.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.select_curve_label.configure(anchor='center')
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
                                                values=list(Curve.dic.keys()),
                                                justify=tk.CENTER,
@@ -544,10 +549,12 @@ class Application(tk.Tk):
         # Curve Name
         self.active_curve_name = tk.StringVar()
         self.active_curve_name.set(' ')
-        ttk.Label(self.curve_prop_frame, text='Name'
-                ).grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.name_label = ttk.Label(self.curve_prop_frame, text='Curve name'
+                )
+        self.name_label.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.name_label.configure(anchor='center')
         ttk.Entry(self.curve_prop_frame, textvariable=self.active_curve_name,
                  width=30, justify=tk.CENTER
                 ).grid(row=1, column=1, columnspan=3, sticky=tk.E+tk.W+tk.N+tk.S,
@@ -555,10 +562,12 @@ class Application(tk.Tk):
         # Curve X data type.
         self.active_curve_x_data = tk.StringVar()
         self.active_curve_x_data.set(' ')
-        ttk.Label(self.curve_prop_frame, text='X data'
-                ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.x_data_label = ttk.Label(self.curve_prop_frame, text='Title for X data'
+                )
+        self.x_data_label.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.x_data_label.configure(anchor='center')
         ttk.Entry(self.curve_prop_frame, textvariable=self.active_curve_x_data,
                  width=30, justify=tk.CENTER
                 ).grid(row=2, column=1, columnspan=3, sticky=tk.E+tk.W+tk.N+tk.S,
@@ -566,19 +575,23 @@ class Application(tk.Tk):
         # Curve Y data type.
         self.active_curve_y_data = tk.StringVar()
         self.active_curve_y_data.set(' ')
-        ttk.Label(self.curve_prop_frame, text='Y data'
-                ).grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.y_data_label = ttk.Label(self.curve_prop_frame, text='Title for Y data'
+                )
+        self.y_data_label.grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.y_data_label.configure(anchor='center')
         ttk.Entry(self.curve_prop_frame, textvariable=self.active_curve_y_data,
                  width=30, justify=tk.CENTER
                 ).grid(row=3, column=1, columnspan=3, sticky=tk.E+tk.W+tk.N+tk.S,
                 padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Curve color
-        ttk.Label(self.curve_prop_frame, text='Line color'
-                ).grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.line_color_label = ttk.Label(self.curve_prop_frame, text='Line color'
+                )
+        self.line_color_label.grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.line_color_label.configure(anchor='center')
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_colors_white,
                                                 justify=tk.CENTER,
@@ -590,18 +603,22 @@ class Application(tk.Tk):
                                    )
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
         # Line width
-        ttk.Label(self.curve_prop_frame, text='Line width'
-                ).grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.line_width_label = ttk.Label(self.curve_prop_frame, text='Line width'
+                )
+        self.line_width_label.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.line_width_label.configure(anchor='center')
         self.curve_width = tk.StringVar()
         self.curve_width.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_width, width=4, justify=tk.CENTER).grid(
                   row=5, column=1, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
         # Line style
-        ttk.Label(self.curve_prop_frame,
-                text='Line style').grid(row=5,
+        self.line_style_label = ttk.Label(self.curve_prop_frame,
+                text='Line style')
+        self.line_style_label.grid(row=5,
                         column=2, padx=self.WIDGET_PADX, pady=self.WIDGET_PADY, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.line_style_label.configure(anchor='center')
         self.curve_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_linestyles,
                                                 justify=tk.CENTER,
@@ -613,20 +630,24 @@ class Application(tk.Tk):
                                    )
         self.curve_style_combo.bind('<<ComboboxSelected>>', self.change_curve_style)
         # X scale
-        ttk.Label(self.curve_prop_frame, text='Scale X axis'
-                ).grid(row=6, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.x_scale_label = ttk.Label(self.curve_prop_frame, text='Scale X axis'
+                )
+        self.x_scale_label.grid(row=6, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.x_scale_label.configure(anchor='center')
         self.curve_x_scale = tk.StringVar()
         self.curve_x_scale.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_x_scale, width=8,
                  justify=tk.CENTER).grid(row=6, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
         # Y scale
-        ttk.Label(self.curve_prop_frame, text='Scale Y axis'
-                ).grid(row=6, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.y_scale_label = ttk.Label(self.curve_prop_frame, text='Scale Y axis'
+                )
+        self.y_scale_label.grid(row=6, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.y_scale_label.configure(anchor='center')
         self.curve_y_scale = tk.StringVar()
         self.curve_y_scale.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_y_scale, width=8,
@@ -634,10 +655,12 @@ class Application(tk.Tk):
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                         )
         # X offset
-        ttk.Label(self.curve_prop_frame, text='Offset X axis'
-                ).grid(row=7, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.x_offset_label = ttk.Label(self.curve_prop_frame, text='Offset X axis'
+                )
+        self.x_offset_label.grid(row=7, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.x_offset_label.configure(anchor='center')
         self.curve_x_offset = tk.StringVar()
         self.curve_x_offset.set('0')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_x_offset, width=8,
@@ -645,10 +668,12 @@ class Application(tk.Tk):
                                          padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                                          )
         # Y offset
-        ttk.Label(self.curve_prop_frame, text='Offset Y axis'
-                ).grid(row=7, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
+        self.y_offset_label = ttk.Label(self.curve_prop_frame, text='Offset Y axis'
+                )
+        self.y_offset_label.grid(row=7, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
                        padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
                       )
+        self.y_offset_label.configure(anchor='center')
         self.curve_y_offset = tk.StringVar()
         self.curve_y_offset.set('0')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_y_offset, width=8,
