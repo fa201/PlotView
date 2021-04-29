@@ -455,12 +455,15 @@ class Application(tk.Tk):
         """ First tab managing curve creation."""
         # Create curve tab
         self.curve_tab = ttk.Frame(self.tool_notebook)
+        # Allow the column to expand for children
+        self.curve_tab.columnconfigure(index=0, weight=1)
 
         # CREATE CURVE PANEL
         self.create_curve_frame = ttk.LabelFrame(self.curve_tab, text='Create curve')
         self.create_curve_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                      padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
                                     )
+        
         # Working directory widgets
         ttk.Button(self.create_curve_frame, text='Work dir.',
                   command=self.choose_dir, width=9
@@ -506,6 +509,7 @@ class Application(tk.Tk):
         self.curve_prop_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
                                    padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
                                   )
+    
         # Active curve selection
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
         ttk.Label(self.curve_prop_frame, text='Select curve'
@@ -908,6 +912,8 @@ class Application(tk.Tk):
         """ Second tab managing plot area parameters."""
         # Create plot tab
         self.plot_tab = ttk.Frame(self.tool_notebook)
+        # Allow the column to expand for children
+        self.plot_tab.columnconfigure(index=0, weight=1)
 
         # TITLE PANEL
         self.plot_frame = ttk.LabelFrame(self.plot_tab, text='Plot titles')
@@ -1077,6 +1083,8 @@ class Application(tk.Tk):
         """ Third tab managing annotations."""
         # Create annotation tab
         self.annot_tab = ttk.Frame(self.tool_notebook)
+        # Allow the column to expand for children
+        self.annot_tab.columnconfigure(index=0, weight=1)
 
         # Comment
         ttk.Label(self.annot_tab, text='X and Y positions refer to data coordinate system.',
