@@ -72,9 +72,9 @@ class Curve:
         """
         self.name = 'Name'
         self.path = path
-        self.data_in = self.read_file(path)
-        self.data_type = {'x_type': self.data_in.columns[0], 'y_type': self.data_in.columns[1]}
-        self.data_out = self.data_in.copy()
+        self.data_in = self.read_file(self.path)
+        self.data_type = self.get_data_types()
+        self.data_out = self.create_data_out(self.data_in)
         self.visibility = True
         self.color = my_colors_white[0]
         self.width = 1.0
@@ -97,8 +97,20 @@ class Curve:
                 - decimal character is the point '.'
         """
         df = pd.read_csv(self.path, delimiter=',', dtype=float)
+        print('CSV file read:', self.path)
+        print(df)
         return df
         # TODO: handle following exceptions: no column, 1 column, more than 2 columns, strings, missing values, etc.
+
+    def get_data_types(self):
+        temp = {}
+        temp['x_type'] = self.data_in.columns[0]
+        temp['y_type'] = self.data_in.columns[1]
+        return temp
+
+    def create_data_out(self, df):
+        temp = df.copy()
+        return temp
 
 
 class Application(tk.Tk):
@@ -133,8 +145,8 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '0.15'
-        self.WIN_SIZE_POS = '800x600+0+0'
+        self.PV_VERSION = '0.16'
+        self.WIN_SIZE_POS = '1280x780'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
         self.PLOT_WIDTH = 16
@@ -205,7 +217,6 @@ class Application(tk.Tk):
         # WINDOW
         self.title('PlotView ' + self.PV_VERSION)
         self.geometry(self.WIN_SIZE_POS)
-
 
         # FONT
         # https://stackoverflow.com/questions/31918073/tkinter-how-to-set-font-for-text
@@ -302,7 +313,7 @@ class Application(tk.Tk):
 
     def save_session(self):
         """ Save session as a config file
-        
+
             Curve data are exported.
             Plot data are exported.
             The session file will be created each time so the previous one is erased.
@@ -313,14 +324,14 @@ class Application(tk.Tk):
                           'x title': self.x_title.get(),
                           'y title': self.y_title.get(),
                           'auto scale': self.autoscale.get(),
-                          'x min user range': self.x_min_range.get(), 
-                          'x max user range': self.x_max_range.get(), 
-                          'y min user range': self.y_min_range.get(), 
-                          'y max user range': self.y_max_range.get(), 
+                          'x min user range': self.x_min_range.get(),
+                          'x max user range': self.x_max_range.get(),
+                          'y min user range': self.y_min_range.get(),
+                          'y max user range': self.y_max_range.get(),
                           'legend position': self.legend.get(),
                           'display grid': self.grid_state.get()
                           }
-        
+
         # Annotation and arrow data
         config['annotation'] = {'text': self.annotation.get(),
                                 'text X pos.': self.annotation_x.get(),
@@ -336,7 +347,7 @@ class Application(tk.Tk):
                                 'arrow line width': self.arrow_width.get(),
                                 'arrow state': self.arrow_state.get(),
                                }
-        
+
         # Session info
         config['session'] = {'working directory': self.work_dir,
                              'curve count': Curve.count,
@@ -364,7 +375,7 @@ class Application(tk.Tk):
 
     def load_session(self):
         """ Load session file
-        
+
             Curve data are read.
             Plot data are read.
         """
@@ -413,7 +424,7 @@ class Application(tk.Tk):
         elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
             self.work_dir_txt.set(self.work_dir)
             self.set_status('Working directory is set at:'+self.work_dir)
-        
+
         Curve.count = config.getint('session', 'curve count')
 
         # Process Curve data
@@ -435,11 +446,10 @@ class Application(tk.Tk):
                 Curve.dic[str(i)].y_scale = config.getfloat(str(i), 'scale in Y')
             else:
                 msg.showerror('Error', 'No CSV file were selected for curve'+str(i))
-        
+
         # Update curve ID list to be able to continue working on curves.
         self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
         self.set_status('Data in session file "PV_session.ini" are read.')
-        # FIXME: the GUI is not updated with offset and scale so the plot is not updated either
         self.plot_curves()
 
     def curve_tab(self):
@@ -691,7 +701,7 @@ class Application(tk.Tk):
     def curve_create(self):
         """ Create the Curve instance from the CSV file given by 'work_file'
 
-            
+
             First, check that the selected file exists. If not show an error message.
             Second, check that curve label is not empty. If not show an error message.
             The curve is added in the Curve.dic. Index is Curve.count.
@@ -700,6 +710,7 @@ class Application(tk.Tk):
             if len(self.curve_label.get()) != 0:
                 # Since instance is not yet created self.id does not exist. So 'count' is used.
                 Curve.dic[str(Curve.count)] = (Curve(self.work_file))
+                # FIXME: si le CSV est mauvais il faut sortir de cette fonction.
                 # Show the name of the created curve in 'curve_label'
                 Curve.dic[str(Curve.count)].name = self.curve_label.get()
                 # Update the list of curve for future modifications.
@@ -754,7 +765,7 @@ class Application(tk.Tk):
                 msg.showerror('Error', 'The value of Y scale cannot be 0.')
         except ValueError:
             msg.showerror('Error', 'The values of X scale, X offset, Y scale and Y offset must be numbers.')
-        
+
         self.plot_curves()
 
     def plot_curves(self):
@@ -780,6 +791,7 @@ class Application(tk.Tk):
         # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
             # print('Visibility ', Curve.dic[str(i)].name, Curve.dic[str(i)].visibility)
+            #if Curve.dic[str(i)].data_out != None:
             # Curve data is computed again in case the curve are plot after reading a session file.
             Curve.dic[str(i)].data_out.iloc[:, 0] = Curve.dic[str(i)].data_in.iloc[:, 0]* Curve.dic[str(i)].x_scale + Curve.dic[str(i)].x_offset
             Curve.dic[str(i)].data_out.iloc[:, 1] = Curve.dic[str(i)].data_in.iloc[:, 1]* Curve.dic[str(i)].y_scale + Curve.dic[str(i)].y_offset
@@ -859,7 +871,6 @@ class Application(tk.Tk):
             self.curve_y_offset.set(Curve.dic[str(self.selected_curve)].y_offset)
             self.set_status('Selected curve: '+Curve.dic[str(self.selected_curve)].name)
         else:
-            # TODO add a warning popup window.
             print('ERROR - Curve ID not found. Please select again a curve ID.')
             self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
 
@@ -870,7 +881,6 @@ class Application(tk.Tk):
             # 'plot_curves' should not be in try so that it is not launched in case of Exception.
             # This allows to have the warning message persistent in status bar.
         except AttributeError:
-            # TODO add a error popup window.
             self.set_status('ERROR - There is no curve defined.')
 
     def change_curve_color(self, event):
@@ -882,7 +892,6 @@ class Application(tk.Tk):
                             ' is updated.'
                             )
         except AttributeError:
-            # TODO add a error popup window.
             self.set_status('ERROR - There is no color defined.')
 
     def change_curve_style(self, event):
@@ -894,7 +903,6 @@ class Application(tk.Tk):
                             ' is updated.'
                             )
         except AttributeError:
-            # TODO add a error popup window.
             self.set_status('ERROR - There is no style defined.')
 
     def plot_tab(self):
@@ -1245,10 +1253,12 @@ class Application(tk.Tk):
 if __name__ == '__main__':
     app = Application()
     # Show the screen dimensions at start-up.
+    """
     screen_height = app.winfo_screenheight()
     screen_width = app.winfo_width()
     print('Screen height', screen_height)
     print('Screen width', screen_width)
+    """
     # Define the min size for the window. It should enough even for old screens.
     app.minsize(800, 600)
     # Launch the GUI mainloop which should always be the last instruction!
