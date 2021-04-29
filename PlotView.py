@@ -21,7 +21,6 @@ try:
     from tkinter import filedialog
     import tkinter.ttk as ttk
     import webbrowser
-
 except ModuleNotFoundError as e:
         print('The necessary Python packages are not installed.\n' + str(e))
         print('Please check the required packages at https://github.com/fa201/PlotView.')
@@ -262,8 +261,8 @@ class Application(tk.Tk):
         # This panel needs to be defined before the matplotlib frame.
         self.tool_frame = ttk.Frame(self)
         self.tool_frame.pack(expand=False, fill=tk.BOTH, side=tk.RIGHT)
-        # Notebook
-        self.tool_notebook = ttk.Notebook(self.tool_frame)
+        # Notebook with padding only on the left
+        self.tool_notebook = ttk.Notebook(self.tool_frame, padding=[self.CONTAINER_PADX, 0, 0, 0])
         self.tool_notebook.pack(expand=True, fill=tk.BOTH)
 
         # CREATE PLOT AREA ON THE LEFT
