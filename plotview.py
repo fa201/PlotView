@@ -920,48 +920,34 @@ class Application(tk.Tk):
         # Main title
         main_title_label = ttk.Label(self.plot_frame, text='Main title'
                 )
-        main_title_label.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                      )
+        main_title_label.grid(row=0, column=0)
         main_title_label.configure(anchor='center')
         self.main_title = tk.StringVar()
         self.main_title.set('Title')
         ttk.Entry(self.plot_frame, textvariable=self.main_title, width=30,
-                 justify=tk.CENTER).grid(row=0, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
-                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                                        )
+                 justify=tk.CENTER).grid(row=0, column=1)
         # X axis title
         x_title_label = ttk.Label(self.plot_frame, text='X title'
                 )
-        x_title_label.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                      )
+        x_title_label.grid(row=1, column=0)
         x_title_label.configure(anchor='center')
         self.x_title = tk.StringVar()
         self.x_title.set('X_data (units)')
         ttk.Entry(self.plot_frame, textvariable=self.x_title, width=30,
-                 justify=tk.CENTER).grid(row=1, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
-                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                                        )
+                 justify=tk.CENTER).grid(row=1, column=1)
         # Y axis title
         y_title_label = ttk.Label(self.plot_frame, text='Y title'
                 )
-        y_title_label.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                      )
+        y_title_label.grid(row=2, column=0)
         y_title_label.configure(anchor='center')
         self.y_title = tk.StringVar()
         self.y_title.set('X_data (units)')
         ttk.Entry(self.plot_frame, textvariable=self.y_title, width=30,
-                 justify=tk.CENTER).grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
-                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                                        )
+                 justify=tk.CENTER).grid(row=2, column=1)
 
         # RANGE PANEL
         self.range_frame = ttk.LabelFrame(self.plot_tab, text='Plot ranges for X and Y')
-        self.range_frame.grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                              padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
-                             )
+        self.range_frame.grid(row=1, column=0)
         # Allow the column to expand for children
         for i in range(0, 4):
             self.range_frame.columnconfigure(index=i, weight=1)
@@ -969,108 +955,73 @@ class Application(tk.Tk):
         self.autoscale = tk.IntVar()
         self.autoscale.set(0)
         ttk.Radiobutton(self.range_frame, text='Auto scale', variable=self.autoscale,
-                       value=0).grid(row=0, column=0, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S,
-                                     padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                                    )
+                       value=0).grid(row=0, column=0, columnspan=2)
 
         ttk.Radiobutton(self.range_frame, text='User defined', variable=self.autoscale,
-                       value=1).grid(row=0, column=2, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S,
-                                     padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                                    )
+                       value=1).grid(row=0, column=2, columnspan=2)
         # User defined
         ttk.Label(self.range_frame, text='User defined ranges:'
-                ).grid(row=1, column=0, columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S,
-                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                      )
+                ).grid(row=1, column=0, columnspan=2)
         # https://stackoverflow.com/questions/26333769/event-triggered-by-listbox-and-radiobutton-in-tkinter
         # X min
         x_min_label = ttk.Label(self.range_frame, text='X min'
                 )
-        x_min_label.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                      )
+        x_min_label.grid(row=2, column=0)
         x_min_label.configure(anchor='center')
         self.x_min_range = tk.StringVar()
         self.x_min_range.set('0')
         ttk.Entry(self.range_frame, textvariable=self.x_min_range, width=8,
-                 justify=tk.CENTER).grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
-                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                                        )
+                 justify=tk.CENTER).grid(row=2, column=1)
         # Y min
         y_min_label = ttk.Label(self.range_frame, text='Y min'
                 )
-        y_min_label.grid(row=2, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
-                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                      )
+        y_min_label.grid(row=2, column=2)
         y_min_label.configure(anchor='center')
         self.y_min_range = tk.StringVar()
         self.y_min_range.set('0')
         ttk.Entry(self.range_frame, textvariable=self.y_min_range, width=8,
-                 justify=tk.CENTER).grid(row=2, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
-                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                                        )
+                 justify=tk.CENTER).grid(row=2, column=3)
         # X max
         x_max_label = ttk.Label(self.range_frame, text='X max'
                 )
-        x_max_label.grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                      )
+        x_max_label.grid(row=3, column=0)
         x_max_label.configure(anchor='center')
         self.x_max_range = tk.StringVar()
         self.x_max_range.set('100')
         ttk.Entry(self.range_frame, textvariable=self.x_max_range, width=8,
-                 justify=tk.CENTER).grid(row=3, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
-                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                                        )
+                 justify=tk.CENTER).grid(row=3, column=1)
         # Y max
         y_max_label = ttk.Label(self.range_frame, text='Y max'
                 )
-        y_max_label.grid(row=3, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
-                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                      )
+        y_max_label.grid(row=3, column=2)
         y_max_label.configure(anchor='center')
         self.y_max_range = tk.StringVar()
         self.y_max_range.set('100')
         ttk.Entry(self.range_frame, textvariable=self.y_max_range, width=8,
-                 justify=tk.CENTER).grid(row=3, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
-                                         padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                                        )
+                 justify=tk.CENTER).grid(row=3, column=3)
 
         # LEGEND PANEL
         self.legend_frame = ttk.LabelFrame(self.plot_tab, text='Legend position')
-        self.legend_frame.grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
-                              )
+        self.legend_frame.grid(row=2, column=0)
         # Allow the column to expand for children
         for i in range(0, 2):
             self.legend_frame.columnconfigure(index=i, weight=1)
         temp = "'Best' lets matplotlib decide the position."
         ttk.Label(self.legend_frame, text=temp
-                ).grid(row=0, column=0, columnspan=3, sticky=tk.E+tk.W+tk.N+tk.S,
-                       padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                      )
+                ).grid(row=0, column=0, columnspan=3)
         # Legend position
         self.legend = tk.IntVar()
         self.legend.set(4)
         ttk.Radiobutton(self.legend_frame, text='Upper left', variable=self.legend, value=0
-                      ).grid(row=1, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                            )
+                      ).grid(row=1, column=0)
         ttk.Radiobutton(self.legend_frame, text='Upper right', variable=self.legend, value=1
-                      ).grid(row=1, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
-                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                            )
+                      ).grid(row=1, column=1)
         ttk.Radiobutton(self.legend_frame, text='Lower left', variable=self.legend, value=2
-                      ).grid(row=2, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                            )
+                      ).grid(row=2, column=0)
         ttk.Radiobutton(self.legend_frame, text='Lower right', variable=self.legend, value=3
-                      ).grid(row=2, column=1, sticky=tk.E+tk.W+tk.N+tk.S,
-                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                            )
+                      ).grid(row=2, column=1)
         ttk.Radiobutton(self.legend_frame, text='Best', variable=self.legend, value=4
-                      ).grid(row=1, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
-                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY)
+                      ).grid(row=1, column=2)
         self.legend_var ={'0': 'upper left',
                           '1': 'upper right',
                           '2': 'lower left',
@@ -1080,21 +1031,36 @@ class Application(tk.Tk):
 
         # CUSTOMIZE PANEL
         self.custom_frame = ttk.LabelFrame(self.plot_tab, text='Customize')
-        self.custom_frame.grid(row=3, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                               padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
-                              )
+        self.custom_frame.grid(row=3, column=0)
         self.grid_state = tk.IntVar()
         self.grid_state.set(1)
         ttk.Checkbutton(self.custom_frame, text='Show grid', variable=self.grid_state
-                      ).grid(row=0, column=2, sticky=tk.E+tk.W+tk.N+tk.S,
-                             padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                            )
+                      ).grid(row=0, column=2)
         # APPLY BUTTON
         # Padding for apply needs to be the same for containers for layout consistency
         ttk.Button(self.plot_tab, text='Apply plot properties', command=self.plot_curves
-                 ).grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                        padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY
-                       )
+                 ).grid(row=4, column=0)
+
+        # APPLY PADDING AND STICKINESS ON WIDGETS CHILDREN AFTER THEY ARE CREATED
+        # For self.plot_tab frame
+        for frame in self.plot_tab.winfo_children():
+            frame.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
+                                 padx=self.CONTAINER_PADX, 
+                                 pady=self.CONTAINER_PADY
+                                )
+        # For self.plot_frame, self.range_frame,  frames
+        union_list = (set(self.plot_frame.winfo_children()) |
+                      set(self.range_frame.winfo_children()) |
+                      set(self.legend_frame.winfo_children()) |
+                      set(self.custom_frame.winfo_children())
+                     )
+        for widget in union_list:
+            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
+                                  padx=self.WIDGET_PADX, 
+                                  pady=self.WIDGET_PADY
+                                 )
+
+
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.plot_tab, text='Plot area')
