@@ -152,11 +152,11 @@ class Application(tk.Tk):
         self.PLOT_HEIGHT = 12
         # Parameters for widgets on RH tool panel.
         # Padding for all containers to uniformize the look
-        self.CONTAINER_PADX = 6
-        self.CONTAINER_PADY = 6.5
+        self.CONTAINER_PADX = 10
+        self.CONTAINER_PADY = 6.5 
         # Padding for all widgets inside a container
-        self.WIDGET_PADX = 2
-        self.WIDGET_PADY = 2.3
+        self.WIDGET_PADX = 2.5
+        self.WIDGET_PADY = 2.5
         # Max length of string showed by 'Create curve' labels.
         # This is related to window width, font, and font size.
         self.MAX_STR_CREATE_CURVE = 39
@@ -262,7 +262,7 @@ class Application(tk.Tk):
         self.tool_frame = ttk.Frame(self)
         self.tool_frame.pack(expand=False, fill=tk.BOTH, side=tk.RIGHT)
         # Notebook with padding only on the left
-        self.tool_notebook = ttk.Notebook(self.tool_frame, padding=[self.CONTAINER_PADX, 0, 0, 0])
+        self.tool_notebook = ttk.Notebook(self.tool_frame)
         self.tool_notebook.pack(expand=True, fill=tk.BOTH)
 
         # CREATE PLOT AREA ON THE LEFT
