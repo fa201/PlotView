@@ -638,19 +638,16 @@ class Application(tk.Tk):
                                  padx=self.CONTAINER_PADX, 
                                  pady=self.CONTAINER_PADY
                                 )
-        # For self.create_curve_frame frame
-        for widget in self.create_curve_frame.winfo_children():
+        # For self.create_curve_frame self.curve_prop_frame frames
+        union_list = (set(self.create_curve_frame.winfo_children()) |
+                      set(self.curve_prop_frame.winfo_children())
+                     )
+        for widget in union_list:
             widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
                                   padx=self.WIDGET_PADX, 
                                   pady=self.WIDGET_PADY
                                  )
-        # For self.curve_prop_frame frame
-        for widget in self.curve_prop_frame.winfo_children():
-            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
-                                  padx=self.WIDGET_PADX, 
-                                  pady=self.WIDGET_PADY
-                                 )
-
+        
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
 
