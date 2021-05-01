@@ -120,22 +120,31 @@ class Curve:
         return temp
 
     def find_extrema(self):
-        self.ext_x_min = self.data_out.iloc[:, 0].min()
+        """all values are round to 10 -> use a variable and update first label in extrema plot (number of digits)"""
+        self.ext_x_min = self.data_out.iloc[:, 0].min().round(10)
         # Find Y for X min
-        self.ext_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1]
+        print('Extrema for curve:', self.name)
+        self.ext_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1].round(10)
         print('X min:', self.ext_x_min, '@ Y:', self.ext_x_min_y)
-        self.ext_x_max = self.data_out.iloc[:, 0].max()
+        app.extrema_x_min.set('X min ' + str(self.ext_x_min) + ' @ Y ' + str(self.ext_x_min_y))
+
+        self.ext_x_max = self.data_out.iloc[:, 0].max().round(10)
         # Find Y for X max
-        self.ext_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1]
+        self.ext_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1].round(10)
         print('X max:', self.ext_x_max, '@ Y:', self.ext_x_max_y)
-        self.ext_y_min = self.data_out.iloc[:, 1].min()
+        app.extrema_x_max.set('X max ' + str(self.ext_x_max) + ' @ Y ' + str(self.ext_x_max_y))
+
+        self.ext_y_min = self.data_out.iloc[:, 1].min().round(10)
         # Find X for Y min
-        self.ext_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0]
+        self.ext_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0].round(10)
         print('Y min:', self.ext_y_min, '@ X:', self.ext_y_min_x)
-        self.ext_y_max = self.data_out.iloc[:, 1].max()
+        app.extrema_y_min.set('Y min ' + str(self.ext_y_min) + ' @ X ' + str(self.ext_y_min_x))
+
+        self.ext_y_max = self.data_out.iloc[:, 1].max().round(10)
         # Find X for Y max
-        self.ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0]
+        self.ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0].round(10)
         print('Y max:', self.ext_y_max, '@ X:', self.ext_y_max_x)
+        app.extrema_y_max.set('Y max ' + str(self.ext_y_max) + ' @ X ' + str(self.ext_y_max_x))
 
 
 class Application(tk.Tk):
@@ -170,7 +179,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '1.1'
+        self.PV_VERSION = '1.2'
         self.WIN_SIZE_POS = '1280x780'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
@@ -1298,10 +1307,26 @@ class Application(tk.Tk):
         self.selected_curve_name.set(' ')
         ttk.Entry(self.extrema_tab, textvariable=self.selected_curve_name, width=20,
                  justify=tk.CENTER).grid(row=1, column=3)
-        extrema_x_min_label = tk.StringVar()
-        extrema_x_min_label.set('Xmin:')
-
-
+        # Xmin
+        self.extrema_x_min = tk.StringVar()
+        self.extrema_x_min.set('X min')
+        extrema_x_min_label = ttk.Label(self.extrema_tab, textvariable=self.extrema_x_min)
+        extrema_x_min_label.grid(row=3, column=0, columnspan=4)
+        # Xmax
+        self.extrema_x_max = tk.StringVar()
+        self.extrema_x_max.set('X max')
+        extrema_x_max_label = ttk.Label(self.extrema_tab, textvariable=self.extrema_x_max)
+        extrema_x_max_label.grid(row=4, column=0, columnspan=4)
+        # Ymin
+        self.extrema_y_min = tk.StringVar()
+        self.extrema_y_min.set('Y min')
+        extrema_y_min_label = ttk.Label(self.extrema_tab, textvariable=self.extrema_y_min)
+        extrema_y_min_label.grid(row=5, column=0, columnspan=4)
+        # Ymax
+        self.extrema_y_max = tk.StringVar()
+        self.extrema_y_max.set('Y max')
+        extrema_y_max_label = ttk.Label(self.extrema_tab, textvariable=self.extrema_y_max)
+        extrema_y_max_label.grid(row=6, column=0, columnspan=4)
 
         # For all frames
         union_list = (set(self.extrema_tab.winfo_children()) 
@@ -1327,85 +1352,6 @@ class Application(tk.Tk):
         else:
             print('ERROR - Curve ID not found. Please select again a curve ID.')
             self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
-
-"""
-        # EXTREMA PANEL
-        self.ext_frame = ttk.LabelFrame(self.extrema_tab, text='Annotation')
-        self.ext_frame.grid(row=0, column=0)
-        # Allow the column to expand for children
-        for i in range(0, 4):
-            self.text_frame.columnconfigure(index=i, weight=1)
-        # Text
-        text_label = ttk.Label(self.ext_frame, text='Text'
-                )
-        text_label.grid(row=0, column=0)
-        text_label.configure(anchor='center')
-        self.annotation = tk.StringVar()
-        self.annotation.set('Annotation_text')
-        ttk.Entry(self.text_frame, textvariable=self.annotation, width=30,
-                 justify=tk.CENTER).grid(row=0, column=1, columnspan=3)
-        # X position of annotation
-        text_x_pos_label = ttk.Label(self.text_frame, text='X position'
-                )
-        text_x_pos_label.grid(row=1, column=0)
-        text_x_pos_label.configure(anchor='center')
-        self.annotation_x = tk.StringVar()
-        self.annotation_x.set('0')
-        ttk.Entry(self.text_frame, textvariable=self.annotation_x, width=8,
-                 justify=tk.CENTER).grid(row=1, column=1)
-        # Y position of annotation
-        text_y_pos_label = ttk.Label(self.text_frame, text='Y position'
-                )
-        text_y_pos_label.grid(row=1, column=2)
-        text_y_pos_label.configure(anchor='center')
-        self.annotation_y = tk.StringVar()
-        self.annotation_y.set('0')
-        ttk.Entry(self.text_frame, textvariable=self.annotation_y, width=8,
-                 justify=tk.CENTER).grid(row=1, column=3)
-        # Color
-        text_color_label = ttk.Label(self.text_frame, text='Text color'
-                )
-        text_color_label.grid(row=2, column=0)
-        text_color_label.configure(anchor='center')
-        self.annot_color_combo = ttk.Combobox(self.text_frame,
-                                              values=my_colors_white,
-                                              justify=tk.CENTER,
-                                              width=8
-                                             )
-        self.annot_color_combo.set(my_colors_white[0])
-        self.annot_color_combo.grid(row=2, column=1)
-        # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
-        # Font size
-        font_size_label = ttk.Label(self.text_frame, text='Font size'
-                )
-        font_size_label.grid(row=2, column=2)
-        font_size_label.configure(anchor='center')
-        self.annot_size = tk.StringVar()
-        self.annot_size.set('10')
-        ttk.Entry(self.text_frame, textvariable=self.annot_size, width=8,
-                 justify=tk.CENTER).grid(row=2, column=3)
-        # Show annotation
-        self.annot_state = tk.IntVar()
-        self.annot_state.set(0)
-        # No callback since 'Apply all' redraw the plot with or without the annotation.
-        ttk.Checkbutton(self.text_frame, text='Show the annotation on the plot', variable=self.annot_state
-                       ).grid(row=3, column=0, columnspan=4)
-        
-
-        # APPLY BUTTON
-        # Padding for apply needs to be the same for containers for layout consistency
-        ttk.Button(self.extrema_tab, text='Apply annotation and arrow properties',
-                  command=self.plot_curves, width=6).grid(row=4, column=0)
-
-        # APPLY PADDING AND STICKINESS ON WIDGETS CHILDREN AFTER THEY ARE CREATED
-        # For self.extrema_tab
-        for frame in self.extrema_tab.winfo_children():
-            frame.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
-                                 padx=self.CONTAINER_PADX, 
-                                 pady=self.CONTAINER_PADY
-                                )
-        
-"""
 
 
 if __name__ == '__main__':
