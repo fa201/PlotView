@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""PlotView reads a data file and plots the data curve using matplotlib.
+""" PlotView reads a data file and plots the data curve using matplotlib.
 
     Code hosted at: https://github.com/fa201/PlotView
     PlotView is summarized as PV in variable names.
@@ -82,6 +82,14 @@ class Curve:
         self.y_offset = 0.0
         self.x_scale = 1.0
         self.y_scale = 1.0
+        self.ext_x_min = 0.0
+        self.ext_x_min_y = 0.0
+        self.ext_x_max = 0.0
+        self.ext_x_max_y = 0.0
+        self.ext_y_min = 0.0
+        self.ext_y_min_x = 0.0
+        self.ext_y_max = 0.0
+        self.ext_y_max_x = 0.0
         Curve.count += 1
 
     def read_file(self, path):
@@ -110,6 +118,33 @@ class Curve:
     def create_data_out(self, df):
         temp = df.copy()
         return temp
+
+    def find_extrema(self):
+        """all values are round to 10 -> use a variable and update first label in extrema plot (number of digits)"""
+        self.ext_x_min = self.data_out.iloc[:, 0].min().round(10)
+        # Find Y for X min
+        print('Extrema for curve:', self.name)
+        self.ext_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1].round(10)
+        print('X min:', self.ext_x_min, '@ Y:', self.ext_x_min_y)
+        app.extrema_x_min.set('X min ' + str(self.ext_x_min) + ' @ Y ' + str(self.ext_x_min_y))
+
+        self.ext_x_max = self.data_out.iloc[:, 0].max().round(10)
+        # Find Y for X max
+        self.ext_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1].round(10)
+        print('X max:', self.ext_x_max, '@ Y:', self.ext_x_max_y)
+        app.extrema_x_max.set('X max ' + str(self.ext_x_max) + ' @ Y ' + str(self.ext_x_max_y))
+
+        self.ext_y_min = self.data_out.iloc[:, 1].min().round(10)
+        # Find X for Y min
+        self.ext_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0].round(10)
+        print('Y min:', self.ext_y_min, '@ X:', self.ext_y_min_x)
+        app.extrema_y_min.set('Y min ' + str(self.ext_y_min) + ' @ X ' + str(self.ext_y_min_x))
+
+        self.ext_y_max = self.data_out.iloc[:, 1].max().round(10)
+        # Find X for Y max
+        self.ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0].round(10)
+        print('Y max:', self.ext_y_max, '@ X:', self.ext_y_max_x)
+        app.extrema_y_max.set('Y max ' + str(self.ext_y_max) + ' @ X ' + str(self.ext_y_max_x))
 
 
 class Application(tk.Tk):
@@ -144,7 +179,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '1.1'
+        self.PV_VERSION = '1.2'
         self.WIN_SIZE_POS = '1280x780'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
@@ -190,6 +225,8 @@ class Application(tk.Tk):
         self.plot_tab()
         # Create the tool 'Annotation' tab on the RH side
         self.annotation_tab()
+        # Create the tool 'Extrema' tab on the RH side
+        self.extrema_tab()
 
     def create_underscores(self):
         """ Creates a string with underscores to fill the 'work_dir' and 'work file' labels when empty.
@@ -710,6 +747,7 @@ class Application(tk.Tk):
                 Curve.dic[str(Curve.count)].name = self.curve_label.get()
                 # Update the list of curve for future modifications.
                 self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
+                self.active_curve_combo2['values'] = tuple(list(Curve.dic.keys()))
                 self.plot_curves()
             else:
                 msg.showerror('Error', 'The name of the curve is required.')
@@ -1234,6 +1272,86 @@ class Application(tk.Tk):
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.annot_tab, text='Annotation')
+
+    def extrema_tab(self):
+        """ Fourth tab managing extrema.
+
+            Label variables are local variables so no 'self' prepend.
+        """
+        # Create extrema tab
+        self.extrema_tab = ttk.Frame(self.tool_notebook)
+        # Allow the column to expand for children
+        self.extrema_tab.columnconfigure(index=0, weight=1)
+
+        # Label
+        comment = ttk.Label(self.extrema_tab, text='Values are rounded with 10 digits after decimal.')
+        comment.grid(row=0, column=0, columnspan=4)
+        comment.configure(anchor=tk.W)
+        # Active curve selection
+        select_curve_label2 = ttk.Label(self.extrema_tab, text='Select curve')
+        select_curve_label2.grid(row=1, column=0)
+        select_curve_label2.configure(anchor='center')
+        self.active_curve_combo2 = ttk.Combobox(self.extrema_tab,
+                                               values=list(Curve.dic.keys()),
+                                               justify=tk.CENTER,
+                                               width=4,
+                                               )
+        self.active_curve_combo2.grid(row=1, column=1)
+        self.active_curve_combo2.bind('<<ComboboxSelected>>', self.get_extrema)
+        # Label
+        selected_curve_label = ttk.Label(self.extrema_tab, text='Curve name')
+        selected_curve_label.grid(row=1, column=2)
+        selected_curve_label.configure(anchor='center')
+        # Entry for curve name
+        self.selected_curve_name = tk.StringVar()
+        self.selected_curve_name.set(' ')
+        ttk.Entry(self.extrema_tab, textvariable=self.selected_curve_name, width=20,
+                 justify=tk.CENTER).grid(row=1, column=3)
+        # Xmin
+        self.extrema_x_min = tk.StringVar()
+        self.extrema_x_min.set('X min')
+        extrema_x_min_label = ttk.Label(self.extrema_tab, textvariable=self.extrema_x_min)
+        extrema_x_min_label.grid(row=3, column=0, columnspan=4)
+        # Xmax
+        self.extrema_x_max = tk.StringVar()
+        self.extrema_x_max.set('X max')
+        extrema_x_max_label = ttk.Label(self.extrema_tab, textvariable=self.extrema_x_max)
+        extrema_x_max_label.grid(row=4, column=0, columnspan=4)
+        # Ymin
+        self.extrema_y_min = tk.StringVar()
+        self.extrema_y_min.set('Y min')
+        extrema_y_min_label = ttk.Label(self.extrema_tab, textvariable=self.extrema_y_min)
+        extrema_y_min_label.grid(row=5, column=0, columnspan=4)
+        # Ymax
+        self.extrema_y_max = tk.StringVar()
+        self.extrema_y_max.set('Y max')
+        extrema_y_max_label = ttk.Label(self.extrema_tab, textvariable=self.extrema_y_max)
+        extrema_y_max_label.grid(row=6, column=0, columnspan=4)
+
+        # For all frames
+        union_list = (set(self.extrema_tab.winfo_children()) 
+                     )
+        for widget in union_list:
+            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
+                                  padx=self.WIDGET_PADX, 
+                                  pady=self.WIDGET_PADY
+                                 )
+
+        # Add this tab to the notebook.
+        self.tool_notebook.add(self.extrema_tab, text='Extrema')
+
+    def get_extrema(self, event):
+        # Get the curve ID through event.
+        selected_curve2 = event.widget.get()
+        # check for input error on curve ID
+        if selected_curve2 in Curve.dic.keys():
+            # show the curve name after selection of curve ID
+            self.selected_curve_name.set(Curve.dic[str(selected_curve2)].name)
+            Curve.dic[str(selected_curve2)].find_extrema()
+            self.set_status('Extrema values computed for curve: ' + Curve.dic[str(selected_curve2)].name)
+        else:
+            print('ERROR - Curve ID not found. Please select again a curve ID.')
+            self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
 
 
 if __name__ == '__main__':

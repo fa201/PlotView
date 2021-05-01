@@ -1,5 +1,7 @@
 # PlotView
-PlotView plots curves from CSV data file. The appearance of curves (color, line width, etc.) can be customized and one annotation can also be added if you need to highlight a point of interest.
+PlotView plots curves from CSV data file. The appearance of curves (color, line width, etc.) can be customized. Some curves can also be hidden.
+One annotation can be added if you need to highlight a point of interest.
+PlotView can compute the 4 extrema values (Xmin, Xmax, Ymin, Ymax) for a given curve.
 ttk is used to have a more modern look at least on Windows platorms. Note that the below picture was taken on linux Xubuntu.
 My goals are:
 * Application to learn the basics of Python and simple GUI programming.
