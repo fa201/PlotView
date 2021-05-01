@@ -120,30 +120,47 @@ class Curve:
         return temp
 
     def find_extrema(self):
-        """all values are round to 10 -> use a variable and update first label in extrema plot (number of digits)"""
-        self.ext_x_min = self.data_out.iloc[:, 0].min().round(10)
-        # Find Y for X min
-        print('Extrema for curve:', self.name)
-        self.ext_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1].round(10)
-        print('X min:', self.ext_x_min, '@ Y:', self.ext_x_min_y)
-        app.extrema_x_min.set('X min ' + str(self.ext_x_min) + ' @ Y ' + str(self.ext_x_min_y))
+        """ all values are round to 10 -> use a variable and update first label in extrema plot (number of digits)
 
-        self.ext_x_max = self.data_out.iloc[:, 0].max().round(10)
+            since pd.round() gives error on Windows, rounding is done on the float.
+            The extrema values displayed on GUI are rounded but printed values are not.
+        """
+        print('Extrema values for curve', self.name, 'without rounding:')
+        
+        # X min
+        temp_ext_x_min = self.data_out.iloc[:, 0].min()
+        self.ext_x_min = round(temp_ext_x_min, app.ROUND)
+        # Find Y for X min
+        temp_ext_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1]
+        self.ext_x_min_y = round(temp_ext_x_min_y, app.ROUND)
+        print('X min:', temp_ext_x_min, ' @ Y:', temp_ext_x_min_y)
+        app.extrema_x_min.set('X min ' + str(self.ext_x_min) + ' @ Y ' + str(self.ext_x_min_y))
+        
+        # X max
+        temp_ext_x_max = self.data_out.iloc[:, 0].max()
+        self.ext_x_max = round(temp_ext_x_max, app.ROUND)
         # Find Y for X max
-        self.ext_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1].round(10)
-        print('X max:', self.ext_x_max, '@ Y:', self.ext_x_max_y)
+        temp_ext_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1]
+        self.ext_x_max_y = round(temp_ext_x_max_y, app.ROUND)
+        print('X max:', temp_ext_x_max, ' @ Y:', temp_ext_x_max_y)
         app.extrema_x_max.set('X max ' + str(self.ext_x_max) + ' @ Y ' + str(self.ext_x_max_y))
 
-        self.ext_y_min = self.data_out.iloc[:, 1].min().round(10)
+        # Y min
+        temp_ext_y_min = self.data_out.iloc[:, 1].min()
+        self.ext_y_min = round(temp_ext_y_min, app.ROUND)
         # Find X for Y min
-        self.ext_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0].round(10)
-        print('Y min:', self.ext_y_min, '@ X:', self.ext_y_min_x)
+        temp_ext_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0]
+        self.ext_y_min_x = round(temp_ext_y_min_x, app.ROUND)
+        print('Y min:', temp_ext_y_min, '@ X:', temp_ext_y_min_x)
         app.extrema_y_min.set('Y min ' + str(self.ext_y_min) + ' @ X ' + str(self.ext_y_min_x))
 
-        self.ext_y_max = self.data_out.iloc[:, 1].max().round(10)
+        # Y max
+        temp_ext_y_max = self.data_out.iloc[:, 1].max()
+        self.ext_y_max = round(temp_ext_y_max, app.ROUND)
         # Find X for Y max
-        self.ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0].round(10)
-        print('Y max:', self.ext_y_max, '@ X:', self.ext_y_max_x)
+        temp_ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0]
+        self.ext_y_max_x = round(temp_ext_y_max_x, app.ROUND)
+        print('Y max:', temp_ext_y_max, '@ X:', temp_ext_y_max_x)
         app.extrema_y_max.set('Y max ' + str(self.ext_y_max) + ' @ X ' + str(self.ext_y_max_x))
 
 
@@ -179,7 +196,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '1.2'
+        self.PV_VERSION = '1.3'
         self.WIN_SIZE_POS = '1280x780'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
@@ -209,6 +226,9 @@ class Application(tk.Tk):
         # Curve creation label showing the curve name
         self.curve_label = tk.StringVar(self)
         self.curve_label.set('No CSV files selected.')
+
+        # Number of decimals for rounding operation
+        self.ROUND = 5
 
         s = ttk.Style()
         # Options: default, clam, alt, classic
@@ -1284,7 +1304,8 @@ class Application(tk.Tk):
         self.extrema_tab.columnconfigure(index=0, weight=1)
 
         # Label
-        comment = ttk.Label(self.extrema_tab, text='Values are rounded with 10 digits after decimal.')
+        txt = 'Values are rounded with ' + str(self.ROUND) + ' digits after decimal.'
+        comment = ttk.Label(self.extrema_tab, text=txt)
         comment.grid(row=0, column=0, columnspan=4)
         comment.configure(anchor=tk.W)
         # Active curve selection
