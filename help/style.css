@@ -116,7 +116,7 @@ h2 {
     font-size: 2rem;
     font-style: italic;
     border-bottom: 1px solid darkgrey;
-    margin-top: 3rem;
+    margin-top: 4rem;
 }
 
 h3 {
@@ -124,7 +124,7 @@ h3 {
     font-size: 1.8rem;
     font-variant: small-caps;
     color: hsl(220, 90%, 50%);
-    margin-top: 1.8rem;
+    margin-top: 3rem;
 }
 
 .en_ligne {
