@@ -13,6 +13,7 @@ try:
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_tkagg import (
         FigureCanvasTkAgg, NavigationToolbar2Tk)
+    from matplotlib.ticker import MaxNLocator
     import pandas as pd
     import sys
     import tkinter as tk
@@ -841,6 +842,7 @@ class Application(tk.Tk):
                             )
             except ValueError:
                 msg.showerror('Error', 'The values of X min, X max, Y min and Y max must be numbers.')
+    
         # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
             # print('Visibility ', Curve.dic[str(i)].name, Curve.dic[str(i)].visibility)
@@ -888,6 +890,10 @@ class Application(tk.Tk):
             message1 = 'For the annotation, the values of X and Y positions and the value of font size must be numbers.'
             message2 = '\nFor the arrow, the values of X and Y positions, the length and width of head and the line width must be numbers.'
             msg.showerror('Error', message1 + message2)
+
+        # Set the number of bins (axis ticks)
+        self.ax.xaxis.set_major_locator(MaxNLocator(int(self.x_bin.get())+1))
+        self.ax.yaxis.set_major_locator(MaxNLocator(int(self.y_bin.get())+1))
 
         # Set plot area parameters
         self.ax.legend(loc=self.legend_var[str(self.legend.get())])
@@ -1013,14 +1019,15 @@ class Application(tk.Tk):
         self.autoscale = tk.IntVar()
         self.autoscale.set(0)
         ttk.Radiobutton(self.range_frame, text='Auto scale', variable=self.autoscale,
-                       value=0).grid(row=0, column=0, columnspan=2)
+                       value=0, command=self.update_user_state).grid(row=0, column=0, columnspan=2)
 
         ttk.Radiobutton(self.range_frame, text='User defined', variable=self.autoscale,
-                       value=1).grid(row=0, column=2, columnspan=2)
+                       value=1, command=self.update_user_state).grid(row=0, column=2, columnspan=2)
         # User defined
         ttk.Label(self.range_frame, text='User defined ranges:'
                 ).grid(row=1, column=0, columnspan=2)
         # https://stackoverflow.com/questions/26333769/event-triggered-by-listbox-and-radiobutton-in-tkinter
+    
         # X min
         x_min_label = ttk.Label(self.range_frame, text='X min'
                 )
@@ -1028,8 +1035,10 @@ class Application(tk.Tk):
         x_min_label.configure(anchor='center')
         self.x_min_range = tk.StringVar()
         self.x_min_range.set('0')
-        ttk.Entry(self.range_frame, textvariable=self.x_min_range, width=8,
-                 justify=tk.CENTER).grid(row=2, column=1)
+        self.x_min_entry = ttk.Entry(self.range_frame, textvariable=self.x_min_range, width=8,
+                 justify=tk.CENTER)
+        self.x_min_entry.configure(state='disabled')
+        self.x_min_entry.grid(row=2, column=1)
         # Y min
         y_min_label = ttk.Label(self.range_frame, text='Y min'
                 )
@@ -1037,8 +1046,10 @@ class Application(tk.Tk):
         y_min_label.configure(anchor='center')
         self.y_min_range = tk.StringVar()
         self.y_min_range.set('0')
-        ttk.Entry(self.range_frame, textvariable=self.y_min_range, width=8,
-                 justify=tk.CENTER).grid(row=2, column=3)
+        self.y_min_entry = ttk.Entry(self.range_frame, textvariable=self.y_min_range, width=8, 
+                 justify=tk.CENTER)
+        self.y_min_entry.configure(state='disabled')
+        self.y_min_entry.grid(row=2, column=3)
         # X max
         x_max_label = ttk.Label(self.range_frame, text='X max'
                 )
@@ -1046,8 +1057,10 @@ class Application(tk.Tk):
         x_max_label.configure(anchor='center')
         self.x_max_range = tk.StringVar()
         self.x_max_range.set('100')
-        ttk.Entry(self.range_frame, textvariable=self.x_max_range, width=8,
-                 justify=tk.CENTER).grid(row=3, column=1)
+        self.x_max_entry = ttk.Entry(self.range_frame, textvariable=self.x_max_range, width=8, 
+                 justify=tk.CENTER)
+        self.x_max_entry.configure(state='disabled')
+        self.x_max_entry.grid(row=3, column=1)
         # Y max
         y_max_label = ttk.Label(self.range_frame, text='Y max'
                 )
@@ -1055,8 +1068,32 @@ class Application(tk.Tk):
         y_max_label.configure(anchor='center')
         self.y_max_range = tk.StringVar()
         self.y_max_range.set('100')
-        ttk.Entry(self.range_frame, textvariable=self.y_max_range, width=8,
-                 justify=tk.CENTER).grid(row=3, column=3)
+        self.y_max_entry = ttk.Entry(self.range_frame, textvariable=self.y_max_range, width=8, 
+                 justify=tk.CENTER)
+        self.y_max_entry.configure(state='disabled')
+        self.y_max_entry.grid(row=3, column=3)
+
+        # Tick label
+        ttk.Label(self.range_frame, text='Numbers of ticks:'
+                ).grid(row=4, column=0, columnspan=2)
+        # X tick
+        x_tick_label = ttk.Label(self.range_frame, text='X axis'
+                )
+        x_tick_label.grid(row=5, column=0)
+        x_tick_label.configure(anchor='center')
+        self.x_bin = tk.StringVar()
+        self.x_bin.set('10')
+        ttk.Entry(self.range_frame, textvariable=self.x_bin, width=8,
+                 justify=tk.CENTER).grid(row=5, column=1)
+        # Y tick
+        y_tick_label = ttk.Label(self.range_frame, text='Y axis'
+                )
+        y_tick_label.grid(row=5, column=2)
+        y_tick_label.configure(anchor='center')
+        self.y_bin = tk.StringVar()
+        self.y_bin.set('10')
+        ttk.Entry(self.range_frame, textvariable=self.y_bin, width=8,
+                 justify=tk.CENTER).grid(row=5, column=3)
 
         # LEGEND PANEL
         self.legend_frame = ttk.LabelFrame(self.plot_tab, text='Legend position')
@@ -1120,6 +1157,19 @@ class Application(tk.Tk):
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.plot_tab, text='Plot area')
+
+    def update_user_state(self):
+        """necessary to update the state of ttk entries for user defined ranges"""
+        if self.autoscale.get() == 0:
+            self.x_min_entry.configure(state='disabled')
+            self.x_max_entry.configure(state='disabled')
+            self.y_min_entry.configure(state='disabled')
+            self.y_max_entry.configure(state='disabled')
+        else:
+            self.x_min_entry.configure(state='normal')
+            self.x_max_entry.configure(state='normal')
+            self.y_min_entry.configure(state='normal')
+            self.y_max_entry.configure(state='normal')
 
     def annotation_tab(self):
         """ Third tab managing annotations.
