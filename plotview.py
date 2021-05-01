@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""PlotView reads a data file and plots the data curve using matplotlib.
+""" PlotView reads a data file and plots the data curve using matplotlib.
 
     Code hosted at: https://github.com/fa201/PlotView
     PlotView is summarized as PV in variable names.
@@ -82,6 +82,14 @@ class Curve:
         self.y_offset = 0.0
         self.x_scale = 1.0
         self.y_scale = 1.0
+        self.ext_x_min = 0.0
+        self.ext_x_min_y = 0.0
+        self.ext_x_max = 0.0
+        self.ext_x_max_y = 0.0
+        self.ext_y_min = 0.0
+        self.ext_y_min_x = 0.0
+        self.ext_y_max = 0.0
+        self.ext_y_max_x = 0.0
         Curve.count += 1
 
     def read_file(self, path):
@@ -110,6 +118,24 @@ class Curve:
     def create_data_out(self, df):
         temp = df.copy()
         return temp
+
+    def find_extrema(self):
+        self.ext_x_min = self.data_out.iloc[:, 0].min()
+        # Find Y for X min
+        self.ext_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1]
+        print('X min:', self.ext_x_min, '@ Y:', self.ext_x_min_y)
+        self.ext_x_max = self.data_out.iloc[:, 0].max()
+        # Find Y for X max
+        self.ext_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1]
+        print('X max:', self.ext_x_max, '@ Y:', self.ext_x_max_y)
+        self.ext_y_min = self.data_out.iloc[:, 1].min()
+        # Find X for Y min
+        self.ext_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0]
+        print('Y min:', self.ext_y_min, '@ X:', self.ext_y_min_x)
+        self.ext_y_max = self.data_out.iloc[:, 1].max()
+        # Find X for Y max
+        self.ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0]
+        print('Y max:', self.ext_y_max, '@ X:', self.ext_y_max_x)
 
 
 class Application(tk.Tk):
@@ -190,6 +216,8 @@ class Application(tk.Tk):
         self.plot_tab()
         # Create the tool 'Annotation' tab on the RH side
         self.annotation_tab()
+        # Create the tool 'Extrema' tab on the RH side
+        self.extrema_tab()
 
     def create_underscores(self):
         """ Creates a string with underscores to fill the 'work_dir' and 'work file' labels when empty.
@@ -710,6 +738,7 @@ class Application(tk.Tk):
                 Curve.dic[str(Curve.count)].name = self.curve_label.get()
                 # Update the list of curve for future modifications.
                 self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
+                self.active_curve_combo2['values'] = tuple(list(Curve.dic.keys()))
                 self.plot_curves()
             else:
                 msg.showerror('Error', 'The name of the curve is required.')
@@ -1234,6 +1263,129 @@ class Application(tk.Tk):
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.annot_tab, text='Annotation')
+
+    def extrema_tab(self):
+        """ Fourth tab managing extrema.
+
+            Label variables are local variables so no 'self' prepend.
+        """
+        # Create extrema tab
+        self.extrema_tab = ttk.Frame(self.tool_notebook)
+        # Allow the column to expand for children
+        self.extrema_tab.columnconfigure(index=0, weight=1)
+
+        # Active curve selection
+        select_curve_label2 = ttk.Label(self.extrema_tab, text='Select curve')
+        select_curve_label2.grid(row=0, column=0)
+        select_curve_label2.configure(anchor='center')
+        self.active_curve_combo2 = ttk.Combobox(self.extrema_tab,
+                                               values=list(Curve.dic.keys()),
+                                               justify=tk.CENTER,
+                                               width=4,
+                                               )
+        self.active_curve_combo2.grid(row=0, column=1)
+        self.active_curve_combo2.bind('<<ComboboxSelected>>', self.get_extrema)
+
+        # Add this tab to the notebook.
+        self.tool_notebook.add(self.extrema_tab, text='Extrema')
+
+    def get_extrema(self, event):
+        # Get the curve ID through event.
+        selected_curve2 = event.widget.get()
+        # check for input error on curve ID
+        if selected_curve2 in Curve.dic.keys():
+            # Update the active curve attributes.
+            Curve.dic[str(selected_curve2)].find_extrema() 
+        else:
+            print('ERROR - Curve ID not found. Please select again a curve ID.')
+            self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
+
+"""
+        # EXTREMA PANEL
+        self.ext_frame = ttk.LabelFrame(self.extrema_tab, text='Annotation')
+        self.ext_frame.grid(row=0, column=0)
+        # Allow the column to expand for children
+        for i in range(0, 4):
+            self.text_frame.columnconfigure(index=i, weight=1)
+        # Text
+        text_label = ttk.Label(self.ext_frame, text='Text'
+                )
+        text_label.grid(row=0, column=0)
+        text_label.configure(anchor='center')
+        self.annotation = tk.StringVar()
+        self.annotation.set('Annotation_text')
+        ttk.Entry(self.text_frame, textvariable=self.annotation, width=30,
+                 justify=tk.CENTER).grid(row=0, column=1, columnspan=3)
+        # X position of annotation
+        text_x_pos_label = ttk.Label(self.text_frame, text='X position'
+                )
+        text_x_pos_label.grid(row=1, column=0)
+        text_x_pos_label.configure(anchor='center')
+        self.annotation_x = tk.StringVar()
+        self.annotation_x.set('0')
+        ttk.Entry(self.text_frame, textvariable=self.annotation_x, width=8,
+                 justify=tk.CENTER).grid(row=1, column=1)
+        # Y position of annotation
+        text_y_pos_label = ttk.Label(self.text_frame, text='Y position'
+                )
+        text_y_pos_label.grid(row=1, column=2)
+        text_y_pos_label.configure(anchor='center')
+        self.annotation_y = tk.StringVar()
+        self.annotation_y.set('0')
+        ttk.Entry(self.text_frame, textvariable=self.annotation_y, width=8,
+                 justify=tk.CENTER).grid(row=1, column=3)
+        # Color
+        text_color_label = ttk.Label(self.text_frame, text='Text color'
+                )
+        text_color_label.grid(row=2, column=0)
+        text_color_label.configure(anchor='center')
+        self.annot_color_combo = ttk.Combobox(self.text_frame,
+                                              values=my_colors_white,
+                                              justify=tk.CENTER,
+                                              width=8
+                                             )
+        self.annot_color_combo.set(my_colors_white[0])
+        self.annot_color_combo.grid(row=2, column=1)
+        # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
+        # Font size
+        font_size_label = ttk.Label(self.text_frame, text='Font size'
+                )
+        font_size_label.grid(row=2, column=2)
+        font_size_label.configure(anchor='center')
+        self.annot_size = tk.StringVar()
+        self.annot_size.set('10')
+        ttk.Entry(self.text_frame, textvariable=self.annot_size, width=8,
+                 justify=tk.CENTER).grid(row=2, column=3)
+        # Show annotation
+        self.annot_state = tk.IntVar()
+        self.annot_state.set(0)
+        # No callback since 'Apply all' redraw the plot with or without the annotation.
+        ttk.Checkbutton(self.text_frame, text='Show the annotation on the plot', variable=self.annot_state
+                       ).grid(row=3, column=0, columnspan=4)
+        
+
+        # APPLY BUTTON
+        # Padding for apply needs to be the same for containers for layout consistency
+        ttk.Button(self.extrema_tab, text='Apply annotation and arrow properties',
+                  command=self.plot_curves, width=6).grid(row=4, column=0)
+
+        # APPLY PADDING AND STICKINESS ON WIDGETS CHILDREN AFTER THEY ARE CREATED
+        # For self.extrema_tab
+        for frame in self.extrema_tab.winfo_children():
+            frame.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
+                                 padx=self.CONTAINER_PADX, 
+                                 pady=self.CONTAINER_PADY
+                                )
+        # For all frames
+        union_list = (set(self.text_frame.winfo_children()) |
+                      set(self.arrow_frame.winfo_children())
+                     )
+        for widget in union_list:
+            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
+                                  padx=self.WIDGET_PADX, 
+                                  pady=self.WIDGET_PADY
+                                 )
+"""
 
 
 if __name__ == '__main__':
