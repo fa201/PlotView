@@ -13,6 +13,7 @@ try:
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_tkagg import (
         FigureCanvasTkAgg, NavigationToolbar2Tk)
+    from matplotlib.ticker import MaxNLocator
     import pandas as pd
     import sys
     import tkinter as tk
@@ -821,6 +822,7 @@ class Application(tk.Tk):
                             )
             except ValueError:
                 msg.showerror('Error', 'The values of X min, X max, Y min and Y max must be numbers.')
+    
         # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
             # print('Visibility ', Curve.dic[str(i)].name, Curve.dic[str(i)].visibility)
@@ -868,6 +870,10 @@ class Application(tk.Tk):
             message1 = 'For the annotation, the values of X and Y positions and the value of font size must be numbers.'
             message2 = '\nFor the arrow, the values of X and Y positions, the length and width of head and the line width must be numbers.'
             msg.showerror('Error', message1 + message2)
+
+        # Set the number of bins (axis ticks)
+        self.ax.xaxis.set_major_locator(MaxNLocator(int(self.x_bin.get())+1))
+        self.ax.yaxis.set_major_locator(MaxNLocator(int(self.y_bin.get())+1))
 
         # Set plot area parameters
         self.ax.legend(loc=self.legend_var[str(self.legend.get())])
@@ -1056,7 +1062,7 @@ class Application(tk.Tk):
         x_tick_label.grid(row=5, column=0)
         x_tick_label.configure(anchor='center')
         self.x_bin = tk.StringVar()
-        self.x_bin.set('4')
+        self.x_bin.set('10')
         ttk.Entry(self.range_frame, textvariable=self.x_bin, width=8,
                  justify=tk.CENTER).grid(row=5, column=1)
         # Y tick
@@ -1065,7 +1071,7 @@ class Application(tk.Tk):
         y_tick_label.grid(row=5, column=2)
         y_tick_label.configure(anchor='center')
         self.y_bin = tk.StringVar()
-        self.y_bin.set('4')
+        self.y_bin.set('10')
         ttk.Entry(self.range_frame, textvariable=self.y_bin, width=8,
                  justify=tk.CENTER).grid(row=5, column=3)
 
@@ -1133,6 +1139,7 @@ class Application(tk.Tk):
         self.tool_notebook.add(self.plot_tab, text='Plot area')
 
     def update_user_state(self):
+        """necessary to update the state of ttk entries for user defined ranges"""
         if self.autoscale.get() == 0:
             self.x_min_entry.configure(state='disabled')
             self.x_max_entry.configure(state='disabled')
