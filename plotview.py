@@ -1274,17 +1274,43 @@ class Application(tk.Tk):
         # Allow the column to expand for children
         self.extrema_tab.columnconfigure(index=0, weight=1)
 
+        # Label
+        comment = ttk.Label(self.extrema_tab, text='Values are rounded with 10 digits after decimal.')
+        comment.grid(row=0, column=0, columnspan=4)
+        comment.configure(anchor=tk.W)
         # Active curve selection
         select_curve_label2 = ttk.Label(self.extrema_tab, text='Select curve')
-        select_curve_label2.grid(row=0, column=0)
+        select_curve_label2.grid(row=1, column=0)
         select_curve_label2.configure(anchor='center')
         self.active_curve_combo2 = ttk.Combobox(self.extrema_tab,
                                                values=list(Curve.dic.keys()),
                                                justify=tk.CENTER,
                                                width=4,
                                                )
-        self.active_curve_combo2.grid(row=0, column=1)
+        self.active_curve_combo2.grid(row=1, column=1)
         self.active_curve_combo2.bind('<<ComboboxSelected>>', self.get_extrema)
+        # Label
+        selected_curve_label = ttk.Label(self.extrema_tab, text='Curve name')
+        selected_curve_label.grid(row=1, column=2)
+        selected_curve_label.configure(anchor='center')
+        # Entry for curve name
+        self.selected_curve_name = tk.StringVar()
+        self.selected_curve_name.set(' ')
+        ttk.Entry(self.extrema_tab, textvariable=self.selected_curve_name, width=20,
+                 justify=tk.CENTER).grid(row=1, column=3)
+        extrema_x_min_label = tk.StringVar()
+        extrema_x_min_label.set('Xmin:')
+
+
+
+        # For all frames
+        union_list = (set(self.extrema_tab.winfo_children()) 
+                     )
+        for widget in union_list:
+            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
+                                  padx=self.WIDGET_PADX, 
+                                  pady=self.WIDGET_PADY
+                                 )
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.extrema_tab, text='Extrema')
@@ -1294,8 +1320,10 @@ class Application(tk.Tk):
         selected_curve2 = event.widget.get()
         # check for input error on curve ID
         if selected_curve2 in Curve.dic.keys():
-            # Update the active curve attributes.
-            Curve.dic[str(selected_curve2)].find_extrema() 
+            # show the curve name after selection of curve ID
+            self.selected_curve_name.set(Curve.dic[str(selected_curve2)].name)
+            Curve.dic[str(selected_curve2)].find_extrema()
+            self.set_status('Extrema values computed for curve: ' + Curve.dic[str(selected_curve2)].name)
         else:
             print('ERROR - Curve ID not found. Please select again a curve ID.')
             self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
@@ -1376,15 +1404,7 @@ class Application(tk.Tk):
                                  padx=self.CONTAINER_PADX, 
                                  pady=self.CONTAINER_PADY
                                 )
-        # For all frames
-        union_list = (set(self.text_frame.winfo_children()) |
-                      set(self.arrow_frame.winfo_children())
-                     )
-        for widget in union_list:
-            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
-                                  padx=self.WIDGET_PADX, 
-                                  pady=self.WIDGET_PADY
-                                 )
+        
 """
 
 
