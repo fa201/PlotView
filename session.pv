@@ -7,6 +7,8 @@ x min user range = 0
 x max user range = 100
 y min user range = 0
 y max user range = 100
+x number of ticks = 10
+y number of ticks = 10
 legend position = 4
 display grid = 1
 
@@ -26,12 +28,12 @@ arrow line width = 0.5
 arrow state = 1
 
 [session]
-working directory = /home/fabrice/Programmes/Python/Mes_scripts/PlotView/test
+working directory = test
 curve count = 4
 
 [1]
 name = Linear offset in X by 5
-csv file path = /home/fabrice/Programmes/Python/Mes_scripts/PlotView/test/xlin.csv
+csv file path = test/xlin.csv
 x data = displacement (mm)
 y data = force (kN)
 visibility = 1
@@ -45,7 +47,7 @@ scale in y = 1.0
 
 [2]
 name = Power scaled in Y by 10
-csv file path = /home/fabrice/Programmes/Python/Mes_scripts/PlotView/test/xpower_with_spaces.csv
+csv file path = test/xpower_with_spaces.csv
 x data = time (s)
 y data = distance (km)
 visibility = 1
@@ -59,7 +61,7 @@ scale in y = 10.0
 
 [3]
 name = x.sin(x)
-csv file path = /home/fabrice/Programmes/Python/Mes_scripts/PlotView/test/xsinx.csv
+csv file path = test/xsinx.csv
 x data = x
 y data = y
 visibility = 1
@@ -73,7 +75,7 @@ scale in y = 1.0
 
 [4]
 name = Circle
-csv file path = /home/fabrice/Programmes/Python/Mes_scripts/PlotView/test/extrema.csv
+csv file path = test/extrema.csv
 x data = x
 y data = y
 visibility = 0
@@ -84,4 +86,3 @@ offset in x = 0.0
 offset in y = 0.0
 scale in x = 1.0
 scale in y = 1.0
-
