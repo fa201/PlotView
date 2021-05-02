@@ -54,8 +54,8 @@
         </p>
 
         <h3>Menus</h3>
-        <p><em>File / Load PV_session.ini</em> opens the previously saved session file. This restores curves, titles and annotation as they were at the moment of saving.</p>
-        <p><em>File / Save PV_session.ini</em> saves curves, titles and annotation as they are in the ini file. This file is located in the same folder as the PlotView.py script. <strong>It is possible to edit this file yet it is not recommended to do so</strong> since the error processing is not coded (so any error or missing data will cause the application to raise an error).</p>
+        <p><em>File / Load session</em> allows to select a previously session file (*.pv). This restores curves, titles and annotation as they were at the moment of saving.</p>
+        <p><em>File / Save session</em> saves a session file (*.pv) with curves, titles and annotation. It is recommended to save this file in the working directory. <strong>It is possible to edit this file yet it is not recommended to do so</strong> since the error processing is not coded (so any error or missing data will cause the application to raise an error).</p>
 
         <h3>Status bar</h3>
         <p>It is recommended to <strong>look at the status bar after each function</strong> to check the status of PlotView.</p>
@@ -74,7 +74,7 @@
 
         <h3>Plot area tab</h3>
         <p>The <em>titles</em> of plot, X label and Y label are defined by default and shown on the plot. Of course, they can be changed. Tip: double-click on the default title to replace it by a more relevant title.</p>
-        <p>The plot <em>ranges</em> for X and Y axis are automatically computed by matplotlib by default when <em>Autoscale</em> choice is selected. You can change these values by selecting <em>User defined</em> and input more appropriate values.</p>
+        <p>The plot <em>ranges</em> for X and Y axis are automatically computed by matplotlib by default when <em>Autoscale</em> choice is selected. You can change these values by selecting <em>User defined</em> and input more appropriate values. The <em>number of ticks</em> for X an Y defines the number of intervals (range between 2 ticks) on the considered axis.</p>
         <p>The legend position can be set in each of 4 corners of the plot area. <em>Best</em> lets matplotlib decide the position.</p>
         <p><em>Show grid</em> allows to trace grids on major axis values.</p>
         <p><em>Apply all</em> allows to take into accound all the modifications done in the Plot area tab to update the plot.</p>

@@ -293,8 +293,8 @@ class Application(tk.Tk):
         # Link of main menu to root window
         self.config(menu=menu_main)
         # File Menu
-        menu_file.add_command(label='Load PV_session.ini', command=self.load_session)
-        menu_file.add_command(label='Save PV_session.ini', command=self.save_session)
+        menu_file.add_command(label='Load session', command=self.load_session)
+        menu_file.add_command(label='Save session', command=self.save_session)
         menu_file.add_command(label='Quit', command=self.app_quit)
         # Help Menu
         menu_help.add_command(label='Help files', command=self.help_message)
@@ -375,6 +375,9 @@ class Application(tk.Tk):
             Plot data are exported.
             The session file will be created each time so the previous one is erased.
         """
+        session_file = filedialog.asksaveasfilename(
+            initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Save as PlotView session file')
+
         config = configparser.ConfigParser()
         # Plot data
         config['plot'] = {'main title': self.main_title.get(),
@@ -385,6 +388,8 @@ class Application(tk.Tk):
                           'x max user range': self.x_max_range.get(),
                           'y min user range': self.y_min_range.get(),
                           'y max user range': self.y_max_range.get(),
+                          'x number of ticks': self.x_bin.get(),
+                          'y number of ticks': self.y_bin.get(),
                           'legend position': self.legend.get(),
                           'display grid': self.grid_state.get()
                           }
@@ -426,20 +431,22 @@ class Application(tk.Tk):
                          'scale in Y': Curve.dic[str(i)].y_scale
                         }
         # Write the file and erase existing file.
-        with open('PV_session.ini', 'w') as file:
+        with open(session_file, 'w') as file:
             config.write(file)
-        self.set_status('Session file "PV_session.ini" is written where PlotView.py file is located.')
+        self.set_status('Session file is saved at: ' + session_file)
 
     def load_session(self):
-        """ Load session file
+        """ Load session file 
 
             Curve data are read.
             Plot data are read.
         """
         config = configparser.ConfigParser()
         # TODO: Show a warning or ask a permission since the work will be lost ?
-        # Read the file
-        config.read('PV_session.ini')
+        # Read the sessionfile
+        session_file = filedialog.askopenfilename(
+            initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Open PlotView session file')
+        config.read(session_file)
         # Process Plot section
         self.main_title.set(config.get('plot', 'main title'))
         self.x_title.set(config.get('plot', 'x title'))
@@ -449,6 +456,8 @@ class Application(tk.Tk):
         self.x_max_range.set(config.get('plot', 'x max user range'))
         self.y_min_range.set(config.get('plot', 'y min user range'))
         self.y_max_range.set(config.get('plot', 'y max user range'))
+        self.x_bin.set(config.get('plot', 'x number of ticks'))
+        self.y_bin.set(config.get('plot', 'y number of ticks'))
         self.legend.set(config.getint('plot', 'legend position'))
         self.grid_state.set(config.getboolean('plot', 'display grid'))
         self.main_title.set(config.get('plot', 'main title'))
