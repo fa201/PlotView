@@ -293,8 +293,8 @@ class Application(tk.Tk):
         # Link of main menu to root window
         self.config(menu=menu_main)
         # File Menu
-        menu_file.add_command(label='Load PV_session.ini', command=self.load_session)
-        menu_file.add_command(label='Save PV_session.ini', command=self.save_session)
+        menu_file.add_command(label='Load session', command=self.load_session)
+        menu_file.add_command(label='Save session', command=self.save_session)
         menu_file.add_command(label='Quit', command=self.app_quit)
         # Help Menu
         menu_help.add_command(label='Help files', command=self.help_message)
@@ -439,7 +439,10 @@ class Application(tk.Tk):
         config = configparser.ConfigParser()
         # TODO: Show a warning or ask a permission since the work will be lost ?
         # Read the file
-        config.read('PV_session.ini')
+        session_file = filedialog.askopenfilename(
+            initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Open PlotView session file')
+
+        config.read(session_file)
         # Process Plot section
         self.main_title.set(config.get('plot', 'main title'))
         self.x_title.set(config.get('plot', 'x title'))
