@@ -1,8 +1,8 @@
 # PlotView
-PlotView plots curves from CSV data file. The appearance of curves (color, line width, etc.) can be customized. Some curves can also be hidden.
-One annotation can be added if you need to highlight a point of interest.
-PlotView can compute the 4 extrema values (Xmin, Xmax, Ymin, Ymax) for a given curve.
+PlotView plots curves from CSV data file. The appearance of curves (color, line width, etc.) can be customized. Some curves can also be hidden. One annotation can be added if you need to highlight a point of interest. PlotView can compute the 4 extrema values (Xmin, Xmax, Ymin, Ymax) for a given curve.
+
 ttk is used to have a more modern look at least on Windows platorms. Note that the below picture was taken on linux Xubuntu.
+
 My goals are:
 * Application to learn the basics of Python and simple GUI programming.
 * Hopefully make a tool which will be useable to plot test data at work.
@@ -13,7 +13,9 @@ My goals are:
 The GUI will be make with **Tkinter** due to:
 * *portability* to Linux & Windows
 * *ease of programming* for a beginner
+
 pandas and matplotlib allow to **process a lot of data points much faster than spreadsheet applications** (MS-Excel, LibreOffice Calc, etc.).
+
 matplotlib *Figure* and *Navigation Tool Bar* will be embedded in tkinter GUI since it is not possible to update the matplotlib window in an interactive way.
 
 ## Expected CSV format
@@ -24,7 +26,7 @@ matplotlib *Figure* and *Navigation Tool Bar* will be embedded in tkinter GUI si
 * 'image' folder contains a few pictures of plot examples.
 * 'test' folder contains a few test curves.
 * plotview.py is the python script.
-* PV_session.ini is a session file which enables to bring back a saved session: curves will be load, colors, titles and annotation are updated.
+* session.pv is a session file which enables to bring back the session shown on the picture: curves will be load, colors, titles and annotation are updated.
 
 # Required Python packages.
 PlotView needs the following packages to run.
