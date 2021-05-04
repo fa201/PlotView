@@ -298,16 +298,14 @@ class Application(tk.Tk):
         menu_help = tk.Menu(menu_main, tearoff='False')
         # Add menu_file in menu_main
         menu_main.add_cascade(label='File', menu=menu_file)
-        menu_main.add_cascade(label='Preferences', menu=menu_pref)
         menu_main.add_cascade(label='Help', menu=menu_help)
         # Link of main menu to root window
         self.config(menu=menu_main)
         # File Menu
         menu_file.add_command(label='Load session', command=self.load_session)
         menu_file.add_command(label='Save session', command=self.save_session)
+        menu_file.add_separator()
         menu_file.add_command(label='Quit', command=self.app_quit)
-        # Preference menu
-        menu_pref.add_command(label='GUI font size', command=self.update_GUI_font)
         # Help Menu
         menu_help.add_command(label='Help files', command=self.help_message)
         menu_help.add_command(label='Licence', command=self.licence_message)
@@ -1476,9 +1474,6 @@ class Application(tk.Tk):
         else:
             print('ERROR - Curve ID not found. Please select again a curve ID.')
             self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
-
-    def update_GUI_font(self):
-    	pass
 
     def update_plot_bg_color(self):
     	if self.fig_color_flag.get() == 0:
