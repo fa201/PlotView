@@ -253,9 +253,6 @@ class Application(tk.Tk):
         # Options: default, clam, alt, classic
         s.theme_use('alt')
 
-        # Matplotlib global color setting
-        self.plot_fig_color = 'white_bg' # Or 'black_bg'
-
         # METHODS
         # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
@@ -307,9 +304,11 @@ class Application(tk.Tk):
         menu_main = tk.Menu(self)
         # Menu tear off is disabled.
         menu_file = tk.Menu(menu_main, tearoff='False')
+        menu_pref = tk.Menu(menu_main, tearoff='False')
         menu_help = tk.Menu(menu_main, tearoff='False')
         # Add menu_file in menu_main
         menu_main.add_cascade(label='File', menu=menu_file)
+        menu_main.add_cascade(label='Preferences', menu=menu_pref)
         menu_main.add_cascade(label='Help', menu=menu_help)
         # Link of main menu to root window
         self.config(menu=menu_main)
@@ -317,6 +316,8 @@ class Application(tk.Tk):
         menu_file.add_command(label='Load session', command=self.load_session)
         menu_file.add_command(label='Save session', command=self.save_session)
         menu_file.add_command(label='Quit', command=self.app_quit)
+        # Preference menu
+        menu_pref.add_command(label='GUI font size', command=self.update_GUI_font)
         # Help Menu
         menu_help.add_command(label='Help files', command=self.help_message)
         menu_help.add_command(label='Licence', command=self.licence_message)
@@ -349,6 +350,8 @@ class Application(tk.Tk):
         self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
         self.ax = self.fig.add_subplot(111)
         # Color setting according to plot backgroung color
+        # plot_fig_color is initialized here but the value will be updatedbased on radiobutton state
+        self.plot_fig_color = 'white_bg'
         self.fig.set_facecolor(my_colors[self.plot_fig_color][0])
         self.ax.set_facecolor(my_colors[self.plot_fig_color][0])
         
@@ -1160,12 +1163,29 @@ class Application(tk.Tk):
                          }
 
         # CUSTOMIZE PANEL
-        self.custom_frame = ttk.LabelFrame(self.plot_tab, text='Customize')
+        self.custom_frame = ttk.LabelFrame(self.plot_tab, text='Customize plot')
         self.custom_frame.grid(row=3, column=0)
+
+        # Background color 
+        x_min_label = ttk.Label(self.custom_frame, text='Background color'
+                )
+        x_min_label.grid(row=0, column=0, columnspan=2)
+        x_min_label.configure(anchor='center')
+        # Matplotlib global color setting
+        self.fig_color_flag = tk.IntVar()
+        self.fig_color_flag.set(0)
+        ttk.Radiobutton(self.custom_frame, text='White', variable=self.fig_color_flag,
+        				value=0, command=self.update_plot_bg_color
+                      ).grid(row=0, column=2)
+        ttk.Radiobutton(self.custom_frame, text='Black', variable=self.fig_color_flag, 
+        				value=1, command=self.update_plot_bg_color
+                      ).grid(row=0, column=3)
+        # Show grid
         self.grid_state = tk.IntVar()
         self.grid_state.set(1)
         ttk.Checkbutton(self.custom_frame, text='Show grid', variable=self.grid_state
-                      ).grid(row=0, column=2)
+                      ).grid(row=1, column=0)
+
         # APPLY BUTTON
         # Padding for apply needs to be the same for containers for layout consistency
         ttk.Button(self.plot_tab, text='Apply plot properties', command=self.plot_curves
@@ -1458,6 +1478,15 @@ class Application(tk.Tk):
         else:
             print('ERROR - Curve ID not found. Please select again a curve ID.')
             self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
+
+    def update_GUI_font(self):
+    	pass
+
+    def update_plot_bg_color(self):
+    	if self.fig_color_flag.get() == 0:
+    		self.plot_fig_color = 'white_bg'
+    	elif self.fig_color_flag.get() == 1:
+    		self.plot_fig_color = 'black_bg'
 
 
 if __name__ == '__main__':
