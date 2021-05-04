@@ -309,6 +309,7 @@ class Application(tk.Tk):
         # Help Menu
         menu_help.add_command(label='Help files', command=self.help_message)
         menu_help.add_command(label='Licence', command=self.licence_message)
+        menu_file.add_separator()
         menu_help.add_command(label='About', command=self.about_redirect)
 
         # CREATE STATUS BAR AT BOTTOM
@@ -529,6 +530,8 @@ class Application(tk.Tk):
 
         # Update curve ID list to be able to continue working on curves.
         self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
+        # Update curve list for Extrema
+        self.active_curve_combo2['values'] = tuple(list(Curve.dic.keys()))
         self.set_status('Data in session file "PV_session.ini" are read.')
         self.plot_curves()
 
