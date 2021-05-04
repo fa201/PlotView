@@ -309,7 +309,7 @@ class Application(tk.Tk):
         # Help Menu
         menu_help.add_command(label='Help files', command=self.help_message)
         menu_help.add_command(label='Licence', command=self.licence_message)
-        menu_file.add_separator()
+        menu_help.add_separator()
         menu_help.add_command(label='About', command=self.about_redirect)
 
         # CREATE STATUS BAR AT BOTTOM
@@ -406,7 +406,8 @@ class Application(tk.Tk):
                           'x number of ticks': self.x_bin.get(),
                           'y number of ticks': self.y_bin.get(),
                           'legend position': self.legend.get(),
-                          'display grid': self.grid_state.get()
+                          'display grid': self.grid_state.get(),
+                          'background color': self.fig_color_flag.get()
                           }
 
         # Annotation and arrow data
@@ -475,10 +476,7 @@ class Application(tk.Tk):
         self.y_bin.set(config.get('plot', 'y number of ticks'))
         self.legend.set(config.getint('plot', 'legend position'))
         self.grid_state.set(config.getboolean('plot', 'display grid'))
-        self.main_title.set(config.get('plot', 'main title'))
-        self.main_title.set(config.get('plot', 'main title'))
-        self.main_title.set(config.get('plot', 'main title'))
-        self.main_title.set(config.get('plot', 'main title'))
+        self.fig_color_flag.set(config.get('plot', 'background color'))
 
         # Process Annotation section
         self.annotation.set(config.get('annotation', 'text'))
@@ -532,6 +530,8 @@ class Application(tk.Tk):
         self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
         # Update curve list for Extrema
         self.active_curve_combo2['values'] = tuple(list(Curve.dic.keys()))
+        # Update background color for plot
+        self.update_plot_bg_color()
         self.set_status('Data in session file "PV_session.ini" are read.')
         self.plot_curves()
 
