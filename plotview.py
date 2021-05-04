@@ -29,16 +29,6 @@ except ModuleNotFoundError as e:
 
 # Constants for curve styling properties.
 # Set of color for a white background. Change the set for a black background.
-"""
-my_colors_white = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
-             'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
-             'peru', 'limegreen', 'turquoise', 'royalblue'
-             ]
-my_colors_black = ['white', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
-             'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
-             'peru', 'limegreen', 'turquoise', 'royalblue'
-             ]
-"""
 my_colors = {'white_bg': ['white', 'black', 'grey', 'red', 'darksalmon', 
 						  'sienna', 'tan', 'gold', 'green', 'dodgerblue', 
 						  'blueviolet', 'hotpink', 'orange', 'peru', 
@@ -352,10 +342,7 @@ class Application(tk.Tk):
         # Color setting according to plot backgroung color
         # plot_fig_color is initialized here but the value will be updatedbased on radiobutton state
         self.plot_fig_color = 'white_bg'
-        self.fig.set_facecolor(my_colors[self.plot_fig_color][0])
-        self.ax.set_facecolor(my_colors[self.plot_fig_color][0])
-        
-
+       
         self.mat_frame = ttk.Frame(self)
         self.mat_frame.pack(expand=True, fill=tk.BOTH, side=tk.LEFT)
         # Creates a drawing area to put the Figure
@@ -933,11 +920,22 @@ class Application(tk.Tk):
         self.ax.xaxis.set_major_locator(MaxNLocator(int(self.x_bin.get())+1))
         self.ax.yaxis.set_major_locator(MaxNLocator(int(self.y_bin.get())+1))
 
-        # Set plot area parameters
+        # PLOT AREA PARAMETERS
+        # Background colors
+        self.fig.set_facecolor(my_colors[self.plot_fig_color][0])
+        self.ax.set_facecolor(my_colors[self.plot_fig_color][0])
+        # Axis and label colors
+        self.ax.tick_params(axis='both', color=my_colors[self.plot_fig_color][1], labelcolor=my_colors[self.plot_fig_color][1])
+        # Spine color
+        self.ax.spines['top'].set_color(my_colors[self.plot_fig_color][1])
+        self.ax.spines['bottom'].set_color(my_colors[self.plot_fig_color][1])
+        self.ax.spines['left'].set_color(my_colors[self.plot_fig_color][1])
+        self.ax.spines['right'].set_color(my_colors[self.plot_fig_color][1])
+
         self.ax.legend(loc=self.legend_var[str(self.legend.get())])
-        self.ax.set_title(self.main_title.get(), fontweight='bold')
-        self.ax.set_xlabel(self.x_title.get())
-        self.ax.set_ylabel(self.y_title.get())
+        self.ax.set_title(self.main_title.get(), color=my_colors[self.plot_fig_color][1], fontweight='bold')
+        self.ax.set_xlabel(self.x_title.get(), color=my_colors[self.plot_fig_color][1])
+        self.ax.set_ylabel(self.y_title.get(), color=my_colors[self.plot_fig_color][1])
         self.ax.grid(self.grid_state.get())
         self.fig.tight_layout()
         # Update the matplotlib area
