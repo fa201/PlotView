@@ -11,6 +11,7 @@ x number of ticks = 10
 y number of ticks = 10
 legend position = 4
 display grid = 1
+background color = 0
 
 [annotation]
 text = This is of interest
