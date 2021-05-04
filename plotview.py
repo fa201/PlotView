@@ -197,7 +197,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '1.3'
+        self.PV_VERSION = '1.4'
         self.WIN_SIZE_POS = '1280x780'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
@@ -911,8 +911,8 @@ class Application(tk.Tk):
         self.ax.set_ylabel(self.y_title.get())
         self.ax.grid(self.grid_state.get())
         self.fig.tight_layout()
-        # Update the matplotlib area
-        self.canvas.draw()
+        # Update the matplotlib area. canvas.draw() will be deprecated.
+        self.canvas.draw_idle()
         self.set_status('Plot is updated.')
 
     def active_curve(self, event):
