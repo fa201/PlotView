@@ -29,10 +29,27 @@ except ModuleNotFoundError as e:
 
 # Constants for curve styling properties.
 # Set of color for a white background. Change the set for a black background.
+"""
 my_colors_white = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
              'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
              'peru', 'limegreen', 'turquoise', 'royalblue'
              ]
+my_colors_black = ['white', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
+             'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
+             'peru', 'limegreen', 'turquoise', 'royalblue'
+             ]
+"""
+my_colors = {'white_bg': ['white', 'black', 'grey', 'red', 'darksalmon', 
+						  'sienna', 'tan', 'gold', 'green', 'dodgerblue', 
+						  'blueviolet', 'hotpink', 'orange', 'peru', 
+						  'limegreen', 'turquoise', 'royalblue'
+			             ],
+			 'black_bg': ['black', 'white', 'grey', 'red', 'darksalmon', 
+			  			  'sienna', 'tan', 'gold', 'green', 'dodgerblue', 
+			  			  'blueviolet', 'hotpink', 'orange', 'peru', 
+			  			  'limegreen', 'turquoise', 'royalblue'
+			             ]
+			}
 my_linestyles = ['solid', 'dashed', 'dotted']
 
 
@@ -76,7 +93,7 @@ class Curve:
         self.data_type = self.get_data_types()
         self.data_out = self.create_data_out(self.data_in)
         self.visibility = True
-        self.color = my_colors_white[0]
+        self.color = my_colors[app.plot_fig_color][1]
         self.width = 1.0
         self.style = my_linestyles[0]
         self.x_offset = 0.0
@@ -231,9 +248,13 @@ class Application(tk.Tk):
         # Number of decimals for rounding operation
         self.ROUND = 5
 
+        # TTK styling
         s = ttk.Style()
         # Options: default, clam, alt, classic
         s.theme_use('alt')
+
+        # Matplotlib global color setting
+        self.plot_fig_color = 'white_bg' # Or 'black_bg'
 
         # METHODS
         # Allows root window to be closed by the closing icon.
@@ -327,6 +348,11 @@ class Application(tk.Tk):
         # Tip: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
         self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
         self.ax = self.fig.add_subplot(111)
+        # Color setting according to plot backgroung color
+        self.fig.set_facecolor(my_colors[self.plot_fig_color][0])
+        self.ax.set_facecolor(my_colors[self.plot_fig_color][0])
+        
+
         self.mat_frame = ttk.Frame(self)
         self.mat_frame.pack(expand=True, fill=tk.BOTH, side=tk.LEFT)
         # Creates a drawing area to put the Figure
@@ -625,11 +651,11 @@ class Application(tk.Tk):
         line_color_label.grid(row=4, column=0)
         line_color_label.configure(anchor='center')
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
-                                                values=my_colors_white,
+                                                values=my_colors[self.plot_fig_color],
                                                 justify=tk.CENTER,
                                                 width=12
                                                 )
-        self.curve_color_combo.set(my_colors_white[0])
+        self.curve_color_combo.set(my_colors[self.plot_fig_color][1])
         self.curve_color_combo.grid(row=4, column=1, columnspan=2)
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
         # Line width
@@ -1233,11 +1259,11 @@ class Application(tk.Tk):
         text_color_label.grid(row=2, column=0)
         text_color_label.configure(anchor='center')
         self.annot_color_combo = ttk.Combobox(self.text_frame,
-                                              values=my_colors_white,
+                                              values=my_colors[self.plot_fig_color],
                                               justify=tk.CENTER,
                                               width=8
                                              )
-        self.annot_color_combo.set(my_colors_white[0])
+        self.annot_color_combo.set(my_colors[self.plot_fig_color][1])
         self.annot_color_combo.grid(row=2, column=1)
         # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
         # Font size
@@ -1303,11 +1329,11 @@ class Application(tk.Tk):
         line_color_label.grid(row=2, column=0)
         line_color_label.configure(anchor='center')
         self.arrow_color_combo = ttk.Combobox(self.arrow_frame,
-                                                values=my_colors_white,
+                                                values=my_colors[self.plot_fig_color],
                                                 justify=tk.CENTER,
                                                 width=8
                                                 )
-        self.arrow_color_combo.set(my_colors_white[0])
+        self.arrow_color_combo.set(my_colors[self.plot_fig_color][1])
         self.arrow_color_combo.grid(row=2, column=1)
         # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
         # Width of arrow
