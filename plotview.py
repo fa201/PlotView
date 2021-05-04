@@ -29,10 +29,17 @@ except ModuleNotFoundError as e:
 
 # Constants for curve styling properties.
 # Set of color for a white background. Change the set for a black background.
-my_colors_white = ['black', 'grey', 'red', 'darksalmon', 'sienna', 'tan', 'gold',
-             'green', 'dodgerblue', 'blueviolet', 'hotpink', 'orange',
-             'peru', 'limegreen', 'turquoise', 'royalblue'
-             ]
+my_colors = {'white_bg': ['white', 'black', 'grey', 'red', 'darksalmon', 
+						  'sienna', 'tan', 'gold', 'green', 'dodgerblue', 
+						  'blueviolet', 'hotpink', 'orange', 'peru', 
+						  'limegreen', 'turquoise', 'royalblue'
+			             ],
+			 'black_bg': ['black', 'white', 'grey', 'red', 'darksalmon', 
+			  			  'sienna', 'tan', 'gold', 'green', 'dodgerblue', 
+			  			  'blueviolet', 'hotpink', 'orange', 'peru', 
+			  			  'limegreen', 'turquoise', 'royalblue'
+			             ]
+			}
 my_linestyles = ['solid', 'dashed', 'dotted']
 
 
@@ -76,7 +83,7 @@ class Curve:
         self.data_type = self.get_data_types()
         self.data_out = self.create_data_out(self.data_in)
         self.visibility = True
-        self.color = my_colors_white[0]
+        self.color = my_colors[app.plot_fig_color][1]
         self.width = 1.0
         self.style = my_linestyles[0]
         self.x_offset = 0.0
@@ -231,6 +238,7 @@ class Application(tk.Tk):
         # Number of decimals for rounding operation
         self.ROUND = 5
 
+        # TTK styling
         s = ttk.Style()
         # Options: default, clam, alt, classic
         s.theme_use('alt')
@@ -286,9 +294,11 @@ class Application(tk.Tk):
         menu_main = tk.Menu(self)
         # Menu tear off is disabled.
         menu_file = tk.Menu(menu_main, tearoff='False')
+        menu_pref = tk.Menu(menu_main, tearoff='False')
         menu_help = tk.Menu(menu_main, tearoff='False')
         # Add menu_file in menu_main
         menu_main.add_cascade(label='File', menu=menu_file)
+        menu_main.add_cascade(label='Preferences', menu=menu_pref)
         menu_main.add_cascade(label='Help', menu=menu_help)
         # Link of main menu to root window
         self.config(menu=menu_main)
@@ -296,6 +306,8 @@ class Application(tk.Tk):
         menu_file.add_command(label='Load session', command=self.load_session)
         menu_file.add_command(label='Save session', command=self.save_session)
         menu_file.add_command(label='Quit', command=self.app_quit)
+        # Preference menu
+        menu_pref.add_command(label='GUI font size', command=self.update_GUI_font)
         # Help Menu
         menu_help.add_command(label='Help files', command=self.help_message)
         menu_help.add_command(label='Licence', command=self.licence_message)
@@ -327,6 +339,10 @@ class Application(tk.Tk):
         # Tip: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
         self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
         self.ax = self.fig.add_subplot(111)
+        # Color setting according to plot backgroung color
+        # plot_fig_color is initialized here but the value will be updatedbased on radiobutton state
+        self.plot_fig_color = 'white_bg'
+       
         self.mat_frame = ttk.Frame(self)
         self.mat_frame.pack(expand=True, fill=tk.BOTH, side=tk.LEFT)
         # Creates a drawing area to put the Figure
@@ -625,11 +641,11 @@ class Application(tk.Tk):
         line_color_label.grid(row=4, column=0)
         line_color_label.configure(anchor='center')
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
-                                                values=my_colors_white,
+                                                values=my_colors[self.plot_fig_color],
                                                 justify=tk.CENTER,
                                                 width=12
                                                 )
-        self.curve_color_combo.set(my_colors_white[0])
+        self.curve_color_combo.set(my_colors[self.plot_fig_color][1])
         self.curve_color_combo.grid(row=4, column=1, columnspan=2)
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
         # Line width
@@ -904,11 +920,22 @@ class Application(tk.Tk):
         self.ax.xaxis.set_major_locator(MaxNLocator(int(self.x_bin.get())+1))
         self.ax.yaxis.set_major_locator(MaxNLocator(int(self.y_bin.get())+1))
 
-        # Set plot area parameters
+        # PLOT AREA PARAMETERS
+        # Background colors
+        self.fig.set_facecolor(my_colors[self.plot_fig_color][0])
+        self.ax.set_facecolor(my_colors[self.plot_fig_color][0])
+        # Axis and label colors
+        self.ax.tick_params(axis='both', color=my_colors[self.plot_fig_color][1], labelcolor=my_colors[self.plot_fig_color][1])
+        # Spine color
+        self.ax.spines['top'].set_color(my_colors[self.plot_fig_color][1])
+        self.ax.spines['bottom'].set_color(my_colors[self.plot_fig_color][1])
+        self.ax.spines['left'].set_color(my_colors[self.plot_fig_color][1])
+        self.ax.spines['right'].set_color(my_colors[self.plot_fig_color][1])
+
         self.ax.legend(loc=self.legend_var[str(self.legend.get())])
-        self.ax.set_title(self.main_title.get(), fontweight='bold')
-        self.ax.set_xlabel(self.x_title.get())
-        self.ax.set_ylabel(self.y_title.get())
+        self.ax.set_title(self.main_title.get(), color=my_colors[self.plot_fig_color][1], fontweight='bold')
+        self.ax.set_xlabel(self.x_title.get(), color=my_colors[self.plot_fig_color][1])
+        self.ax.set_ylabel(self.y_title.get(), color=my_colors[self.plot_fig_color][1])
         self.ax.grid(self.grid_state.get())
         self.fig.tight_layout()
         # Update the matplotlib area. canvas.draw() will be deprecated.
@@ -1134,12 +1161,29 @@ class Application(tk.Tk):
                          }
 
         # CUSTOMIZE PANEL
-        self.custom_frame = ttk.LabelFrame(self.plot_tab, text='Customize')
+        self.custom_frame = ttk.LabelFrame(self.plot_tab, text='Customize plot')
         self.custom_frame.grid(row=3, column=0)
+
+        # Background color 
+        x_min_label = ttk.Label(self.custom_frame, text='Background color'
+                )
+        x_min_label.grid(row=0, column=0, columnspan=2)
+        x_min_label.configure(anchor='center')
+        # Matplotlib global color setting
+        self.fig_color_flag = tk.IntVar()
+        self.fig_color_flag.set(0)
+        ttk.Radiobutton(self.custom_frame, text='White', variable=self.fig_color_flag,
+        				value=0, command=self.update_plot_bg_color
+                      ).grid(row=0, column=2)
+        ttk.Radiobutton(self.custom_frame, text='Black', variable=self.fig_color_flag, 
+        				value=1, command=self.update_plot_bg_color
+                      ).grid(row=0, column=3)
+        # Show grid
         self.grid_state = tk.IntVar()
         self.grid_state.set(1)
         ttk.Checkbutton(self.custom_frame, text='Show grid', variable=self.grid_state
-                      ).grid(row=0, column=2)
+                      ).grid(row=1, column=0)
+
         # APPLY BUTTON
         # Padding for apply needs to be the same for containers for layout consistency
         ttk.Button(self.plot_tab, text='Apply plot properties', command=self.plot_curves
@@ -1233,11 +1277,11 @@ class Application(tk.Tk):
         text_color_label.grid(row=2, column=0)
         text_color_label.configure(anchor='center')
         self.annot_color_combo = ttk.Combobox(self.text_frame,
-                                              values=my_colors_white,
+                                              values=my_colors[self.plot_fig_color],
                                               justify=tk.CENTER,
                                               width=8
                                              )
-        self.annot_color_combo.set(my_colors_white[0])
+        self.annot_color_combo.set(my_colors[self.plot_fig_color][1])
         self.annot_color_combo.grid(row=2, column=1)
         # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
         # Font size
@@ -1303,11 +1347,11 @@ class Application(tk.Tk):
         line_color_label.grid(row=2, column=0)
         line_color_label.configure(anchor='center')
         self.arrow_color_combo = ttk.Combobox(self.arrow_frame,
-                                                values=my_colors_white,
+                                                values=my_colors[self.plot_fig_color],
                                                 justify=tk.CENTER,
                                                 width=8
                                                 )
-        self.arrow_color_combo.set(my_colors_white[0])
+        self.arrow_color_combo.set(my_colors[self.plot_fig_color][1])
         self.arrow_color_combo.grid(row=2, column=1)
         # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
         # Width of arrow
@@ -1432,6 +1476,15 @@ class Application(tk.Tk):
         else:
             print('ERROR - Curve ID not found. Please select again a curve ID.')
             self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
+
+    def update_GUI_font(self):
+    	pass
+
+    def update_plot_bg_color(self):
+    	if self.fig_color_flag.get() == 0:
+    		self.plot_fig_color = 'white_bg'
+    	elif self.fig_color_flag.get() == 1:
+    		self.plot_fig_color = 'black_bg'
 
 
 if __name__ == '__main__':
