@@ -570,7 +570,7 @@ class Application(tk.Tk):
         curve_name_label = ttk.Label(self.create_curve_frame, text='Curve name'
                 )
         curve_name_label.grid(row=2, column=0)
-        curve_name_label.configure(anchor='center')
+        # curve_name_label.configure(anchor='center')
         self.curve_label = tk.StringVar()
         self.curve_label.set('Curve_name')
         ttk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=30,
@@ -591,7 +591,7 @@ class Application(tk.Tk):
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
         select_curve_label = ttk.Label(self.curve_prop_frame, text='Select curve')
         select_curve_label.grid(row=0, column=0)
-        select_curve_label.configure(anchor='center')
+        # select_curve_label.configure(anchor='center')
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
                                                values=list(Curve.dic.keys()),
                                                justify=tk.CENTER,
@@ -612,7 +612,7 @@ class Application(tk.Tk):
         name_label = ttk.Label(self.curve_prop_frame, text='Curve name'
                 )
         name_label.grid(row=1, column=0)
-        name_label.configure(anchor='center')
+        # name_label.configure(anchor='center')
         ttk.Entry(self.curve_prop_frame, textvariable=self.active_curve_name,
                  width=30, justify=tk.CENTER
                 ).grid(row=1, column=1, columnspan=3)
@@ -622,7 +622,7 @@ class Application(tk.Tk):
         x_data_label = ttk.Label(self.curve_prop_frame, text='Title for X data'
                 )
         x_data_label.grid(row=2, column=0)
-        x_data_label.configure(anchor='center')
+        # x_data_label.configure(anchor='center')
         ttk.Entry(self.curve_prop_frame, textvariable=self.active_curve_x_data,
                  width=30, justify=tk.CENTER
                 ).grid(row=2, column=1, columnspan=3)
@@ -632,7 +632,7 @@ class Application(tk.Tk):
         y_data_label = ttk.Label(self.curve_prop_frame, text='Title for Y data'
                 )
         y_data_label.grid(row=3, column=0)
-        y_data_label.configure(anchor='center')
+        # y_data_label.configure(anchor='center')
         ttk.Entry(self.curve_prop_frame, textvariable=self.active_curve_y_data,
                  width=30, justify=tk.CENTER
                 ).grid(row=3, column=1, columnspan=3)
@@ -640,7 +640,7 @@ class Application(tk.Tk):
         line_color_label = ttk.Label(self.curve_prop_frame, text='Line color'
                 )
         line_color_label.grid(row=4, column=0)
-        line_color_label.configure(anchor='center')
+        # line_color_label.configure(anchor='center')
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_colors[self.plot_fig_color],
                                                 justify=tk.CENTER,
@@ -653,7 +653,7 @@ class Application(tk.Tk):
         line_width_label = ttk.Label(self.curve_prop_frame, text='Line width'
                 )
         line_width_label.grid(row=5, column=0)
-        line_width_label.configure(anchor='center')
+        # line_width_label.configure(anchor='center')
         self.curve_width = tk.StringVar()
         self.curve_width.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_width, width=4, justify=tk.CENTER).grid(
@@ -662,7 +662,7 @@ class Application(tk.Tk):
         line_style_label = ttk.Label(self.curve_prop_frame,
                 text='Line style')
         line_style_label.grid(row=5, column=2)
-        line_style_label.configure(anchor='center')
+        # line_style_label.configure(anchor='center')
         self.curve_style_combo = ttk.Combobox(self.curve_prop_frame,
                                                 values=my_linestyles,
                                                 justify=tk.CENTER,
@@ -677,7 +677,7 @@ class Application(tk.Tk):
         x_scale_label = ttk.Label(self.curve_prop_frame, text='Scale X axis'
                 )
         x_scale_label.grid(row=6, column=0)
-        x_scale_label.configure(anchor='center')
+        # x_scale_label.configure(anchor='center')
         self.curve_x_scale = tk.StringVar()
         self.curve_x_scale.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_x_scale, width=8,
@@ -686,7 +686,7 @@ class Application(tk.Tk):
         y_scale_label = ttk.Label(self.curve_prop_frame, text='Scale Y axis'
                 )
         y_scale_label.grid(row=6, column=2)
-        y_scale_label.configure(anchor='center')
+        # y_scale_label.configure(anchor='center')
         self.curve_y_scale = tk.StringVar()
         self.curve_y_scale.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_y_scale, width=8,
@@ -695,7 +695,7 @@ class Application(tk.Tk):
         x_offset_label = ttk.Label(self.curve_prop_frame, text='Offset X axis'
                 )
         x_offset_label.grid(row=7, column=0)
-        x_offset_label.configure(anchor='center')
+        # x_offset_label.configure(anchor='center')
         self.curve_x_offset = tk.StringVar()
         self.curve_x_offset.set('0')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_x_offset, width=8,
@@ -704,7 +704,7 @@ class Application(tk.Tk):
         y_offset_label = ttk.Label(self.curve_prop_frame, text='Offset Y axis'
                 )
         y_offset_label.grid(row=7, column=2)
-        y_offset_label.configure(anchor='center')
+        # y_offset_label.configure(anchor='center')
         self.curve_y_offset = tk.StringVar()
         self.curve_y_offset.set('0')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_y_offset, width=8,
@@ -1022,7 +1022,7 @@ class Application(tk.Tk):
         main_title_label = ttk.Label(self.plot_frame, text='Main title'
                 )
         main_title_label.grid(row=0, column=0)
-        main_title_label.configure(anchor='center')
+        # main_title_label.configure(anchor='center')
         self.main_title = tk.StringVar()
         self.main_title.set('Title')
         ttk.Entry(self.plot_frame, textvariable=self.main_title, width=30,
@@ -1031,7 +1031,7 @@ class Application(tk.Tk):
         x_title_label = ttk.Label(self.plot_frame, text='X title'
                 )
         x_title_label.grid(row=1, column=0)
-        x_title_label.configure(anchor='center')
+        # x_title_label.configure(anchor='center')
         self.x_title = tk.StringVar()
         self.x_title.set('X_data (units)')
         ttk.Entry(self.plot_frame, textvariable=self.x_title, width=30,
@@ -1040,7 +1040,7 @@ class Application(tk.Tk):
         y_title_label = ttk.Label(self.plot_frame, text='Y title'
                 )
         y_title_label.grid(row=2, column=0)
-        y_title_label.configure(anchor='center')
+        # y_title_label.configure(anchor='center')
         self.y_title = tk.StringVar()
         self.y_title.set('X_data (units)')
         ttk.Entry(self.plot_frame, textvariable=self.y_title, width=30,
@@ -1069,7 +1069,7 @@ class Application(tk.Tk):
         x_min_label = ttk.Label(self.range_frame, text='X min'
                 )
         x_min_label.grid(row=2, column=0)
-        x_min_label.configure(anchor='center')
+        # x_min_label.configure(anchor='center')
         self.x_min_range = tk.StringVar()
         self.x_min_range.set('0')
         self.x_min_entry = ttk.Entry(self.range_frame, textvariable=self.x_min_range, width=8,
@@ -1080,7 +1080,7 @@ class Application(tk.Tk):
         y_min_label = ttk.Label(self.range_frame, text='Y min'
                 )
         y_min_label.grid(row=2, column=2)
-        y_min_label.configure(anchor='center')
+        # y_min_label.configure(anchor='center')
         self.y_min_range = tk.StringVar()
         self.y_min_range.set('0')
         self.y_min_entry = ttk.Entry(self.range_frame, textvariable=self.y_min_range, width=8, 
@@ -1091,7 +1091,7 @@ class Application(tk.Tk):
         x_max_label = ttk.Label(self.range_frame, text='X max'
                 )
         x_max_label.grid(row=3, column=0)
-        x_max_label.configure(anchor='center')
+        # x_max_label.configure(anchor='center')
         self.x_max_range = tk.StringVar()
         self.x_max_range.set('100')
         self.x_max_entry = ttk.Entry(self.range_frame, textvariable=self.x_max_range, width=8, 
@@ -1102,7 +1102,7 @@ class Application(tk.Tk):
         y_max_label = ttk.Label(self.range_frame, text='Y max'
                 )
         y_max_label.grid(row=3, column=2)
-        y_max_label.configure(anchor='center')
+        # y_max_label.configure(anchor='center')
         self.y_max_range = tk.StringVar()
         self.y_max_range.set('100')
         self.y_max_entry = ttk.Entry(self.range_frame, textvariable=self.y_max_range, width=8, 
@@ -1117,7 +1117,7 @@ class Application(tk.Tk):
         x_tick_label = ttk.Label(self.range_frame, text='X axis'
                 )
         x_tick_label.grid(row=5, column=0)
-        x_tick_label.configure(anchor='center')
+        # x_tick_label.configure(anchor='center')
         self.x_bin = tk.StringVar()
         self.x_bin.set('10')
         ttk.Entry(self.range_frame, textvariable=self.x_bin, width=8,
@@ -1126,7 +1126,7 @@ class Application(tk.Tk):
         y_tick_label = ttk.Label(self.range_frame, text='Y axis'
                 )
         y_tick_label.grid(row=5, column=2)
-        y_tick_label.configure(anchor='center')
+        # y_tick_label.configure(anchor='center')
         self.y_bin = tk.StringVar()
         self.y_bin.set('10')
         ttk.Entry(self.range_frame, textvariable=self.y_bin, width=8,
@@ -1169,7 +1169,7 @@ class Application(tk.Tk):
         x_min_label = ttk.Label(self.custom_frame, text='Background color'
                 )
         x_min_label.grid(row=0, column=0, columnspan=2)
-        x_min_label.configure(anchor='center')
+        # x_min_label.configure(anchor='center')
         # Matplotlib global color setting
         self.fig_color_flag = tk.IntVar()
         self.fig_color_flag.set(0)
@@ -1249,7 +1249,7 @@ class Application(tk.Tk):
         text_label = ttk.Label(self.text_frame, text='Text'
                 )
         text_label.grid(row=0, column=0)
-        text_label.configure(anchor='center')
+        # text_label.configure(anchor='center')
         self.annotation = tk.StringVar()
         self.annotation.set('Annotation_text')
         ttk.Entry(self.text_frame, textvariable=self.annotation, width=30,
@@ -1258,7 +1258,7 @@ class Application(tk.Tk):
         text_x_pos_label = ttk.Label(self.text_frame, text='X position'
                 )
         text_x_pos_label.grid(row=1, column=0)
-        text_x_pos_label.configure(anchor='center')
+        # text_x_pos_label.configure(anchor='center')
         self.annotation_x = tk.StringVar()
         self.annotation_x.set('0')
         ttk.Entry(self.text_frame, textvariable=self.annotation_x, width=8,
@@ -1267,7 +1267,7 @@ class Application(tk.Tk):
         text_y_pos_label = ttk.Label(self.text_frame, text='Y position'
                 )
         text_y_pos_label.grid(row=1, column=2)
-        text_y_pos_label.configure(anchor='center')
+        # text_y_pos_label.configure(anchor='center')
         self.annotation_y = tk.StringVar()
         self.annotation_y.set('0')
         ttk.Entry(self.text_frame, textvariable=self.annotation_y, width=8,
@@ -1276,7 +1276,7 @@ class Application(tk.Tk):
         text_color_label = ttk.Label(self.text_frame, text='Text color'
                 )
         text_color_label.grid(row=2, column=0)
-        text_color_label.configure(anchor='center')
+        # text_color_label.configure(anchor='center')
         self.annot_color_combo = ttk.Combobox(self.text_frame,
                                               values=my_colors[self.plot_fig_color],
                                               justify=tk.CENTER,
@@ -1289,7 +1289,7 @@ class Application(tk.Tk):
         font_size_label = ttk.Label(self.text_frame, text='Font size'
                 )
         font_size_label.grid(row=2, column=2)
-        font_size_label.configure(anchor='center')
+        # font_size_label.configure(anchor='center')
         self.annot_size = tk.StringVar()
         self.annot_size.set('10')
         ttk.Entry(self.text_frame, textvariable=self.annot_size, width=8,
@@ -1311,7 +1311,7 @@ class Application(tk.Tk):
         head_x_pos_label = ttk.Label(self.arrow_frame, text='Head X pos.'
                 )
         head_x_pos_label.grid(row=0, column=0)
-        head_x_pos_label.configure(anchor='center')
+        # head_x_pos_label.configure(anchor='center')
         self.arrow_head_x = tk.StringVar()
         self.arrow_head_x.set('0')
         ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_x, width=8,
@@ -1320,7 +1320,7 @@ class Application(tk.Tk):
         head_y_pos_label = ttk.Label(self.arrow_frame, text='Head Y pos.'
                 )
         head_y_pos_label.grid(row=0, column=2)
-        head_y_pos_label.configure(anchor='center')
+        # head_y_pos_label.configure(anchor='center')
         self.arrow_head_y = tk.StringVar()
         self.arrow_head_y.set('0')
         ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_y, width=8,
@@ -1329,7 +1329,7 @@ class Application(tk.Tk):
         head_length_label = ttk.Label(self.arrow_frame, text='Head length'
                 )
         head_length_label.grid(row=1, column=0)
-        head_length_label.configure(anchor='center')
+        # head_length_label.configure(anchor='center')
         self.arrow_head_length = tk.StringVar()
         self.arrow_head_length.set('10')
         ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_length, width=8,
@@ -1338,7 +1338,7 @@ class Application(tk.Tk):
         head_width_label = ttk.Label(self.arrow_frame, text='Head width'
                 )
         head_width_label.grid(row=1, column=2)
-        head_width_label.configure(anchor='center')
+        # head_width_label.configure(anchor='center')
         self.arrow_head_width = tk.StringVar()
         self.arrow_head_width.set('4')
         ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_width, width=8,
@@ -1346,7 +1346,7 @@ class Application(tk.Tk):
         # Color of arrow
         line_color_label = ttk.Label(self.arrow_frame, text='Line color')
         line_color_label.grid(row=2, column=0)
-        line_color_label.configure(anchor='center')
+        # line_color_label.configure(anchor='center')
         self.arrow_color_combo = ttk.Combobox(self.arrow_frame,
                                                 values=my_colors[self.plot_fig_color],
                                                 justify=tk.CENTER,
@@ -1359,7 +1359,7 @@ class Application(tk.Tk):
         line_width_label = ttk.Label(self.arrow_frame, text='Line width'
                 )
         line_width_label.grid(row=2, column=2)
-        line_width_label.configure(anchor='center')
+        # line_width_label.configure(anchor='center')
         self.arrow_width = tk.StringVar()
         self.arrow_width.set('0.5')
         ttk.Entry(self.arrow_frame, textvariable=self.arrow_width, width=8,
@@ -1415,7 +1415,7 @@ class Application(tk.Tk):
         # Active curve selection
         select_curve_label2 = ttk.Label(self.extrema_tab, text='Select curve')
         select_curve_label2.grid(row=1, column=0)
-        select_curve_label2.configure(anchor='center')
+        # select_curve_label2.configure(anchor='center')
         self.active_curve_combo2 = ttk.Combobox(self.extrema_tab,
                                                values=list(Curve.dic.keys()),
                                                justify=tk.CENTER,
@@ -1426,7 +1426,7 @@ class Application(tk.Tk):
         # Label
         selected_curve_label = ttk.Label(self.extrema_tab, text='Curve name')
         selected_curve_label.grid(row=1, column=2)
-        selected_curve_label.configure(anchor='center')
+        # selected_curve_label.configure(anchor='center')
         # Entry for curve name
         self.selected_curve_name = tk.StringVar()
         self.selected_curve_name.set(' ')
