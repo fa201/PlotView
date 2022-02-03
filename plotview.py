@@ -204,7 +204,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '1.4'
+        self.PV_VERSION = '1.5'
         self.WIN_SIZE_POS = '1280x780'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
@@ -238,10 +238,14 @@ class Application(tk.Tk):
         # Number of decimals for rounding operation
         self.ROUND = 5
 
-        # TTK styling
+        # TTK styling. Does not work for TEntry, TCombobox
         s = ttk.Style()
         # Options: default, clam, alt, classic
         s.theme_use('alt')
+        # Buttons
+        s.configure('w4.TButton', width=4)
+        s.configure('w4.TButton', width=6)
+        s.configure('w4.TButton', width=9)
 
         # METHODS
         # Allows root window to be closed by the closing icon.
@@ -554,7 +558,7 @@ class Application(tk.Tk):
 
         # Working directory widgets
         ttk.Button(self.create_curve_frame, text='Work dir.',
-                  command=self.choose_dir, width=9
+                  command=self.choose_dir, style='w9.TButton'
                   ).grid(row=0, column=0)
         ttk.Label(self.create_curve_frame,
                  textvariable=self.work_dir_txt
@@ -562,7 +566,7 @@ class Application(tk.Tk):
         
         # CSV file widget
         ttk.Button(self.create_curve_frame, text='CSV file',
-                  command=self.choose_file, width=9
+                  command=self.choose_file, style='w9.TButton'
                  ).grid(row=1, column=0)
         ttk.Label(self.create_curve_frame, textvariable=self.work_file_txt
                 ).grid(row=1, column=1)
@@ -577,7 +581,7 @@ class Application(tk.Tk):
                  justify=tk.CENTER).grid(row=2, column=1)
         # Curve create widget
         ttk.Button(self.create_curve_frame, text='Create curve',
-                  command=self.curve_create, width=4
+                  command=self.curve_create, style='w4.TButton'
                  ).grid(row=3, column=0, columnspan=2)
 
         # CURVE PROPERTIES
@@ -712,7 +716,7 @@ class Application(tk.Tk):
 
         # APPLY BUTTON
         ttk.Button(self.curve_prop_frame, text='Apply curve properties',
-                  command=self.update_curve, width=6
+                  command=self.update_curve, style='w6.TButton'
                  ).grid(row=8, column=0, columnspan=4)
 
         # APPLY PADDING AND STICKINESS ON WIDGETS CHILDREN AFTER THEY ARE CREATED
@@ -1375,7 +1379,7 @@ class Application(tk.Tk):
         # APPLY BUTTON
         # Padding for apply needs to be the same for containers for layout consistency
         ttk.Button(self.annot_tab, text='Apply annotation and arrow properties',
-                  command=self.plot_curves, width=6).grid(row=4, column=0)
+                  command=self.plot_curves, style='w6.TButton').grid(row=4, column=0)
 
         # APPLY PADDING AND STICKINESS ON WIDGETS CHILDREN AFTER THEY ARE CREATED
         # For self.annot_tab
