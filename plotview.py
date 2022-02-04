@@ -1498,7 +1498,7 @@ if __name__ == '__main__':
     print('Screen height', screen_height)
     print('Screen width', screen_width)
     """
-    # Define the min size for the window. It should enough even for old screens.
-    app.minsize(800, 600)
+    # Define the min size for the window. It should be enough even for old screens.
+    app.minsize(800, 610)
     # Launch the GUI mainloop which should always be the last instruction!
     app.mainloop()
