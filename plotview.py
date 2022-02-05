@@ -318,6 +318,9 @@ class Application(tk.Tk):
 
         # CREATE STATUS BAR AT BOTTOM
         self.status_frame = ttk.Frame(self)
+        # Create the sizegrip align on lower edge with status bar.
+        self.sg = ttk.Sizegrip(self.status_frame)
+        self.sg.pack(side=tk.RIGHT)
         # The status frame should extend on all width of the main window.
         self.status_frame.pack(expand=False, fill=tk.X, side=tk.BOTTOM)
         # The status is initialized with empty message left aligned.
@@ -345,7 +348,6 @@ class Application(tk.Tk):
         # Color setting according to plot backgroung color
         # plot_fig_color is initialized here but the value will be updatedbased on radiobutton state
         self.plot_fig_color = 'white_bg'
-       
         self.mat_frame = ttk.Frame(self)
         self.mat_frame.pack(expand=True, fill=tk.BOTH, side=tk.LEFT)
         # Creates a drawing area to put the Figure
