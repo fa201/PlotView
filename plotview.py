@@ -604,6 +604,8 @@ class Application(tk.Tk):
                                                width=4,
                                                )
         self.active_curve_combo.grid(row=0, column=1)
+        # Define self.selected_curve here to avoid error if update_curve is called without curve selected.
+        self.selected_curve = None
         self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
 
         # Show curve
@@ -809,50 +811,45 @@ class Application(tk.Tk):
 
     def update_curve(self):
         """ Update Curve instance attributes based on GUI input"""
-        # Update curve name
-        if len(self.active_curve_name.get()) != 0:
-            Curve.dic[str(self.selected_curve)].name = self.active_curve_name.get()
-        else:
-            # status message will be replaced by the one from 'plot_curves'.
+        # Update curve name after testing is a curve was selected
+        if self.selected_curve == None:
             msg.showerror('Error', 'The name of the curve is required.')
+        else:
+            Curve.dic[str(self.selected_curve)].name = self.active_curve_name.get()
+            # Update curve data types
+            self.active_curve_x_data.set(Curve.dic[str(self.selected_curve)].data_type['x_type'])
+            self.active_curve_y_data.set(Curve.dic[str(self.selected_curve)].data_type['y_type'])
+            # Update curve visibility
+            Curve.dic[str(self.selected_curve)].visibility = self.show_state.get()
+            # Update curve width
+            try:
+                if float(self.curve_width.get()) != 0:
+                    Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
+                else:
+                    # status message will be replaced by the one from 'plot_curves'.
+                    msg.showerror('Error', 'The width of curve line cannot be 0.')
+            except ValueError:
+                msg.showerror('Error', 'The width of curve line must be a number.')
+            # Update scale and offset values for curve
+            try:
+                if float(self.curve_x_scale.get()) != 0:
+                    Curve.dic[str(self.selected_curve)].x_scale = float(self.curve_x_scale.get())
+                    Curve.dic[str(self.selected_curve)].x_offset = float(self.curve_x_offset.get())
+                    Curve.dic[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 0]* Curve.dic[str(self.selected_curve)].x_scale + Curve.dic[str(self.selected_curve)].x_offset
+                else:
+                    # status message will be replaced by the one from 'plot_curves'.
+                    msg.showerror('Error', 'The value of X scale cannot be 0.')
+                if float(self.curve_y_scale.get()) != 0:
+                    Curve.dic[str(self.selected_curve)].y_scale = float(self.curve_y_scale.get())
+                    Curve.dic[str(self.selected_curve)].y_offset = float(self.curve_y_offset.get())
+                    Curve.dic[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 1]* Curve.dic[str(self.selected_curve)].y_scale + Curve.dic[str(self.selected_curve)].y_offset
+                else:
+                    # status message will be replaced by the one from 'plot_curves'.
+                    msg.showerror('Error', 'The value of Y scale cannot be 0.')
+            except ValueError:
+                msg.showerror('Error', 'The values of X scale, X offset, Y scale and Y offset must be numbers.')
 
-        # Update curve data types
-        self.active_curve_x_data.set(Curve.dic[str(self.selected_curve)].data_type['x_type'])
-        self.active_curve_y_data.set(Curve.dic[str(self.selected_curve)].data_type['y_type'])
-
-        # Update curve visibility
-        Curve.dic[str(self.selected_curve)].visibility = self.show_state.get()
-
-        # Update curve width
-        try:
-            if float(self.curve_width.get()) != 0:
-                Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
-            else:
-                # status message will be replaced by the one from 'plot_curves'.
-                msg.showerror('Error', 'The width of curve line cannot be 0.')
-        except ValueError:
-            msg.showerror('Error', 'The width of curve line must be a number.')
-
-        # Update scale and offset values for curve
-        try:
-            if float(self.curve_x_scale.get()) != 0:
-                Curve.dic[str(self.selected_curve)].x_scale = float(self.curve_x_scale.get())
-                Curve.dic[str(self.selected_curve)].x_offset = float(self.curve_x_offset.get())
-                Curve.dic[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 0]* Curve.dic[str(self.selected_curve)].x_scale + Curve.dic[str(self.selected_curve)].x_offset
-            else:
-                # status message will be replaced by the one from 'plot_curves'.
-                msg.showerror('Error', 'The value of X scale cannot be 0.')
-            if float(self.curve_y_scale.get()) != 0:
-                Curve.dic[str(self.selected_curve)].y_scale = float(self.curve_y_scale.get())
-                Curve.dic[str(self.selected_curve)].y_offset = float(self.curve_y_offset.get())
-                Curve.dic[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 1]* Curve.dic[str(self.selected_curve)].y_scale + Curve.dic[str(self.selected_curve)].y_offset
-            else:
-                # status message will be replaced by the one from 'plot_curves'.
-                msg.showerror('Error', 'The value of Y scale cannot be 0.')
-        except ValueError:
-            msg.showerror('Error', 'The values of X scale, X offset, Y scale and Y offset must be numbers.')
-
-        self.plot_curves()
+            self.plot_curves()
 
     def plot_curves(self):
         """ Plot all curves with visibility = True
