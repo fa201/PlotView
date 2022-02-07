@@ -399,64 +399,67 @@ class Application(tk.Tk):
         """
         session_file = filedialog.asksaveasfilename(
             initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Save as PlotView session file')
-
-        config = configparser.ConfigParser()
-        # Plot data
-        config['plot'] = {'main title': self.main_title.get(),
-                          'x title': self.x_title.get(),
-                          'y title': self.y_title.get(),
-                          'auto scale': self.autoscale.get(),
-                          'x min user range': self.x_min_range.get(),
-                          'x max user range': self.x_max_range.get(),
-                          'y min user range': self.y_min_range.get(),
-                          'y max user range': self.y_max_range.get(),
-                          'x number of ticks': self.x_bin.get(),
-                          'y number of ticks': self.y_bin.get(),
-                          'legend position': self.legend.get(),
-                          'display grid': self.grid_state.get(),
-                          'background color': self.fig_color_flag.get()
-                          }
-
-        # Annotation and arrow data
-        config['annotation'] = {'text': self.annotation.get(),
-                                'text X pos.': self.annotation_x.get(),
-                                'text Y pos.': self.annotation_y.get(),
-                                'text color': self.annot_color_combo.get(),
-                                'text size': self.annot_size.get(),
-                                'text state': self.annot_state.get(),
-                                'arrow head X pos.': self.arrow_head_x.get(),
-                                'arrow head Y pos.': self.arrow_head_y.get(),
-                                'arrow head length': self.arrow_head_length.get(),
-                                'arrow head width': self.arrow_head_width.get(),
-                                'arrow color': self.arrow_color_combo.get(),
-                                'arrow line width': self.arrow_width.get(),
-                                'arrow state': self.arrow_state.get(),
-                               }
-
-        # Session info
-        config['session'] = {'working directory': self.work_dir,
-                             'curve count': Curve.count,
+        # Case if CANCEL is clicked after selecting a session file. Then session_file=''. 
+        if session_file == '':
+            self.set_status('No session file selected.')   
+        # Case if CANCEL is clicked without selecting a session file. Then session_file=(), empty tuple. 
+        elif isinstance(session_file, tuple):
+            self.set_status('No session file selected.')    
+        else:
+            config = configparser.ConfigParser()
+            # Plot data
+            config['plot'] = {'main title': self.main_title.get(),
+                              'x title': self.x_title.get(),
+                              'y title': self.y_title.get(),
+                              'auto scale': self.autoscale.get(),
+                              'x min user range': self.x_min_range.get(),
+                              'x max user range': self.x_max_range.get(),
+                              'y min user range': self.y_min_range.get(),
+                              'y max user range': self.y_max_range.get(),
+                              'x number of ticks': self.x_bin.get(),
+                              'y number of ticks': self.y_bin.get(),
+                              'legend position': self.legend.get(),
+                              'display grid': self.grid_state.get(),
+                              'background color': self.fig_color_flag.get()
+                              }
+            # Annotation and arrow data
+            config['annotation'] = {'text': self.annotation.get(),
+                                    'text X pos.': self.annotation_x.get(),
+                                    'text Y pos.': self.annotation_y.get(),
+                                    'text color': self.annot_color_combo.get(),
+                                    'text size': self.annot_size.get(),
+                                    'text state': self.annot_state.get(),
+                                    'arrow head X pos.': self.arrow_head_x.get(),
+                                    'arrow head Y pos.': self.arrow_head_y.get(),
+                                    'arrow head length': self.arrow_head_length.get(),
+                                    'arrow head width': self.arrow_head_width.get(),
+                                    'arrow color': self.arrow_color_combo.get(),
+                                    'arrow line width': self.arrow_width.get(),
+                                    'arrow state': self.arrow_state.get(),
+                                   }
+            # Session info
+            config['session'] = {'working directory': self.work_dir,
+                                 'curve count': Curve.count,
+                                }
+            # Curve data
+            for i in range(1, Curve.count+1):
+                config[i] = {'name': Curve.dic[str(i)].name,
+                             'CSV file path': Curve.dic[str(i)].path,
+                             'X data': Curve.dic[str(i)].data_type['x_type'],
+                             'Y data': Curve.dic[str(i)].data_type['y_type'],
+                             'visibility': Curve.dic[str(i)].visibility,
+                             'line color': Curve.dic[str(i)].color,
+                             'line width': Curve.dic[str(i)].width,
+                             'line style': Curve.dic[str(i)].style,
+                             'offset in X': Curve.dic[str(i)].x_offset,
+                             'offset in Y': Curve.dic[str(i)].y_offset,
+                             'scale in X': Curve.dic[str(i)].x_scale,
+                             'scale in Y': Curve.dic[str(i)].y_scale
                             }
-
-        # Curve data
-        for i in range(1, Curve.count+1):
-            config[i] = {'name': Curve.dic[str(i)].name,
-                         'CSV file path': Curve.dic[str(i)].path,
-                         'X data': Curve.dic[str(i)].data_type['x_type'],
-                         'Y data': Curve.dic[str(i)].data_type['y_type'],
-                         'visibility': Curve.dic[str(i)].visibility,
-                         'line color': Curve.dic[str(i)].color,
-                         'line width': Curve.dic[str(i)].width,
-                         'line style': Curve.dic[str(i)].style,
-                         'offset in X': Curve.dic[str(i)].x_offset,
-                         'offset in Y': Curve.dic[str(i)].y_offset,
-                         'scale in X': Curve.dic[str(i)].x_scale,
-                         'scale in Y': Curve.dic[str(i)].y_scale
-                        }
-        # Write the file and erase existing file.
-        with open(session_file, 'w') as file:
-            config.write(file)
-        self.set_status('Session file is saved at: ' + session_file)
+            # Write the file and erase existing file.
+            with open(session_file, 'w') as file:
+                config.write(file)
+            self.set_status('Session file is saved at: ' + session_file)
 
     def load_session(self):
         """ Load session file 
@@ -471,7 +474,7 @@ class Application(tk.Tk):
             initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Open PlotView session file')
         # Case if CANCEL is clicked without selecting a session file. Then session_file=(), empty tuple.
         if isinstance(session_file, tuple):
-            self.set_status('No session file selected.1')    
+            self.set_status('No session file selected.')    
         # Make sure the path to session file exists.
         elif os.path.exists(session_file):
             config.read(session_file)
@@ -543,7 +546,7 @@ class Application(tk.Tk):
             self.plot_curves()
         else:
             # Case if CANCEL is clicked after selecting a session file.
-            self.set_status('No session file selected.2')    
+            self.set_status('No session file selected.')    
             
 
     def curve_tab(self):
