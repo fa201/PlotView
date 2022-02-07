@@ -920,9 +920,14 @@ class Application(tk.Tk):
             message2 = '\nFor the arrow, the values of X and Y positions, the length and width of head and the line width must be numbers.'
             msg.showerror('Error', message1 + message2)
 
-        # Set the number of bins (axis ticks)
-        self.ax.xaxis.set_major_locator(MaxNLocator(int(self.x_bin.get())+1))
-        self.ax.yaxis.set_major_locator(MaxNLocator(int(self.y_bin.get())+1))
+        # Set the number of bins (axis ticks). Abs() is used to handle negative integers.
+        try:
+            self.ax.xaxis.set_major_locator(MaxNLocator(abs(int(self.x_bin.get()))+1))
+            self.ax.yaxis.set_major_locator(MaxNLocator(abs(int(self.y_bin.get()))+1))
+        except ValueError:
+            message3 = 'The values of number of ticks for X and Y axis must be integers.'
+            message4 = '\n.'
+            msg.showerror('Error', message3 + message4)
 
         # PLOT AREA PARAMETERS
         # Background colors
