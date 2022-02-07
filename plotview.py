@@ -14,6 +14,7 @@ try:
     from matplotlib.backends.backend_tkagg import (
         FigureCanvasTkAgg, NavigationToolbar2Tk)
     from matplotlib.ticker import MaxNLocator
+    import os
     import pandas as pd
     import sys
     import tkinter as tk
@@ -468,78 +469,82 @@ class Application(tk.Tk):
         # Read the sessionfile
         session_file = filedialog.askopenfilename(
             initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Open PlotView session file')
-        config.read(session_file)
-        # Process Plot section
-        self.main_title.set(config.get('plot', 'main title'))
-        self.x_title.set(config.get('plot', 'x title'))
-        self.y_title.set(config.get('plot', 'y title'))
-        self.autoscale.set(config.getboolean('plot', 'auto scale'))
-        self.x_min_range.set(config.get('plot', 'x min user range'))
-        self.x_max_range.set(config.get('plot', 'x max user range'))
-        self.y_min_range.set(config.get('plot', 'y min user range'))
-        self.y_max_range.set(config.get('plot', 'y max user range'))
-        self.x_bin.set(config.get('plot', 'x number of ticks'))
-        self.y_bin.set(config.get('plot', 'y number of ticks'))
-        self.legend.set(config.getint('plot', 'legend position'))
-        self.grid_state.set(config.getboolean('plot', 'display grid'))
-        self.fig_color_flag.set(config.get('plot', 'background color'))
-
-        # Process Annotation section
-        self.annotation.set(config.get('annotation', 'text'))
-        self.annotation_x.set(config.getfloat('annotation', 'text X pos.'))
-        self.annotation_y.set(config.getfloat('annotation', 'text Y pos.'))
-        self.annot_color_combo.set(config.get('annotation', 'text color'))
-        self.annot_size.set(config.get('annotation', 'text size'))
-        self.annot_state.set(config.getboolean('annotation', 'text state'))
-        self.arrow_head_x.set(config.getfloat('annotation', 'arrow head X pos.'))
-        self.arrow_head_y.set(config.getfloat('annotation', 'arrow head Y pos.'))
-        self.arrow_head_length.set(config.get('annotation', 'arrow head length'))
-        self.arrow_head_width.set(config.get('annotation', 'arrow head width'))
-        self.arrow_color_combo.set(config.get('annotation', 'arrow color'))
-        self.arrow_width.set(config.get('annotation', 'arrow line width'))
-        self.arrow_state.set(config.getboolean('annotation', 'arrow state'))
-
-        # Process session data
-        self.work_dir = config.get('session', 'working directory')
-        # Display the working directory
-        if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
-            temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE+3:]
-            self.work_dir_txt.set(temp)
-            self.set_status('Working directory is set at:'+self.work_dir)
-        elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
-            self.work_dir_txt.set(self.work_dir)
-            self.set_status('Working directory is set at:'+self.work_dir)
-
-        Curve.count = config.getint('session', 'curve count')
-
-        # Process Curve data
-        for i in range(1, Curve.count+1):
-            if config.get(str(i), 'csv file path'):
-                Curve.dic[str(i)] = Curve(config.get(str(i), 'csv file path'))
-                # Since Curve.count is incremented after curve creation, it needs to be decremented.
-                Curve.count -= 1
-                Curve.dic[str(i)].name = config.get(str(i), 'name')
-                Curve.dic[str(i)].data_type['x_type'] = config.get(str(i), 'x data')
-                Curve.dic[str(i)].data_type['y_type'] = config.get(str(i), 'y data')
-                Curve.dic[str(i)].visibility = config.get(str(i), 'visibility')
-                Curve.dic[str(i)].color = config.get(str(i), 'line color')
-                Curve.dic[str(i)].width = config.get(str(i), 'line width')
-                Curve.dic[str(i)].style = config.get(str(i), 'line style')
-                Curve.dic[str(i)].x_offset = config.getfloat(str(i), 'offset in X')
-                Curve.dic[str(i)].y_offset = config.getfloat(str(i), 'offset in Y')
-                Curve.dic[str(i)].x_scale = config.getfloat(str(i), 'scale in X')
-                Curve.dic[str(i)].y_scale = config.getfloat(str(i), 'scale in Y')
-            else:
-                msg.showerror('Error', 'No CSV file were selected for curve'+str(i))
-
-        # Update curve ID list to be able to continue working on curves.
-        self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
-        # Update curve list for Extrema
-        self.active_curve_combo2['values'] = tuple(list(Curve.dic.keys()))
-        # Update background color for plot
-        self.update_plot_bg_color()
-        self.set_status('Data in session file "PV_session.ini" are read.')
-        self.plot_curves()
+        # Case if CANCEL is clicked without selecting a session file. Then session_file=(), empty tuple.
+        if isinstance(session_file, tuple):
+            self.set_status('No session file selected.1')    
+        # Make sure the path to session file exists.
+        elif os.path.exists(session_file):
+            config.read(session_file)
+            # Process Plot section
+            self.main_title.set(config.get('plot', 'main title'))
+            self.x_title.set(config.get('plot', 'x title'))
+            self.y_title.set(config.get('plot', 'y title'))
+            self.autoscale.set(config.getboolean('plot', 'auto scale'))
+            self.x_min_range.set(config.get('plot', 'x min user range'))
+            self.x_max_range.set(config.get('plot', 'x max user range'))
+            self.y_min_range.set(config.get('plot', 'y min user range'))
+            self.y_max_range.set(config.get('plot', 'y max user range'))
+            self.x_bin.set(config.get('plot', 'x number of ticks'))
+            self.y_bin.set(config.get('plot', 'y number of ticks'))
+            self.legend.set(config.getint('plot', 'legend position'))
+            self.grid_state.set(config.getboolean('plot', 'display grid'))
+            self.fig_color_flag.set(config.get('plot', 'background color'))
+            # Process Annotation section
+            self.annotation.set(config.get('annotation', 'text'))
+            self.annotation_x.set(config.getfloat('annotation', 'text X pos.'))
+            self.annotation_y.set(config.getfloat('annotation', 'text Y pos.'))
+            self.annot_color_combo.set(config.get('annotation', 'text color'))
+            self.annot_size.set(config.get('annotation', 'text size'))
+            self.annot_state.set(config.getboolean('annotation', 'text state'))
+            self.arrow_head_x.set(config.getfloat('annotation', 'arrow head X pos.'))
+            self.arrow_head_y.set(config.getfloat('annotation', 'arrow head Y pos.'))
+            self.arrow_head_length.set(config.get('annotation', 'arrow head length'))
+            self.arrow_head_width.set(config.get('annotation', 'arrow head width'))
+            self.arrow_color_combo.set(config.get('annotation', 'arrow color'))
+            self.arrow_width.set(config.get('annotation', 'arrow line width'))
+            self.arrow_state.set(config.getboolean('annotation', 'arrow state'))
+            # Process session data
+            self.work_dir = config.get('session', 'working directory')
+            # Display the working directory
+            if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
+                temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE+3:]
+                self.work_dir_txt.set(temp)
+                self.set_status('Working directory is set at:'+self.work_dir)
+            elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
+                self.work_dir_txt.set(self.work_dir)
+                self.set_status('Working directory is set at:'+self.work_dir)
+            Curve.count = config.getint('session', 'curve count')
+            # Process Curve data
+            for i in range(1, Curve.count+1):
+                if config.get(str(i), 'csv file path'):
+                    Curve.dic[str(i)] = Curve(config.get(str(i), 'csv file path'))
+                    # Since Curve.count is incremented after curve creation, it needs to be decremented.
+                    Curve.count -= 1
+                    Curve.dic[str(i)].name = config.get(str(i), 'name')
+                    Curve.dic[str(i)].data_type['x_type'] = config.get(str(i), 'x data')
+                    Curve.dic[str(i)].data_type['y_type'] = config.get(str(i), 'y data')
+                    Curve.dic[str(i)].visibility = config.get(str(i), 'visibility')
+                    Curve.dic[str(i)].color = config.get(str(i), 'line color')
+                    Curve.dic[str(i)].width = config.get(str(i), 'line width')
+                    Curve.dic[str(i)].style = config.get(str(i), 'line style')
+                    Curve.dic[str(i)].x_offset = config.getfloat(str(i), 'offset in X')
+                    Curve.dic[str(i)].y_offset = config.getfloat(str(i), 'offset in Y')
+                    Curve.dic[str(i)].x_scale = config.getfloat(str(i), 'scale in X')
+                    Curve.dic[str(i)].y_scale = config.getfloat(str(i), 'scale in Y')
+                else:
+                    msg.showerror('Error', 'No CSV file were selected for curve'+str(i))
+            # Update curve ID list to be able to continue working on curves.
+            self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
+            # Update curve list for Extrema
+            self.active_curve_combo2['values'] = tuple(list(Curve.dic.keys()))
+            # Update background color for plot
+            self.update_plot_bg_color()
+            self.set_status('Data in session file "PV_session.ini" are read.')
+            self.plot_curves()
+        else:
+            # Case if CANCEL is clicked after selecting a session file.
+            self.set_status('No session file selected.2')    
+            
 
     def curve_tab(self):
         """ First tab managing curve creation.
