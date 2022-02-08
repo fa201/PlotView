@@ -205,7 +205,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '1.5'
+        self.PV_VERSION = '1.6'
         self.WIN_SIZE_POS = '1280x780'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
@@ -546,8 +546,7 @@ class Application(tk.Tk):
             self.plot_curves()
         else:
             # Case if CANCEL is clicked after selecting a session file.
-            self.set_status('No session file selected.')    
-            
+            self.set_status('No session file selected.')       
 
     def curve_tab(self):
         """ First tab managing curve creation.
@@ -612,7 +611,7 @@ class Application(tk.Tk):
                                                width=4,
                                                )
         self.active_curve_combo.grid(row=0, column=1)
-        # Define self.selected_curve here to avoid error if update_curve is called without curve selected.
+        # Set self.selected_curve here to avoid error if update_curve() is called without any curve selected.
         self.selected_curve = None
         self.active_curve_combo.bind('<<ComboboxSelected>>', self.active_curve)
 
@@ -1047,7 +1046,6 @@ class Application(tk.Tk):
         x_title_label = ttk.Label(self.plot_frame, text='X title'
                 )
         x_title_label.grid(row=1, column=0)
-        # x_title_label.configure(anchor='center')
         self.x_title = tk.StringVar()
         self.x_title.set('X_data (units)')
         ttk.Entry(self.plot_frame, textvariable=self.x_title, width=30,
@@ -1056,7 +1054,6 @@ class Application(tk.Tk):
         y_title_label = ttk.Label(self.plot_frame, text='Y title'
                 )
         y_title_label.grid(row=2, column=0)
-        # y_title_label.configure(anchor='center')
         self.y_title = tk.StringVar()
         self.y_title.set('X_data (units)')
         ttk.Entry(self.plot_frame, textvariable=self.y_title, width=30,
@@ -1079,7 +1076,6 @@ class Application(tk.Tk):
         # User defined
         ttk.Label(self.range_frame, text='User defined ranges:'
                 ).grid(row=1, column=0, columnspan=2)
-        # https://stackoverflow.com/questions/26333769/event-triggered-by-listbox-and-radiobutton-in-tkinter
     
         # X min
         x_min_label = ttk.Label(self.range_frame, text='X min'
