@@ -55,7 +55,7 @@
 
         <h3>Menus</h3>
         <p><em>File / Load session</em> allows to select a previously session file (*.pv). This restores curves, titles and annotation as they were at the moment of saving.</p>
-        <p><em>File / Save session</em> saves a session file (*.pv) with curves, titles and annotation. It is recommended to save this file in the working directory. <strong>It is possible to edit this file yet it is not recommended to do so</strong> since the error processing is not coded (so any error or missing data will cause the application to raise an error).</p>
+        <p><em>File / Save session</em> saves a session file (*.pv) with curves, titles and annotation. It is recommended to save this file in the working directory. <strong>Do not forget to add the "*.pv" extension after the name of the session</strong> so that the file appears when you want to load it (only *.pv files are shown in the file dialog). <strong>It is possible to edit this file yet it is not recommended to do so</strong> since the error processing is not coded (so any error or missing data will cause the application to raise an error).</p>
 
         <h3>Status bar</h3>
         <p>It is recommended to <strong>look at the status bar after each function</strong> to check the status of PlotView.</p>
@@ -66,7 +66,7 @@
         <p>The entry field allows to give a name to the curve before it is created. If you skip this entry field, the default name "Curve_label" will be given to the curve. this curve can be renamed after. Tip: double-click on the default name to replace it by a more relevant name.</p>
         <p>The <em>Create</em> button create the plot of the selected CSV file with the entered curve name (if any). This plot also considers some default values for color, type of line, etc. These default values can be changed in the <em>curve properties</em> area just below. Each curve is referenced by a curve ID.</p>
         <p>In the <em>Curve properties</em> panel, you can modify the properties of all created by first selecting the curve ID in the list and then modifying the properties. This also applies to the <em>Show curve</em> check button.</p>
-        <p>Below the name of curve (which can be changed here), there are 2 fields showing the <em>X and Y data types</em>. These types are the column titles of the related CSV file. You can edit these types and used them as a reminder of the data for the selected curve.</p>
+        <p>Below the name of curve (which can be changed here), the <em>X and Y data types</em> are shown. These types are the column titles of the related CSV file.</p>
         <p>The <em>type of line</em> is chose through a drop down list: solid, dashed or dotted.
         </p>
         <p>Next, you can offset and scale the X and Y data of the selected curve. Note that you can <em>revert back these changes</em> by resetting offset values to 0 and resetting scale values to 1.</p>
