@@ -77,8 +77,8 @@ scale in y = 1.0
 [4]
 name = Circle
 csv file path = test/extrema.csv
-x data = x
-y data = y
+x data = Very long title. Shows how it displays.
+y data = Also very long title. Shows how it partially displays.
 visibility = 0
 line color = gold
 line width = 2.0
