@@ -108,15 +108,19 @@ class Curve:
             Requirements on the file format:
                 - delete unused data and headers: header should be on the first line
                 - rename column headers if necessary
-                - only 2 columns of data
+                - only 2 columns of data (there is no error for 1 column of data but no curve is visible)
                 - make sure that comma is the delimiter
                 - decimal character is the point '.'
         """
-        df = pd.read_csv(self.path, delimiter=',', dtype=float)
-        print('CSV file read:', self.path)
-        print(df)
-        return df
-        # TODO: handle following exceptions: no column, 1 column, more than 2 columns, strings, missing values, etc.
+        try:
+            df = pd.read_csv(self.path, delimiter=',', dtype=float)
+            print('CSV file read:', self.path)
+            print(df)
+            return df
+        except (TypeError, ValueError, IndexError, AttributeError) as e:
+            msg.showerror('Error', 'The format of CSV file is not correct.\nPlease refer to files in the "test" folder.')
+            Application.choose_file(app)
+        # TODO: handle following exceptions: no column, more than 2 columns, strings, missing values, etc.
 
     def get_data_types(self):
         temp = {}
@@ -780,7 +784,6 @@ class Application(tk.Tk):
 
     def curve_create(self):
         """ Create the Curve instance from the CSV file given by 'work_file'
-
 
             First, check that the selected file exists. If not show an error message.
             Second, check that curve label is not empty. If not show an error message.
