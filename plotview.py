@@ -1041,7 +1041,7 @@ class Application(tk.Tk):
                 )
         y_title_label.grid(row=2, column=0)
         self.y_title = tk.StringVar()
-        self.y_title.set('X_data (units)')
+        self.y_title.set('Y_data (units)')
         ttk.Entry(self.plot_frame, textvariable=self.y_title, width=30,
                  justify=tk.CENTER).grid(row=2, column=1)
 
