@@ -1,0 +1,34 @@
+[plot]
+main title = Title
+x title = X_data (units)
+y title = Y_data (units)
+auto scale = 0
+x min user range = 0
+x max user range = 100
+y min user range = 0
+y max user range = 100
+x number of ticks = 10
+y number of ticks = 10
+legend position = 4
+display grid = 1
+background color = 0
+
+[annotation]
+text = Annotation_text
+text x pos. = 0
+text y pos. = 0
+text color = black
+text size = 10
+text state = 0
+arrow head x pos. = 0
+arrow head y pos. = 0
+arrow head length = 10
+arrow head width = 4
+arrow color = black
+arrow line width = 0.5
+arrow state = 0
+
+[session]
+working directory = 
+curve count = 0
+
