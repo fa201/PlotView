@@ -26,7 +26,7 @@
         <p>PlotView plots curves from CSV data file. It is licensed under GPL3. The appearance of curves (color, line width, etc.) can be customized and one annotation can also be added if you need to highlight a point of interest.</p>
         <p>These HTML help files are located in the <code>help</code> directory, both in the local copy and in the <a href="http://github.com/fa201/PlotView" title="Github repository" target="_blank">Github repository</a>.</p>
         <h2>Launch PlotView</h2>
-        <p>After downloading and unzipping the source zip file, open a terminal in the directory of the file plotview.py. Then type: <code>python3 plotview.py</code>.</p>
+        <p>After downloading and unzipping the source zip file, open a terminal in the directory of the file <em>plotview.py</em>. Then type: <code>python3 plotview.py</code>.</p>
 
         <h2>GUI: Graphical User Interface</h2>
         <p>The GUI was designed to be:
@@ -43,18 +43,19 @@
             <ul>
                 <li>menus on top</li>
                 <li><em>plot area</em> on the left: it is a <a href="https://matplotlib.org/" title="matplotlib" target="_blank">matplotlib</a> plot area embedded in the main window. The lower part is a <a href="https://matplotlib.org/3.2.2/users/navigation_toolbar.html#" title="help on matplotlib toolbar" target="_blank">matplotlib toolbar</a> with panning, zooming and picture export fonctions.</li>
-                <li><em>function area</em> on the right: it is divided in tab panels which gather function link to 3 groups of functions:
+                <li><em>function area</em> on the right: it is divided in tab panels which gather function link to 4 groups of functions:
                 <ul>
                     <li><em>curve creation</em></li>
                     <li><em>plot information</em></li>
-                    <li><em>annotations</em></li>
+                    <li><em>text annotation</em></li>
+                    <li><em>finding extrema</em></li>
                 </ul>
                 <li><em>status bar</em> at the bottom of the main window: a messages on performed operation, warnings, etc. are shown.</li>
             </ul>
         </p>
 
         <h3>Menus</h3>
-        <p><em>File / Load session</em> allows to select a previously session file (*.pv). This restores curves, titles and annotation as they were at the moment of saving.</p>
+        <p><em>File / Load session</em> allows to select a previously saved session file (*.pv). This restores curves, titles and annotation as they were at the moment of saving. Two session files are provided: <em>session.pv</em> contains the examples shown in the help pictures and <em>fresh_session.pv</em> with restores the session as a fresh session. Another to have a fresh session is to close and launch again PlotView.</p>
         <p><em>File / Save session</em> saves a session file (*.pv) with curves, titles and annotation. It is recommended to save this file in the working directory. <strong>Do not forget to add the "*.pv" extension after the name of the session</strong> so that the file appears when you want to load it (only *.pv files are shown in the file dialog). <strong>It is possible to edit this file yet it is not recommended to do so</strong> since the error processing is not coded (so any error or missing data will cause the application to raise an error).</p>
 
         <h3>Status bar</h3>
@@ -91,7 +92,7 @@
         <p></p>
 
         <h3>Extrema tab</h3>
-        <p>PlotView can compute the values of 4 extrema of the selected curve: X min, X max, Ymin, Y max. These values are rounded with 10 digits after decimal.</p>
+        <p>PlotView can compute the values of 4 extrema of the selected curve: <em>X min</em>, <em>X max</em>, <em>Ymin</em>, <em>Y max</em>. These values are rounded with 10 digits after the decimal.</p>
         <p><img class="image_l" src="../image/PlotView_example_3.png" title="PlotView extrema tab" alt="PlotView extrema tab"></p>
         <p>You just have to <em>select the curve ID</em>! Then the name of the curve is shown on the right entry field to make sure that you selected the intended curve and the extrema values are computed.</p>
         <p>For X extrema, the Y value is also given as information (likewise X values are given for Y extrema).</p>

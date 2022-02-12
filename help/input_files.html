@@ -22,9 +22,10 @@
 <main class="main_container">
     <article class="without_aside">
 
-        <h1>Input files format</h1>
+        <h1>Format of CSV files</h1>
+        <h2>Proper format</h2>
         <p>The expected input file format is <abbr title="Comma Separated Values">CSV</abbr>.</p>
-        <p>The first line should be the only line with strings to describe the data shown in each column.</p>
+        <p>The first line should be the only line with <abbr title="Letters [A-Z][a-z]. Digits [0-9]will be considered as letters">strings</abbr>strings to describe the data shown in each column. I tested special characters without problems but if you find one please report it at <a href="http://github.com/fa201/PlotView" title="Github repository" target="_blank">Github repository</a>.</p>
         <p><strong>All the remaining lines should contain numbers with a decimal point '.' separated by comma ','</strong>.</p>
         <p>PlotView expects 2 column of data: the first one is X data and the second one is Y data.</p>
         <p>Below is an example of valid CSV file:<br>
@@ -34,7 +35,12 @@
             0.2,0.06<br>
             0.3,0.09</code>
         </p>
-        <p>Theare can be spaces around the central comma as shown in the example <code>test/xpower_with_spaces.csv</code>.</p>
+        <p>It is a good practice to show the unit in the title of the CSV file.</p>
+        <p>The files provided in the <code>test</code> folder are examples.</p>
+
+        <h2>Wrong CSV format</h2>
+        <p>In the <code>test/wrong_CSV</code> folder, there are examples of wrong formats. I tried to handle inapropriate formats as much as I could but there could be bugs related with wrong CSV format, so it is recommended to follow the guidance of previous paragraph.</p>
+        <p>There can be spaces around the central comma as shown in the example <code>test/xpower_with_spaces.csv</code> but it is not rescommended.</p>
 
         <p class="retour_haut_page"><a href="#">Top of page</a></p>
     </article>
