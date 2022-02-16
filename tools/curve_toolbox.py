@@ -12,6 +12,7 @@ try:
     import pandas as pd
     import glob
     import os
+    import time
     from collections import defaultdict
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
@@ -20,6 +21,7 @@ except ModuleNotFoundError as e:
 # Move to the working directory for reading and writing CSV
 os.chdir('CSV_files')
 
+choice = ''
 
 def clear_console():
     """Clear the console to display menus
@@ -38,14 +40,29 @@ def show_title():
     """Print application title and line below"""
     title = 'Curve_toolbox: prepare CSV curves for plotting with PlotView'
     # Generate a line of '*' with the same width as the title
-    print('*' * len(title))
+    print('=' * len(title))
     print(title)
-    print('*' * len(title))
+    print('=' * len(title))
 
 def show_main_menu():
     """Display main menu commands"""
-    pass
+    global choice
+    line = '.' * 6
+    space = ' ' * 3
 
+    clear_console()
+    show_title()
+    list_files()
+
+    print('')
+    print('Command menu:')
+    print(space, '[C]', line, 'Convert data file to CSV format', sep='')
+    print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')  # uniquement pour les fichiers partageant le même X
+    print(space, '[B]', line, 'Trim the beginning of the curve', sep='')
+    print(space, '[E]', line, 'Trim the end of the curve', sep='')
+    print(space, '[L]', line, 'List CSV files', sep='')
+    print(space, '[EXIT]...Exit program', sep='')
+    choice = input(space + 'Enter a command: ').upper()
 
 def list_files():
     """List all CSV files for the user to see which files will be processed
@@ -59,22 +76,54 @@ def list_files():
     #print('\nList of CSV files in the folder "CSV_files":\n', temp_list_files)
     file_dic = {}
     for name in temp_list_files:
-        index = temp_list_files.index(name)  # Get index of current list item
+        index = temp_list_files.index(name) + 1  # Get index of current list item
         file_dic[index] = name
     #print(file_dic)
 
+    print('')
     print('CSV files found in "CSV_files" folder:')
     for key in file_dic:
-        print('   ', key, '->', file_dic[key])
+        print(' '*3, key, '->', file_dic[key])
 
 
-clear_console()
-show_title()
-#list_files()
+
+# Main program
 show_main_menu()
+while choice != 'EXIT':
 
+    if choice == 'C':
+        print(choice)
+        # Time for the user to read the message.
+        time.sleep(2)  
+        show_main_menu()
 
+    elif choice == 'S':
+        print(choice)
+        time.sleep(2)  
+        show_main_menu()
 
+    elif choice == 'B':
+        print(choice)
+        time.sleep(2)  
+        show_main_menu()
+
+    elif choice == 'E':
+        print(choice)
+        time.sleep(2)  
+        show_main_menu()
+
+    elif choice == 'L':
+        print(choice)
+        time.sleep(2)  
+        show_main_menu()
+
+    elif choice =='EXIT':
+        print('Exiting program.')
+        
+    else:
+        print('UNKNOWN COMMAND.')
+        time.sleep(2)  # Time for the user to read the message.
+        show_main_menu()
 
 """
 Convert data file to CSV format [C]
@@ -88,14 +137,11 @@ Convert data file to CSV format [C]
     Back [back]
 Split a CSV file into several CSV files [S] -> uniquement pour les fichiers partageant le même X
     Export en file_1.csv
-    Lister les fichiers
 Trim the beginning of the curve [B]
     Export en file_beg.csv
-    Lister les fichiers
 Trim the end of the curve [E]
     Export en file_end.csv
-    Lister les fichiers
-Exit [exit]
+
 
 
 menu()
@@ -113,8 +159,6 @@ menu()
 read_data()
 export_data(file_out, sep=',', encoding=UTF-8)
 back_to_menu() -> lance menu()
-
-convertir en uppercase les choix
 """
 
 
