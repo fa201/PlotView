@@ -3,6 +3,7 @@
 """ PlotView reads a data file and plots the data curve using matplotlib.
 
     Code hosted at: https://github.com/fa201/PlotView
+    Licence: GN GPL-3.0
     PlotView is summarized as PV in variable names.
 """
 
