@@ -155,34 +155,41 @@ def trim_commands():
         df_in = pd.read_csv(file_dic[int(file_input)])
         print('Printing the first 5 lines of ' + file_dic[int(file_input)])
         print(df_in.head(5))
+        print('Printing the last 5 lines of ' + file_dic[int(file_input)])
+        print(df_in.tail(5))
+        # Axis X or Y to be considered for 'start_index' and 'end_index'
+        axis =''
+        # Trimmed curve is delimited by 'start' and 'end'
+        start = None
+        end = None
+
+        axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
+
+        if axis == 'X':
+            start = float(input(space + 'Enter the value until which the beginning of the curve is trimmed: '))
+            df_in2 = df_in[df_in.iloc[:, 0] >= start]
+            end = float(input(space + 'Enter the value from which the end of the curve is trimmed: '))
+            df_in2 = df_in2[df_in.iloc[:, 0] <= end]
+            print('The curve is trimmed.')
+            print('Printing the first 5 lines of ' + file_dic[int(file_input)])
+            print(df_in2.head(5))
+            print('Printing the last 5 lines of ' + file_dic[int(file_input)])
+            print(df_in2.tail(5))
+
+        #elif axis == 'Y':
+            #pass
+        #elif axis == 'MAIN':
+            #clear_console()
+            #show_title()
+            #list_files()
+            #show_main_menu()
+        #else:
+            #print('ERROR: unknown command')
+            #axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
 
         # Launch again if the use wants to tri another curve.
         trim_commands()
 
-""""
-        axis =''
-        start_index = None
-        end_index = None
-
-        axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
-
-        while axis != 'MAIN':
-            if axis == 'X':
-                start_index = float(input(space + 'Enter the start_index for ' + axis + ' to trim the curve: '))
-                df_out = (df_in[df_in.columns[0]] > start_index) #FIXME
-                print(df_out.head())
-            elif axis == 'Y':
-                pass
-            elif axis == 'MAIN':
-                clear_console()
-                show_title()
-                list_files()
-                show_main_menu()
-            else:
-                print('ERROR: unknown command')
-                axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
-        reset_choice()
-"""
 
 # Main program
 show_main_menu()
