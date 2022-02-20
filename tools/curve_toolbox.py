@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """ curve_toolbox is a command line set of tools to process CSV files before plot them with PlotView.
 
 
@@ -12,7 +11,6 @@ try:
     import pandas as pd
     import glob
     import os
-    import time
     from collections import defaultdict
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
@@ -21,14 +19,16 @@ except ModuleNotFoundError as e:
 
 # Move to the working directory for reading and writing CSV
 os.chdir('CSV_files')
-
 # GLOBAL VARIABLES
 # Choice for the main menu
 choice = ''
 # Parameters for display variables
+separator = '~'*60
 line = '.' * 6
 space = ' ' * 3
 file_dic = {}
+status =' '
+command ='main'
 
 def clear_console():
     """Clear the console to display menus
@@ -46,9 +46,20 @@ def clear_console():
 def show_title():
     """Print application title and line below"""
     title = 'Curve_toolbox: prepare CSV curves for plotting with PlotView'
-    print('=' * len(title))  # Generate a line with the same width as the title
+    #print('=' * len(title))  # Generate a line with the same width as the title
+    print(separator)
     print(title)
-    print('=' * len(title))
+    print(separator)
+
+def main_commands():
+    """Print the commands of the main menu"""
+    print('')
+    print('Main menu - commands:')
+    print(space, '[C]', line, 'Convert data file to CSV format', sep='')
+    print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')  # uniquement pour les fichiers partageant le même X
+    print(space, '[T]', line, 'Trim the beginning and or the end of the curve', sep='')
+    print(space, '[L]', line, 'List CSV files', sep='')
+    print(space, '[EXIT]...Exit program', sep='')
 
 def show_main_menu():
     """Display main menu commands
@@ -58,19 +69,24 @@ def show_main_menu():
     global choice
     global line
     global space
+    global status
+    global command
 
     clear_console()
     show_title()
     list_files()
+    print('command :', command)
 
+    if command == 'main':
+        main_commands()
+
+    # Status bar
     print('')
-    print('Main menu - commands:')
-    print(space, '[C]', line, 'Convert data file to CSV format', sep='')
-    print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')  # uniquement pour les fichiers partageant le même X
-    print(space, '[T]', line, 'Trim the beginning and or the end of the curve', sep='')
-    print(space, '[L]', line, 'List CSV files', sep='')
-    print(space, '[EXIT]...Exit program', sep='')
-    choice = input(space + 'Enter a command: ').upper()
+    print('STATUS: ', status, sep='')
+    print(separator)
+    # Command line
+    choice = input('Enter a command: ').upper()
+    # All code after the above will be shown only after the input is entered.
 
 def reset_choice():
     """Reset choice to empty string to avoid an error in show_main_menu"""
@@ -85,6 +101,7 @@ def list_files():
         'file_dic' keys are integer to ease selection through command menu.
     """
     global file_dic
+    global status
     # Add all CSV files in working directory into a list
     temp_list_files = glob.glob('*.csv')
 
@@ -95,7 +112,7 @@ def list_files():
 
     # Show the content of 'file_dic'
     print('')
-    print('CSV files found in "CSV_files" folder:')
+    print('List of CSV files found in "CSV_files" folder:')
     for key in file_dic:
         print(space, key, ' -> ', file_dic[key], sep='')
     reset_choice()
@@ -110,6 +127,7 @@ def show_trim_menu():
     global space
     global file_dic
     global choice
+    global status
 
     clear_console()
     show_title()
@@ -118,7 +136,7 @@ def show_trim_menu():
     print('')
     print('Trim menu:')
     file_input = input(space + 'Enter the number of CSV file to trim: ')
-    print('Reading selected CSV file:', file_dic[int(file_input)])
+    status = 'Reading selected CSV file:' + file_dic[int(file_input)]
     df_in = pd.read_csv(file_dic[int(file_input)])
     print(df_in.head())
 
@@ -155,32 +173,22 @@ while choice != 'EXIT':
         show_main_menu()
 
     elif choice == 'C':
-        print('Convert data file to CSV format')
-        # Time for the user to read the message.
-        time.sleep(2)
         show_main_menu()
 
     elif choice == 'S':
-        print('Split a CSV file into several CSV files')
-        time.sleep(2)
         show_main_menu()
 
     elif choice == 'T':
-        print('Trim the beginning and or the end of the curve')
-        time.sleep(2)
         show_trim_menu()
 
     elif choice == 'L':
-        print('List CSV files')
-        time.sleep(2)
+        status = 'list of file updated.'
+        command = 'main'
         show_main_menu()
 
-    elif choice =='EXIT':
-        print('Exiting program.')
-
     else:
-        print('ERROR: unknown command.')
-        time.sleep(2)  # Time for the user to read the message.
+        status = 'unknown command. The list of command is shwon above.'
+        command = 'main'
         show_main_menu()
 
 """
@@ -199,8 +207,6 @@ Trim the beginning of the curve [B]
 
 Trim the end of the curve [E]
     Export en file_end.csv
-
-
 
 menu()
     convert_data_to_csv()
