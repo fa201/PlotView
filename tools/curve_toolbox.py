@@ -140,10 +140,9 @@ def trim_commands():
 
     if file_input == 'M':
         global command  # necessary as the namespace if different from above
-        global choice
         command = 'main'
-        choice = 'M'  # TODO reset_choice(). Delete global choice ?
         status = 'back to main menu.'
+        reset_choice()
         show_main_menu()
     elif file_input =='':
         # Launch again the complete display for title, list of files and trim commands
@@ -173,10 +172,10 @@ def trim_commands():
         # Update the status with trimmed curve filename
         status = 'curve trimmed and saved as ' + file_output
 
-    # Go back to main menu
-    reset_choice()
-    command = 'main'
-    show_main_menu()
+        # Go back to main menu
+        reset_choice()
+        command = 'main'
+        show_main_menu()
 
 
 # Main program
@@ -197,7 +196,7 @@ while choice != 'EXIT':
         show_main_menu()
 
     elif choice == 'L':
-        status = 'list of file updated.'
+        status = 'the list of files was updated.'
         command = 'main'
         show_main_menu()
 
