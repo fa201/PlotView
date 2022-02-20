@@ -163,21 +163,17 @@ def trim_commands():
         start = None
         end = None
 
-        axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
-
-        if axis == 'X':
-            start = float(input(space + 'Enter the value until which the beginning of the curve is trimmed: '))
-            df_in2 = df_in[df_in.iloc[:, 0] >= start]
-            end = float(input(space + 'Enter the value from which the end of the curve is trimmed: '))
-            df_in2 = df_in2[df_in.iloc[:, 0] <= end]
-            print('The curve is trimmed.')
-            print('Printing the first 5 lines of ' + file_dic[int(file_input)])
-            print(df_in2.head(5))
-            print('Printing the last 5 lines of ' + file_dic[int(file_input)])
-            print(df_in2.tail(5))
-
-        #elif axis == 'Y':
-            #pass
+        axis = input(space + 'Enter the number of column to be considered: [1] or [2] : ')
+        axis = int(axis) - 1  # convert to dataframe column integer index
+        start = float(input(space + 'Enter the value until which the beginning of the curve is trimmed: '))
+        df_in = df_in[df_in.iloc[:, axis] >= start]
+        end = float(input(space + 'Enter the value from which the end of the curve is trimmed: '))
+        df_in = df_in[df_in.iloc[:, axis] <= end]
+        print('The curve is trimmed.')
+        print('Printing the first 5 lines of ' + file_dic[int(file_input)])
+        print(df_in.head(5))
+        print('Printing the last 5 lines of ' + file_dic[int(file_input)])
+        print(df_in.tail(5))
         #elif axis == 'MAIN':
             #clear_console()
             #show_title()
