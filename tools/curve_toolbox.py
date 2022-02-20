@@ -151,17 +151,30 @@ def trim_commands():
         list_files()
         trim_commands()
     else:
-        print(space, 'Reading: ', file_dic[int(file_input)], sep='')
-        df_in = pd.read_csv(file_dic[int(file_input)])
-        print('Printing the first 5 lines of ' + file_dic[int(file_input)])
-        print(df_in.head(5))
+        try:
+            print(space, 'Reading: ', file_dic[int(file_input)], sep='')
+            df_in = pd.read_csv(file_dic[int(file_input)])
+            print('Printing the first 5 lines of ' + file_dic[int(file_input)])
+            print(df_in.head(5))
+        except ValueError as e:
+            correct_range = str(file_dic.keys())
+            correct_range = correct_range[10:-1]
+            print('The number selected is not in the correct range ' + correct_range + '. Try again.')
+            trim_commands()
+        except KeyError as e:
+            correct_range = str(file_dic.keys())
+            correct_range = correct_range[10:-1]
+            print('The number selected is not in the correct range ' + correct_range + '. Try again.')
+            trim_commands()
         # Column 1 or 2 to be considered for 'start' and 'end'
         col =''
         # Trimmed curve is delimited by 'start' and 'end'
         start = None
         end = None
         col = input(space + 'Enter the number of column to be considered [1] or [2] : ')
+        #try:
         col = int(col) - 1  # convert to dataframe column integer index
+        #except:
         start = float(input(space + 'Enter the value for the start of the trimmed curve: '))
         df_in = df_in[df_in.iloc[:, col] >= start]
         end = float(input(space + 'Enter the value for the end of the trimmed curve: '))
