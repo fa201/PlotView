@@ -91,7 +91,7 @@ def show_main_menu():
 def reset_choice():
     """Reset choice to empty string to avoid an error in show_main_menu"""
     global choice
-    choice = ''
+    choice = 'M'
 
 def list_files():
     """List all CSV files for the user to see which files will be processed
@@ -131,6 +131,7 @@ def trim_commands():
     file_input = ''
 
     print('')
+    print('Warning: the CSV file to be trimmed should contain only 2 columns')
     print('Trim menu:')
     print(space, '[M]', line, 'Go back to main menu', sep='')
     temp = input(space + 'Enter the number of CSV file to trim: ')
@@ -141,7 +142,7 @@ def trim_commands():
         global command  # necessary as the namespace if different from above
         global choice
         command = 'main'
-        choice = 'M'
+        choice = 'M'  # TODO reset_choice(). Delete global choice ?
         status = 'back to main menu.'
         show_main_menu()
     elif file_input =='':
@@ -151,40 +152,29 @@ def trim_commands():
         list_files()
         trim_commands()
     else:
-        print('Reading selected CSV file:', file_dic[int(file_input)])
+        print(space, 'Reading: ', file_dic[int(file_input)], sep='')
         df_in = pd.read_csv(file_dic[int(file_input)])
-        print('Printing the first 5 lines of ' + file_dic[int(file_input)])
-        print(df_in.head(5))
-        print('Printing the last 5 lines of ' + file_dic[int(file_input)])
-        print(df_in.tail(5))
-        # Axis X or Y to be considered for 'start_index' and 'end_index'
-        axis =''
+        # Column 1 or 2 to be considered for 'start' and 'end'
+        col =''
         # Trimmed curve is delimited by 'start' and 'end'
         start = None
         end = None
+        col = input(space + 'Enter the number of column to be considered [1] or [2] : ')
+        col = int(col) - 1  # convert to dataframe column integer index
+        start = float(input(space + 'Enter the value for the start of the trimmed curve: '))
+        df_in = df_in[df_in.iloc[:, col] >= start]
+        end = float(input(space + 'Enter the value for the end of the trimmed curve: '))
+        df_in = df_in[df_in.iloc[:, col] <= end]
+        # Export trimmed curve with a prefix on the file name
+        file_output = 'trimmed_' + file_dic[int(file_input)]
+        df_in.to_csv(file_output, index=False)
+        # Update the status with trimmed curve filename
+        status = 'curve trimmed and saved as ' + file_output
 
-        axis = input(space + 'Enter the number of column to be considered: [1] or [2] : ')
-        axis = int(axis) - 1  # convert to dataframe column integer index
-        start = float(input(space + 'Enter the value until which the beginning of the curve is trimmed: '))
-        df_in = df_in[df_in.iloc[:, axis] >= start]
-        end = float(input(space + 'Enter the value from which the end of the curve is trimmed: '))
-        df_in = df_in[df_in.iloc[:, axis] <= end]
-        print('The curve is trimmed.')
-        print('Printing the first 5 lines of ' + file_dic[int(file_input)])
-        print(df_in.head(5))
-        print('Printing the last 5 lines of ' + file_dic[int(file_input)])
-        print(df_in.tail(5))
-        #elif axis == 'MAIN':
-            #clear_console()
-            #show_title()
-            #list_files()
-            #show_main_menu()
-        #else:
-            #print('ERROR: unknown command')
-            #axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
-
-        # Launch again if the use wants to tri another curve.
-        trim_commands()
+    # Go back to main menu
+    reset_choice()
+    command = 'main'
+    show_main_menu()
 
 
 # Main program
