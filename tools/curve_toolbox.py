@@ -18,10 +18,17 @@ except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
     print('Please check the required packages at https://github.com/fa201/PlotView.')
 
+
 # Move to the working directory for reading and writing CSV
 os.chdir('CSV_files')
 
+# GLOBAL VARIABLES
+# Choice for the main menu
 choice = ''
+# Parameters for display variables
+line = '.' * 6
+space = ' ' * 3
+file_dic = {}
 
 def clear_console():
     """Clear the console to display menus
@@ -39,89 +46,140 @@ def clear_console():
 def show_title():
     """Print application title and line below"""
     title = 'Curve_toolbox: prepare CSV curves for plotting with PlotView'
-    # Generate a line of '*' with the same width as the title
-    print('=' * len(title))
+    print('=' * len(title))  # Generate a line with the same width as the title
     print(title)
     print('=' * len(title))
 
 def show_main_menu():
-    """Display main menu commands"""
+    """Display main menu commands
+
+        Commands are converted to UPPER case to ease the procesing after
+    """
     global choice
-    line = '.' * 6
-    space = ' ' * 3
+    global line
+    global space
 
     clear_console()
     show_title()
     list_files()
 
     print('')
-    print('Command menu:')
+    print('Main menu - commands:')
     print(space, '[C]', line, 'Convert data file to CSV format', sep='')
     print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')  # uniquement pour les fichiers partageant le même X
-    print(space, '[B]', line, 'Trim the beginning of the curve', sep='')
-    print(space, '[E]', line, 'Trim the end of the curve', sep='')
+    print(space, '[T]', line, 'Trim the beginning and or the end of the curve', sep='')
     print(space, '[L]', line, 'List CSV files', sep='')
     print(space, '[EXIT]...Exit program', sep='')
     choice = input(space + 'Enter a command: ').upper()
 
+def reset_choice():
+    """Reset choice to empty string to avoid an error in show_main_menu"""
+    global choice
+    choice = ''
+
 def list_files():
     """List all CSV files for the user to see which files will be processed
 
-        CSV files must be in 'CSV_files' folder
-        Files will be selected in the menu through keys of file_dic
-
+        CSV files must be in 'CSV_files' folder to be detected.
+        Files will be selected in the menu through keys of 'file_dic'.
+        'file_dic' keys are integer to ease selection through command menu.
     """
-    # List all CSV files in working directory
+    global file_dic
+    # Add all CSV files in working directory into a list
     temp_list_files = glob.glob('*.csv')
-    #print('\nList of CSV files in the folder "CSV_files":\n', temp_list_files)
-    file_dic = {}
+
+    # Update 'file_dic': key is a number starting at 1
     for name in temp_list_files:
         index = temp_list_files.index(name) + 1  # Get index of current list item
         file_dic[index] = name
-    #print(file_dic)
 
+    # Show the content of 'file_dic'
     print('')
     print('CSV files found in "CSV_files" folder:')
     for key in file_dic:
-        print(' '*3, key, '->', file_dic[key])
+        print(space, key, ' -> ', file_dic[key], sep='')
+    reset_choice()
 
+def show_trim_menu():
+    """Remove the point of the curve before or after given values
+
+        Export the file with the 'trim_' prefix
+
+    """
+    global line
+    global space
+    global file_dic
+    global choice
+
+    clear_console()
+    show_title()
+    list_files()
+
+    print('')
+    print('Trim menu:')
+    file_input = input(space + 'Enter the number of CSV file to trim: ')
+    print('Reading selected CSV file:', file_dic[int(file_input)])
+    df_in = pd.read_csv(file_dic[int(file_input)])
+    print(df_in.head())
+
+    axis =''
+    start_index = None
+    end_index = None
+
+    axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
+
+    while axis != 'MAIN':
+        if axis == 'X':
+            start_index = float(input(space + 'Enter the start_index for ' + axis + ' to trim the curve: '))
+            df_out = (df_in[df_in.columns[0]] > start_index) #FIXME
+            print(df_out.head())
+        elif axis == 'Y':
+            pass
+        elif axis == 'MAIN':
+            clear_console()
+            show_title()
+            list_files()
+            show_main_menu()
+        else:
+            print('ERROR: unknown command')
+            axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
+
+
+    reset_choice()
 
 
 # Main program
 show_main_menu()
 while choice != 'EXIT':
+    if choice == '':
+        show_main_menu()
 
-    if choice == 'C':
-        print(choice)
+    elif choice == 'C':
+        print('Convert data file to CSV format')
         # Time for the user to read the message.
-        time.sleep(2)  
+        time.sleep(2)
         show_main_menu()
 
     elif choice == 'S':
-        print(choice)
-        time.sleep(2)  
+        print('Split a CSV file into several CSV files')
+        time.sleep(2)
         show_main_menu()
 
-    elif choice == 'B':
-        print(choice)
-        time.sleep(2)  
-        show_main_menu()
-
-    elif choice == 'E':
-        print(choice)
-        time.sleep(2)  
-        show_main_menu()
+    elif choice == 'T':
+        print('Trim the beginning and or the end of the curve')
+        time.sleep(2)
+        show_trim_menu()
 
     elif choice == 'L':
-        print(choice)
-        time.sleep(2)  
+        print('List CSV files')
+        time.sleep(2)
         show_main_menu()
 
     elif choice =='EXIT':
         print('Exiting program.')
-        
+
     else:
-        print('UNKNOWN COMMAND.')
+        print('ERROR: unknown command.')
         time.sleep(2)  # Time for the user to read the message.
         show_main_menu()
 
@@ -138,7 +196,7 @@ Convert data file to CSV format [C]
 Split a CSV file into several CSV files [S] -> uniquement pour les fichiers partageant le même X
     Export en file_1.csv
 Trim the beginning of the curve [B]
-    Export en file_beg.csv
+
 Trim the end of the curve [E]
     Export en file_end.csv
 
@@ -156,31 +214,6 @@ menu()
     trim_end()
         read_data()
         export_data()
-read_data()
 export_data(file_out, sep=',', encoding=UTF-8)
 back_to_menu() -> lance menu()
 """
-
-
-
-
-
-"""
-try:
-    df = pd.read_csv(self.path, delimiter=',', dtype=float)
-    print('CSV file read:', self.path)
-    #print(df)
-except (TypeError, ValueError, IndexError, AttributeError) as e:
-    print('Error: the format of CSV file is not correct.')
-
-print('===   PlotView trim curve for CSV files   ===')
-print('This script trims a curve to keep only a defined range of this curve.')
-print('The trimming range is defined by the user based on 2 values "start_index" and "end_index".')
-print('These indexes can be values of X axis or values of Y axis.')
-
-        
-start_index = input('Define the value for the beginning of the range to keep (start_index): ')
-try:
-column = input(': X or x ')
-"""
-
