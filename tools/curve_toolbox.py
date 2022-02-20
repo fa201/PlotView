@@ -20,8 +20,8 @@ except ModuleNotFoundError as e:
 # Move to the working directory for reading and writing CSV
 os.chdir('CSV_files')
 # GLOBAL VARIABLES
-# Choice for the main menu
-choice = ''
+# Choice of command for the main menu
+choice = 'M'
 # Parameters for display variables
 separator = '~'*60
 line = '.' * 6
@@ -75,18 +75,18 @@ def show_main_menu():
     clear_console()
     show_title()
     list_files()
-    print('command :', command)
 
-    if command == 'main':
+    if command == 'trim':
+        trim_commands()
+    elif command == 'main':
         main_commands()
-
-    # Status bar
-    print('')
-    print('STATUS: ', status, sep='')
-    print(separator)
-    # Command line
-    choice = input('Enter a command: ').upper()
-    # All code after the above will be shown only after the input is entered.
+        # Status bar
+        print('')
+        print('STATUS: ', status, sep='')
+        print(separator)
+        # Command line
+        choice = input('Enter a command: ').upper()
+        # All code after the above will be shown only after the input is entered.
 
 def reset_choice():
     """Reset choice to empty string to avoid an error in show_main_menu"""
@@ -117,59 +117,78 @@ def list_files():
         print(space, key, ' -> ', file_dic[key], sep='')
     reset_choice()
 
-def show_trim_menu():
+def trim_commands():
     """Remove the point of the curve before or after given values
 
         Export the file with the 'trim_' prefix
-
     """
-    global line
     global space
     global file_dic
     global choice
     global status
-
-    clear_console()
-    show_title()
-    list_files()
+    global space
+    global command
+    file_input = ''
 
     print('')
     print('Trim menu:')
-    file_input = input(space + 'Enter the number of CSV file to trim: ')
-    status = 'Reading selected CSV file:' + file_dic[int(file_input)]
-    df_in = pd.read_csv(file_dic[int(file_input)])
-    print(df_in.head())
+    print(space, '[M]', line, 'Go back to main menu', sep='')
+    temp = input(space + 'Enter the number of CSV file to trim: ')
+    # Convert to upper to simplify next if statement.
+    file_input = temp.upper()
 
-    axis =''
-    start_index = None
-    end_index = None
+    if file_input == 'M':
+        global command  # necessary as the namespace if different from above
+        global choice
+        command = 'main'
+        choice = 'M'
+        status = 'back to main menu.'
+        show_main_menu()
+    elif file_input =='':
+        # Launch again the complete display for title, list of files and trim commands
+        clear_console()
+        show_title()
+        list_files()
+        trim_commands()
+    else:
+        print('Reading selected CSV file:', file_dic[int(file_input)])
+        df_in = pd.read_csv(file_dic[int(file_input)])
+        print('Printing the first 5 lines of ' + file_dic[int(file_input)])
+        print(df_in.head(5))
 
-    axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
+        # Launch again if the use wants to tri another curve.
+        trim_commands()
 
-    while axis != 'MAIN':
-        if axis == 'X':
-            start_index = float(input(space + 'Enter the start_index for ' + axis + ' to trim the curve: '))
-            df_out = (df_in[df_in.columns[0]] > start_index) #FIXME
-            print(df_out.head())
-        elif axis == 'Y':
-            pass
-        elif axis == 'MAIN':
-            clear_console()
-            show_title()
-            list_files()
-            show_main_menu()
-        else:
-            print('ERROR: unknown command')
-            axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
+""""
+        axis =''
+        start_index = None
+        end_index = None
 
+        axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
 
-    reset_choice()
-
+        while axis != 'MAIN':
+            if axis == 'X':
+                start_index = float(input(space + 'Enter the start_index for ' + axis + ' to trim the curve: '))
+                df_out = (df_in[df_in.columns[0]] > start_index) #FIXME
+                print(df_out.head())
+            elif axis == 'Y':
+                pass
+            elif axis == 'MAIN':
+                clear_console()
+                show_title()
+                list_files()
+                show_main_menu()
+            else:
+                print('ERROR: unknown command')
+                axis = input(space + 'Enter the column to be considered [X] or [Y]: ').upper()
+        reset_choice()
+"""
 
 # Main program
 show_main_menu()
 while choice != 'EXIT':
-    if choice == '':
+    if choice == 'M':
+        status = ''
         show_main_menu()
 
     elif choice == 'C':
@@ -179,7 +198,8 @@ while choice != 'EXIT':
         show_main_menu()
 
     elif choice == 'T':
-        show_trim_menu()
+        command = 'trim'
+        show_main_menu()
 
     elif choice == 'L':
         status = 'list of file updated.'
@@ -187,9 +207,10 @@ while choice != 'EXIT':
         show_main_menu()
 
     else:
-        status = 'unknown command. The list of command is shwon above.'
+        status = 'unknown command. The list of command is shown above.'
         command = 'main'
         show_main_menu()
+print('\nExiting the program.')
 
 """
 Convert data file to CSV format [C]
