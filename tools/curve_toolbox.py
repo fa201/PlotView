@@ -154,6 +154,8 @@ def trim_commands():
     else:
         print(space, 'Reading: ', file_dic[int(file_input)], sep='')
         df_in = pd.read_csv(file_dic[int(file_input)])
+        print('Printing the first 5 lines of ' + file_dic[int(file_input)])
+        print(df_in.head(5))
         # Column 1 or 2 to be considered for 'start' and 'end'
         col =''
         # Trimmed curve is delimited by 'start' and 'end'
