@@ -11,6 +11,7 @@ try:
     import pandas as pd
     import glob
     import os
+    import time
     from collections import defaultdict
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
@@ -159,37 +160,72 @@ def trim_commands():
         except ValueError as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
-            print('The number selected is not in the correct range ' + correct_range + '. Try again.')
+            print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
+            time.sleep(4)  # Pause so the user has time to understand the error.
+            clear_console()
+            show_title()
+            list_files()
             trim_commands()
         except KeyError as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
-            print('The number selected is not in the correct range ' + correct_range + '. Try again.')
+            print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
+            time.sleep(4)  # Pause so the user has time to understand the error.
+            clear_console()
+            show_title()
+            list_files()
             trim_commands()
         # Column 1 or 2 to be considered for 'start' and 'end'
         col =''
         # Trimmed curve is delimited by 'start' and 'end'
         start = None
         end = None
-        col = input(space + 'Enter the number of column to be considered [1] or [2] : ')
-        #try:
-        col = int(col) - 1  # convert to dataframe column integer index
-        #except:
-        start = float(input(space + 'Enter the value for the start of the trimmed curve: '))
-        df_in = df_in[df_in.iloc[:, col] >= start]
-        end = float(input(space + 'Enter the value for the end of the trimmed curve: '))
-        df_in = df_in[df_in.iloc[:, col] <= end]
-        # Export trimmed curve with a prefix on the file name
-        file_output = 'trimmed_' + file_dic[int(file_input)]
-        df_in.to_csv(file_output, index=False)
-        # Update the status with trimmed curve filename
-        status = 'curve trimmed and saved as ' + file_output
+        try:
+            col = input(space + 'Enter the number of column to be considered [1] or [2] : ')
+            if (col!='1') & (col!='2'):
+                print('ERROR: the number selected is not correct. It should be 1 or 2.')
+                time.sleep(4)  # Pause so the user has time to understand the error.
+                clear_console()
+                show_title()
+                list_files()
+                trim_commands()
+            elif col == '':
+                print('ERROR: the number selected is not correct. It should be 1 or 2.')
+                time.sleep(4)  # Pause so the user has time to understand the error.
+                clear_console()
+                show_title()
+                list_files()
+                trim_commands()
+            col = int(col) - 1  # convert to dataframe column integer index
+            start = float(input(space + 'Enter the value for the start of the trimmed curve: '))
+            end = float(input(space + 'Enter the value for the end of the trimmed curve: '))
+            if start <= end:
+                df_in = df_in[df_in.iloc[:, col] >= start]
+                df_in = df_in[df_in.iloc[:, col] <= end]
+            else:
+                print('ERROR: the start value should be lower than end value.')
+                time.sleep(4)  # Pause so the user has time to understand the error.
+                clear_console()
+                show_title()
+                list_files()
+                trim_commands()
 
-        # Go back to main menu
-        reset_choice()
-        command = 'main'
-        show_main_menu()
-
+            # Export trimmed curve with a prefix on the file name
+            file_output = 'trimmed_' + file_dic[int(file_input)]
+            df_in.to_csv(file_output, index=False)
+            # Update the status with trimmed curve filename
+            status = 'curve trimmed and saved as ' + file_output
+            # Go back to main menu
+            reset_choice()
+            command = 'main'
+            show_main_menu()
+        except ValueError as e:
+            print('ERROR: the number selected is not correct.')
+            time.sleep(4)  # Pause so the user has time to understand the error.
+            clear_console()
+            show_title()
+            list_files()
+            trim_commands()
 
 # Main program
 show_main_menu()
