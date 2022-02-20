@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="fa201">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css_reset.css">   <!-- Reset du CSS avant d'utiliser mon CSS -->
+<link rel="stylesheet" href="style.css">
+<title>PlotView help - curve toolbox</title>
+</head>
+
+<body>
+<nav>
+    <ul class="nav_first">
+        <li><a href="index.html" title="Home">Home</a></li>
+        <li><a href="repository.html" title="Get PlotView">Get PlotView</a></li>
+        <li><a href="input_files.html" title="Input files">Input files</a></li>
+        <li><a href="limitations.html" title="Limitations">Limitations</a></li>
+        <li><a class="nav_current1" href="curve_toolbox.html" title="Curve toolbox">Curve toolbox</a></li>
+    </ul>
+</nav>
+
+<main class="main_container">
+    <article class="without_aside">
+
+        <h1>Curve toolbox</h1>
+
+        <h2>Presentation</h2>
+        <p>In the folder <code>tools</code>, there is another Python script called <code>curve_toolbox.py</code>. <em>The purpose of this script is to process the curve files before plotting them with PlotView</em>.</p>
+        <p>The folder <code>tools/CSV_files</code> contains some examples of CSV files. The script <code>curve_toolbox.py</code> expects the CSV curve files in this folder. After processing, the modified CSV files is saved in the same folder with a word prefixing the original name. For example: <code>trimmed_xsinx.csv</code> after trimming the input file <code>xsinx.csv</code>.</p>
+        <p>This script is a console script. Commands are letters or numbers in brackets '[' and ']'. the letters could either lower case or upper case. The CSV files in <code>CSV_files</code> are listed and referenced with numbers for selection.</p>
+        <p>The following image shows an issue with curves having several identical Y values. The issue is the same of the X axis. In this case trimming in the Y axis with <code>start = 0</code> and <code>end = 16</code> cuts <em>all the parts of the curve out of this range</em>. In this case, trimming in X is more appropriate as shown. <br><img class="image_l" src="../image/curve_tool_box_trim.png" title="Trimming issues" alt="Trimming issues"></p>
+
+        <h2>Overview of commands</h2>
+
+        <h3>Trim the beginning and the end of the curve</h3>
+        <p></p>
+
+
+        <p class="retour_haut_page"><a href="#">Top of page</a></p>
+    </article>
+</main>
+</body>
+</html>
