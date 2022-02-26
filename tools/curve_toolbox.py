@@ -108,6 +108,12 @@ def show_main_menu():
         choice = input('Enter a command: ').upper()
         # All code after the above will be shown only after the input is entered.
 
+def file_head(file, dataframe):
+    """Show the head of a dataframe and its file """
+    print(space, 'Reading: ', file, sep='')
+    print(space, 'Printing the first 5 lines of ' + file, ':', sep='')
+    print(dataframe.head(5))
+
 def trim_commands():
     """Remove the point of the curve before or after given values
 
@@ -142,10 +148,9 @@ def trim_commands():
         trim_commands()
     else:
         try:
-            print(space, 'Reading: ', file_dic[int(file_input)], sep='')
             df_in = pd.read_csv(file_dic[int(file_input)])
-            print('Printing the first 5 lines of ' + file_dic[int(file_input)])
-            print(df_in.head(5))
+            file_head(file_dic[int(file_input)], df_in)
+
         except ValueError as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
