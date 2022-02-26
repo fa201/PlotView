@@ -31,9 +31,8 @@ file_dic = {}
 status =' '
 command ='main'
 
-def clear_console():
-    """Clear the console to display menus
-
+def show_title():
+    """Clear the console and arint application title and line below
         https://www.geeksforgeeks.org/clear-screen-python/
         Detect if OS is windows or Linux
     """
@@ -43,9 +42,6 @@ def clear_console():
     # Linux and macOS clear command
     else:
         _ = os.system('clear')
-
-def show_title():
-    """Print application title and line below"""
     title = 'Curve_toolbox: prepare CSV curves for plotting with PlotView'
     #print('=' * len(title))  # Generate a line with the same width as the title
     print(separator)
@@ -73,7 +69,6 @@ def show_main_menu():
     global status
     global command
 
-    clear_console()
     show_title()
     list_files()
 
@@ -147,7 +142,6 @@ def trim_commands():
         show_main_menu()
     elif file_input =='':
         # Launch again the complete display for title, list of files and trim commands
-        clear_console()
         show_title()
         list_files()
         trim_commands()
@@ -162,7 +156,6 @@ def trim_commands():
             correct_range = correct_range[10:-1]
             print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            clear_console()
             show_title()
             list_files()
             trim_commands()
@@ -171,7 +164,6 @@ def trim_commands():
             correct_range = correct_range[10:-1]
             print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            clear_console()
             show_title()
             list_files()
             trim_commands()
@@ -185,14 +177,12 @@ def trim_commands():
             if (col!='1') & (col!='2'):
                 print('ERROR: the number selected is not correct. It should be 1 or 2.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
-                clear_console()
                 show_title()
                 list_files()
                 trim_commands()
             elif col == '':
                 print('ERROR: the number selected is not correct. It should be 1 or 2.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
-                clear_console()
                 show_title()
                 list_files()
                 trim_commands()
@@ -205,7 +195,6 @@ def trim_commands():
             else:
                 print('ERROR: the start value should be lower than end value.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
-                clear_console()
                 show_title()
                 list_files()
                 trim_commands()
@@ -222,7 +211,6 @@ def trim_commands():
         except ValueError as e:
             print('ERROR: the number selected is not correct.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            clear_console()
             show_title()
             list_files()
             trim_commands()
