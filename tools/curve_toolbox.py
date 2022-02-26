@@ -29,80 +29,31 @@ line = '.' * 6
 space = ' ' * 3
 file_dic = {}
 status =' '
-command ='main'
 
-def clear_console():
-    """Clear the console to display menus
 
+def show_title_files():
+    """Clear the console, print application title and list of file
         https://www.geeksforgeeks.org/clear-screen-python/
         Detect if OS is windows or Linux
-    """
-    # Windows clear command
-    if os.name == 'nt':
-        _ = os.system('cls')
-    # Linux and macOS clear command
-    else:
-        _ = os.system('clear')
-
-def show_title():
-    """Print application title and line below"""
-    title = 'Curve_toolbox: prepare CSV curves for plotting with PlotView'
-    #print('=' * len(title))  # Generate a line with the same width as the title
-    print(separator)
-    print(title)
-    print(separator)
-
-def main_commands():
-    """Print the commands of the main menu"""
-    print('')
-    print('Main menu - commands:')
-    print(space, '[C]', line, 'Convert data file to CSV format', sep='')
-    print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')  # uniquement pour les fichiers partageant le même X
-    print(space, '[T]', line, 'Trim the beginning and or the end of the curve', sep='')
-    print(space, '[L]', line, 'List CSV files', sep='')
-    print(space, '[EXIT]...Exit program', sep='')
-
-def show_main_menu():
-    """Display main menu commands
-
-        Commands are converted to UPPER case to ease the procesing after
-    """
-    global choice
-    global line
-    global space
-    global status
-    global command
-
-    clear_console()
-    show_title()
-    list_files()
-
-    if command == 'trim':
-        trim_commands()
-    elif command == 'main':
-        main_commands()
-        # Status bar
-        print('')
-        print('STATUS: ', status, sep='')
-        print(separator)
-        # Command line
-        choice = input('Enter a command: ').upper()
-        # All code after the above will be shown only after the input is entered.
-
-def reset_choice():
-    """Reset choice to empty string to avoid an error in show_main_menu"""
-    global choice
-    choice = 'M'
-
-def list_files():
-    """List all CSV files for the user to see which files will be processed
-
+        List all CSV files for the user to see which files will be processed
         CSV files must be in 'CSV_files' folder to be detected.
         Files will be selected in the menu through keys of 'file_dic'.
         'file_dic' keys are integer to ease selection through command menu.
     """
     global file_dic
     global status
+    # Windows clear command
+    if os.name == 'nt':
+        _ = os.system('cls')
+    # Linux and macOS clear command
+    else:
+        _ = os.system('clear')
+    title = 'Curve_toolbox: prepare CSV curves for plotting with PlotView'
+    #print('=' * len(title))  # Generate a line with the same width as the title
+    print(separator)
+    print(title)
+    print(separator)
+
     # Add all CSV files in working directory into a list
     temp_list_files = glob.glob('*.csv')
 
@@ -116,7 +67,47 @@ def list_files():
     print('List of CSV files found in "CSV_files" folder:')
     for key in file_dic:
         print(space, key, ' -> ', file_dic[key], sep='')
-    reset_choice()
+    choice = 'M'
+
+def main_commands():
+    """Print the commands of the main menu"""
+    print('')
+    print('Main menu - commands:')
+    print(space, '[C]', line, 'Convert data file to CSV format', sep='')
+    print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')  # uniquement pour les fichiers partageant le même X
+    print(space, '[T]', line, 'Trim the beginning and or the end of the curve', sep='')
+    print(space, '[L]', line, 'List CSV files', sep='')
+    print(space, '[EXIT]...Exit program', sep='')
+
+def show_main_menu(command):
+    """Display main menu commands
+
+        Commands are converted to UPPER case to ease the procesing after
+    """
+    global choice
+    global line
+    global space
+    global status
+
+    show_title_files()
+
+    if command == 'trim':
+        trim_commands()
+    elif command == 'main':
+        main_commands()
+        # Status bar
+        print('')
+        print('STATUS: ', status, sep='')
+        print(separator)
+        # Command line
+        choice = input('Enter a command: ').upper()
+        # All code after the above will be shown only after the input is entered.
+
+def file_head(file, dataframe):
+    """Show the head of a dataframe and its file """
+    print(space, 'Reading: ', file, sep='')
+    print(space, 'Printing the first 5 lines of ' + file, ':', sep='')
+    print(dataframe.head(5))
 
 def trim_commands():
     """Remove the point of the curve before or after given values
@@ -128,7 +119,6 @@ def trim_commands():
     global choice
     global status
     global space
-    global command
     file_input = ''
 
     print('')
@@ -140,40 +130,30 @@ def trim_commands():
     file_input = temp.upper()
 
     if file_input == 'M':
-        global command  # necessary as the namespace if different from above
-        command = 'main'
         status = 'back to main menu.'
-        reset_choice()
-        show_main_menu()
+        choice = 'M'
+        show_main_menu('main')
     elif file_input =='':
         # Launch again the complete display for title, list of files and trim commands
-        clear_console()
-        show_title()
-        list_files()
+        show_title_files()
         trim_commands()
     else:
         try:
-            print(space, 'Reading: ', file_dic[int(file_input)], sep='')
             df_in = pd.read_csv(file_dic[int(file_input)])
-            print('Printing the first 5 lines of ' + file_dic[int(file_input)])
-            print(df_in.head(5))
+            file_head(file_dic[int(file_input)], df_in)
         except ValueError as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
             print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            clear_console()
-            show_title()
-            list_files()
+            show_title_files()
             trim_commands()
         except KeyError as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
             print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            clear_console()
-            show_title()
-            list_files()
+            show_title_files()
             trim_commands()
         # Column 1 or 2 to be considered for 'start' and 'end'
         col =''
@@ -185,16 +165,12 @@ def trim_commands():
             if (col!='1') & (col!='2'):
                 print('ERROR: the number selected is not correct. It should be 1 or 2.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
-                clear_console()
-                show_title()
-                list_files()
+                show_title_files()
                 trim_commands()
             elif col == '':
                 print('ERROR: the number selected is not correct. It should be 1 or 2.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
-                clear_console()
-                show_title()
-                list_files()
+                show_title_files()
                 trim_commands()
             col = int(col) - 1  # convert to dataframe column integer index
             start = float(input(space + 'Enter the value for the start of the trimmed curve: '))
@@ -205,9 +181,7 @@ def trim_commands():
             else:
                 print('ERROR: the start value should be lower than end value.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
-                clear_console()
-                show_title()
-                list_files()
+                show_title_files()
                 trim_commands()
 
             # Export trimmed curve with a prefix on the file name
@@ -216,43 +190,37 @@ def trim_commands():
             # Update the status with trimmed curve filename
             status = 'curve trimmed and saved as ' + file_output
             # Go back to main menu
-            reset_choice()
-            command = 'main'
-            show_main_menu()
+            choice = 'M'
+            show_main_menu('main')
         except ValueError as e:
             print('ERROR: the number selected is not correct.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            clear_console()
-            show_title()
-            list_files()
+            show_title_files()
             trim_commands()
 
 # Main program
-show_main_menu()
+show_main_menu('main')
 while choice != 'EXIT':
     if choice == 'M':
         status = ''
-        show_main_menu()
+        show_main_menu('main')
 
     elif choice == 'C':
         show_main_menu()
 
     elif choice == 'S':
-        show_main_menu()
+        show_main_menu('main')
 
     elif choice == 'T':
-        command = 'trim'
-        show_main_menu()
+        show_main_menu('trim')
 
     elif choice == 'L':
         status = 'the list of files was updated.'
-        command = 'main'
-        show_main_menu()
+        show_main_menu('main')
 
     else:
         status = 'unknown command. The list of command is shown above.'
-        command = 'main'
-        show_main_menu()
+        show_main_menu('main')
 print('\nExiting the program.')
 
 """
@@ -267,23 +235,5 @@ Convert data file to CSV format [C]
     Back [back]
 Split a CSV file into several CSV files [S] -> uniquement pour les fichiers partageant le même X
     Export en file_1.csv
-Trim the beginning of the curve [B]
-
-Trim the end of the curve [E]
-    Export en file_end.csv
-
-menu()
-    convert_data_to_csv()
-        back_to_menu()
-    split_file()
-        read_data()
-        export_data()
-    trim_beginning()
-        read_data()
-        export_data()
-    trim_end()
-        read_data()
-        export_data()
 export_data(file_out, sep=',', encoding=UTF-8)
-back_to_menu() -> lance menu()
 """
