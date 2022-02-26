@@ -31,11 +31,17 @@ file_dic = {}
 status =' '
 command ='main'
 
-def show_title():
-    """Clear the console and arint application title and line below
+def show_title_files():
+    """Clear the console, print application title and list of file
         https://www.geeksforgeeks.org/clear-screen-python/
         Detect if OS is windows or Linux
+        List all CSV files for the user to see which files will be processed
+        CSV files must be in 'CSV_files' folder to be detected.
+        Files will be selected in the menu through keys of 'file_dic'.
+        'file_dic' keys are integer to ease selection through command menu.
     """
+    global file_dic
+    global status
     # Windows clear command
     if os.name == 'nt':
         _ = os.system('cls')
@@ -48,25 +54,6 @@ def show_title():
     print(title)
     print(separator)
 
-def main_commands():
-    """Print the commands of the main menu"""
-    print('')
-    print('Main menu - commands:')
-    print(space, '[C]', line, 'Convert data file to CSV format', sep='')
-    print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')  # uniquement pour les fichiers partageant le même X
-    print(space, '[T]', line, 'Trim the beginning and or the end of the curve', sep='')
-    print(space, '[L]', line, 'List CSV files', sep='')
-    print(space, '[EXIT]...Exit program', sep='')
-
-def list_files():
-    """List all CSV files for the user to see which files will be processed
-
-        CSV files must be in 'CSV_files' folder to be detected.
-        Files will be selected in the menu through keys of 'file_dic'.
-        'file_dic' keys are integer to ease selection through command menu.
-    """
-    global file_dic
-    global status
     # Add all CSV files in working directory into a list
     temp_list_files = glob.glob('*.csv')
 
@@ -82,6 +69,16 @@ def list_files():
         print(space, key, ' -> ', file_dic[key], sep='')
     choice = 'M'
 
+def main_commands():
+    """Print the commands of the main menu"""
+    print('')
+    print('Main menu - commands:')
+    print(space, '[C]', line, 'Convert data file to CSV format', sep='')
+    print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')  # uniquement pour les fichiers partageant le même X
+    print(space, '[T]', line, 'Trim the beginning and or the end of the curve', sep='')
+    print(space, '[L]', line, 'List CSV files', sep='')
+    print(space, '[EXIT]...Exit program', sep='')
+
 def show_main_menu():
     """Display main menu commands
 
@@ -93,8 +90,7 @@ def show_main_menu():
     global status
     global command
 
-    show_title()
-    list_files()
+    show_title_files()
 
     if command == 'trim':
         trim_commands()
@@ -143,8 +139,7 @@ def trim_commands():
         show_main_menu()
     elif file_input =='':
         # Launch again the complete display for title, list of files and trim commands
-        show_title()
-        list_files()
+        show_title_files()
         trim_commands()
     else:
         try:
@@ -156,16 +151,14 @@ def trim_commands():
             correct_range = correct_range[10:-1]
             print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            show_title()
-            list_files()
+            show_title_files()
             trim_commands()
         except KeyError as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
             print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            show_title()
-            list_files()
+            show_title_files()
             trim_commands()
         # Column 1 or 2 to be considered for 'start' and 'end'
         col =''
@@ -177,14 +170,12 @@ def trim_commands():
             if (col!='1') & (col!='2'):
                 print('ERROR: the number selected is not correct. It should be 1 or 2.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
-                show_title()
-                list_files()
+                show_title_files()
                 trim_commands()
             elif col == '':
                 print('ERROR: the number selected is not correct. It should be 1 or 2.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
-                show_title()
-                list_files()
+                show_title_files()
                 trim_commands()
             col = int(col) - 1  # convert to dataframe column integer index
             start = float(input(space + 'Enter the value for the start of the trimmed curve: '))
@@ -195,8 +186,7 @@ def trim_commands():
             else:
                 print('ERROR: the start value should be lower than end value.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
-                show_title()
-                list_files()
+                show_title_files()
                 trim_commands()
 
             # Export trimmed curve with a prefix on the file name
@@ -211,8 +201,7 @@ def trim_commands():
         except ValueError as e:
             print('ERROR: the number selected is not correct.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            show_title()
-            list_files()
+            show_title_files()
             trim_commands()
 
 # Main program
