@@ -29,7 +29,7 @@ line = '.' * 6
 space = ' ' * 3
 file_dic = {}
 status =' '
-command ='main'
+
 
 def show_title_files():
     """Clear the console, print application title and list of file
@@ -79,7 +79,7 @@ def main_commands():
     print(space, '[L]', line, 'List CSV files', sep='')
     print(space, '[EXIT]...Exit program', sep='')
 
-def show_main_menu():
+def show_main_menu(command):
     """Display main menu commands
 
         Commands are converted to UPPER case to ease the procesing after
@@ -88,7 +88,6 @@ def show_main_menu():
     global line
     global space
     global status
-    global command
 
     show_title_files()
 
@@ -120,7 +119,6 @@ def trim_commands():
     global choice
     global status
     global space
-    global command
     file_input = ''
 
     print('')
@@ -132,11 +130,9 @@ def trim_commands():
     file_input = temp.upper()
 
     if file_input == 'M':
-        global command  # necessary as the namespace if different from above
-        command = 'main'
         status = 'back to main menu.'
         choice = 'M'
-        show_main_menu()
+        show_main_menu('main')
     elif file_input =='':
         # Launch again the complete display for title, list of files and trim commands
         show_title_files()
@@ -145,7 +141,6 @@ def trim_commands():
         try:
             df_in = pd.read_csv(file_dic[int(file_input)])
             file_head(file_dic[int(file_input)], df_in)
-
         except ValueError as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
@@ -196,8 +191,7 @@ def trim_commands():
             status = 'curve trimmed and saved as ' + file_output
             # Go back to main menu
             choice = 'M'
-            command = 'main'
-            show_main_menu()
+            show_main_menu('main')
         except ValueError as e:
             print('ERROR: the number selected is not correct.')
             time.sleep(4)  # Pause so the user has time to understand the error.
@@ -205,31 +199,28 @@ def trim_commands():
             trim_commands()
 
 # Main program
-show_main_menu()
+show_main_menu('main')
 while choice != 'EXIT':
     if choice == 'M':
         status = ''
-        show_main_menu()
+        show_main_menu('main')
 
     elif choice == 'C':
         show_main_menu()
 
     elif choice == 'S':
-        show_main_menu()
+        show_main_menu('main')
 
     elif choice == 'T':
-        command = 'trim'
-        show_main_menu()
+        show_main_menu('trim')
 
     elif choice == 'L':
         status = 'the list of files was updated.'
-        command = 'main'
-        show_main_menu()
+        show_main_menu('main')
 
     else:
         status = 'unknown command. The list of command is shown above.'
-        command = 'main'
-        show_main_menu()
+        show_main_menu('main')
 print('\nExiting the program.')
 
 """
@@ -244,7 +235,5 @@ Convert data file to CSV format [C]
     Back [back]
 Split a CSV file into several CSV files [S] -> uniquement pour les fichiers partageant le même X
     Export en file_1.csv
-Trim the beginning of the curve [B]
-
 export_data(file_out, sep=',', encoding=UTF-8)
 """
