@@ -58,6 +58,30 @@ def main_commands():
     print(space, '[L]', line, 'List CSV files', sep='')
     print(space, '[EXIT]...Exit program', sep='')
 
+def list_files():
+    """List all CSV files for the user to see which files will be processed
+
+        CSV files must be in 'CSV_files' folder to be detected.
+        Files will be selected in the menu through keys of 'file_dic'.
+        'file_dic' keys are integer to ease selection through command menu.
+    """
+    global file_dic
+    global status
+    # Add all CSV files in working directory into a list
+    temp_list_files = glob.glob('*.csv')
+
+    # Update 'file_dic': key is a number starting at 1
+    for name in temp_list_files:
+        index = temp_list_files.index(name) + 1  # Get index of current list item
+        file_dic[index] = name
+
+    # Show the content of 'file_dic'
+    print('')
+    print('List of CSV files found in "CSV_files" folder:')
+    for key in file_dic:
+        print(space, key, ' -> ', file_dic[key], sep='')
+    choice = 'M'
+
 def show_main_menu():
     """Display main menu commands
 
@@ -84,35 +108,6 @@ def show_main_menu():
         choice = input('Enter a command: ').upper()
         # All code after the above will be shown only after the input is entered.
 
-def reset_choice():
-    """Reset choice to empty string to avoid an error in show_main_menu"""
-    global choice
-    choice = 'M'
-
-def list_files():
-    """List all CSV files for the user to see which files will be processed
-
-        CSV files must be in 'CSV_files' folder to be detected.
-        Files will be selected in the menu through keys of 'file_dic'.
-        'file_dic' keys are integer to ease selection through command menu.
-    """
-    global file_dic
-    global status
-    # Add all CSV files in working directory into a list
-    temp_list_files = glob.glob('*.csv')
-
-    # Update 'file_dic': key is a number starting at 1
-    for name in temp_list_files:
-        index = temp_list_files.index(name) + 1  # Get index of current list item
-        file_dic[index] = name
-
-    # Show the content of 'file_dic'
-    print('')
-    print('List of CSV files found in "CSV_files" folder:')
-    for key in file_dic:
-        print(space, key, ' -> ', file_dic[key], sep='')
-    reset_choice()
-
 def trim_commands():
     """Remove the point of the curve before or after given values
 
@@ -138,7 +133,7 @@ def trim_commands():
         global command  # necessary as the namespace if different from above
         command = 'main'
         status = 'back to main menu.'
-        reset_choice()
+        choice = 'M'
         show_main_menu()
     elif file_input =='':
         # Launch again the complete display for title, list of files and trim commands
@@ -205,7 +200,7 @@ def trim_commands():
             # Update the status with trimmed curve filename
             status = 'curve trimmed and saved as ' + file_output
             # Go back to main menu
-            reset_choice()
+            choice = 'M'
             command = 'main'
             show_main_menu()
         except ValueError as e:
@@ -257,21 +252,5 @@ Split a CSV file into several CSV files [S] -> uniquement pour les fichiers part
     Export en file_1.csv
 Trim the beginning of the curve [B]
 
-Trim the end of the curve [E]
-    Export en file_end.csv
-
-menu()
-    convert_data_to_csv()
-        back_to_menu()
-    split_file()
-        read_data()
-        export_data()
-    trim_beginning()
-        read_data()
-        export_data()
-    trim_end()
-        read_data()
-        export_data()
 export_data(file_out, sep=',', encoding=UTF-8)
-back_to_menu() -> lance menu()
 """
