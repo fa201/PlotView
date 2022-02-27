@@ -144,8 +144,7 @@ def trim_commands():
         show_main_menu('main')
     # Nothing is entered: launch again the complete display for trim menu
     elif file_input =='':
-        show_title_files()
-        trim_commands()
+        show_main_menu('trim')
     # Launch trimming.
     else:
         # CSV file reading based on 'file_dic' key.
@@ -158,8 +157,7 @@ def trim_commands():
             correct_range = correct_range[10:-1]
             print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            show_title_files()
-            trim_commands()
+            show_main_menu('trim')
         except KeyError as e:
             # Prepare the correct range of file selection.
             correct_range = str(file_dic.keys())
@@ -167,8 +165,7 @@ def trim_commands():
             print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
             # Display trim menu.
-            show_title_files()
-            trim_commands()
+            show_main_menu('trim')
         # Column 1 or 2 to be considered for 'start' and 'end'
         col =''
         # Trimmed curve is delimited by 'start' and 'end'
@@ -180,14 +177,12 @@ def trim_commands():
             if (col!='1') & (col!='2'):
                 print('ERROR: the number selected is not correct. It should be 1 or 2.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
-                show_title_files()
-                trim_commands()
+                show_main_menu('trim')
             elif col == '':
                 print('ERROR: the number selected is not correct. It should be 1 or 2.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
                 # Display trim menu to remove the error from display.
-                show_title_files()
-                trim_commands()
+                show_main_menu('trim')
             # Convert to dataframe column integer index (starting at 0)
             col = int(col) - 1  
             start = float(input(space + 'Enter the value for the start of the trimmed curve: '))
@@ -200,8 +195,7 @@ def trim_commands():
                 print('ERROR: the start value should be lower than end value.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
                 # Display trim menu.
-                show_title_files()
-                trim_commands()
+                show_main_menu('trim')
 
             # Export trimmed curve with a prefix on the file name with index column.
             file_output = 'trimmed_' + file_dic[int(file_input)]
@@ -215,8 +209,7 @@ def trim_commands():
             print('ERROR: the number selected is not correct.')
             time.sleep(4)  # Pause so the user has time to understand the error.
             # Display trim menu
-            show_title_files()
-            trim_commands()
+            show_main_menu('trim')
 
 def split_commands():
     """Split a CSV file into several CSV files based on the column for X data"""
@@ -254,27 +247,8 @@ def split_commands():
             if len(df_in.columns) < 3:
                 print('ERROR: there is less than 3 columns in the file: ' + file_dic[int(file_input)] + '.')
                 time.sleep(6)  # Pause so the user has time to understand the error.
-                show_title_files()
-                split_commands()
-        except ValueError as e:
-            correct_range = str(file_dic.keys())
-            correct_range = correct_range[10:-1]
-            print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
-            time.sleep(4)  # Pause so the user has time to understand the error.
-            show_title_files()
-            split_commands()
-        except KeyError as e:
-            # Prepare the correct range of file selection.
-            correct_range = str(file_dic.keys())
-            correct_range = correct_range[10:-1]
-            print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
-            time.sleep(4)  # Pause so the user has time to understand the error.
-            # Display trim menu.
-            show_title_files()
-            split_commands()
-        # Column showing the X data for all split CSV files
-        col_x_string = ''
-        try:
+                show_main_menu('split')
+
             message_col = 'Enter the column number to be used as X data for each CSV files'
             message_col += ' [1 to ' + str(len(df_in.columns)) + ']: '
             col_x_string = input(space +  message_col)
@@ -284,8 +258,7 @@ def split_commands():
                 print('ERROR: the selected number of column is not correct.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
                 # Display trim menu to remove the error from display.
-                show_title_files()
-                split_commands()
+                show_main_menu('split')
             else:
                 i = 0
                 for index in df_in.columns:
@@ -305,12 +278,23 @@ def split_commands():
             # Display the main menu since the splitting is done.
             choice = 'M'
             show_main_menu('main')
+
         except ValueError as e:
-            print('ERROR: the number selected is not correct.')
+            correct_range = str(file_dic.keys())
+            correct_range = correct_range[10:-1]
+            print('ERROR: the selected file number is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            # Display split menu
-            show_title_files()
-            split_commands()
+            show_main_menu('split')
+        except KeyError as e:
+            # Prepare the correct range of file selection.
+            correct_range = str(file_dic.keys())
+            correct_range = correct_range[10:-1]
+            print('ERROR: the selected file number is not in the correct range ' + correct_range + '.')
+            time.sleep(4)  # Pause so the user has time to understand the error.
+            # Display trim menu.
+            show_main_menu('split')
+        # Column showing the X data for all split CSV files
+        col_x_string = ''
 
 # Main program
 show_main_menu('main')
