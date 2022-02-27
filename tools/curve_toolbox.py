@@ -246,6 +246,11 @@ def split_commands():
             df_in = pd.read_csv(file_dic[int(file_input)])
             # Allow the user to check it is the selected file is the right one.
             file_head(file_dic[int(file_input)], df_in)
+            if len(df_in.columns) < 3:
+                print('ERROR: there is less than 3 columns in the file: ' + file_dic[int(file_input)] + '.')
+                time.sleep(6)  # Pause so the user has time to understand the error.
+                show_title_files()
+                split_commands()
         except ValueError as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
@@ -288,16 +293,11 @@ def split_commands():
                     else:
                         # This dataframe is not interesting
                         pass
-            """
-            # Export trimmed curve with a prefix on the file name with index column.
-            file_output = 'trimmed_' + file_dic[int(file_input)]
-            df_in.to_csv(file_output, index=False)
             # Update the status with trimmed curve filename
-            status = 'curve trimmed and saved as ' + file_output
+            status = 'curves split and saved, check the list of files'
             # Display the main menu since the splitting is done.
             choice = 'M'
             show_main_menu('main')
-            """
         except ValueError as e:
             pass
 
