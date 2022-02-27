@@ -244,7 +244,7 @@ def split_commands():
                     col_x_string = input(space +  message_col)
                     # Shift to 0-starting column index.
                     col_x = int(col_x_string) - 1
-                    if col_x not in range(1, len(df_in.columns)):
+                    if col_x not in range(0, len(df_in.columns), 1):
                         max_range = str(len(df_in.columns))
                         print('ERROR 2: the selected file column is not in the correct range [1 , ' + max_range + '].')
                         time.sleep(4)  # Pause so the user has time to understand the error.
