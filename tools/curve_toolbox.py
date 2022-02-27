@@ -224,8 +224,7 @@ def split_commands():
         show_main_menu('main')
     # Nothing is entered: launch again the complete display for split menu
     elif file_input =='':
-        show_title_files()
-        split_commands()
+        show_main_menu('split')
     # Launch trimming.
     else:
         # CSV file reading based on 'file_dic' key.
@@ -240,49 +239,47 @@ def split_commands():
             else:
                 col_x_string = ''
                 message_col = 'Enter the column number to be used as X data for each CSV files'
-                message_col += ' [1 to ' + str(len(df_in.columns)) + ']: '
-                col_x_string = input(space +  message_col)
-                # Shift to 0-starting column index.
-                col_x = int(col_x_string) - 1
-                if col_x >= len(df_in.columns):
-                    print('ERROR 3: the selected number of column is not correct.')
+                message_col += ' [1 , ' + str(len(df_in.columns)) + ']: '
+                try:
+                    col_x_string = input(space +  message_col)
+                    # Shift to 0-starting column index.
+                    col_x = int(col_x_string) - 1
+                    if col_x not in range(1, len(df_in.columns)):
+                        max_range = str(len(df_in.columns))
+                        print('ERROR 2: the selected file column is not in the correct range [1 , ' + max_range + '].')
+                        time.sleep(4)  # Pause so the user has time to understand the error.
+                        # Display trim menu to remove the error from display.
+                        show_main_menu('split')
+                    else:
+                        i = 0
+                        for index in df_in.columns:
+                            #print('[df_in.iloc[:, col_x]]: ', [df_in.iloc[:, col_x]])
+                            #print('df_in[index]: ', df_in[index])
+                            if index != df_in.columns[col_x]:
+                                df_temp = pd.concat([df_in.iloc[:, col_x], df_in[index]], axis=1, join='outer')
+                                i += 1
+                                # Remove CSV extension on file name, add file number and add back CSV extension name
+                                file_output = file_dic[int(file_input)][:-4] + '_' + str(i) + '.csv'
+                                df_temp.to_csv(file_output, index=False, encoding='utf-8')
+                            else:
+                                # This dataframe is not interesting
+                                pass
+                        # Update the status with trimmed curve filename
+                        status = 'curves split and saved, check the list of files'
+                        # Display the main menu since the splitting is done.
+                        choice = 'M'
+                        show_main_menu('main')
+                except (ValueError, KeyError) as e:
+                    max_range = str(len(df_in.columns))
+                    print('ERROR 4: the selected file column is not in the correct range [1 , ' + max_range + '].')
                     time.sleep(4)  # Pause so the user has time to understand the error.
-                    # Display trim menu to remove the error from display.
-                    show_main_menu('split')
-                else:
-                    i = 0
-                    for index in df_in.columns:
-                        #print('[df_in.iloc[:, col_x]]: ', [df_in.iloc[:, col_x]])
-                        #print('df_in[index]: ', df_in[index])
-                        if index != df_in.columns[col_x]:
-                            df_temp = pd.concat([df_in.iloc[:, col_x], df_in[index]], axis=1, join='outer')
-                            i += 1
-                            # Remove CSV extension on file name, add file number and add back CSV extension name
-                            file_output = file_dic[int(file_input)][:-4] + '_' + str(i) + '.csv'
-                            df_temp.to_csv(file_output, index=False, encoding='utf-8')
-                        else:
-                            # This dataframe is not interesting
-                            pass
-                # Update the status with trimmed curve filename
-                status = 'curves split and saved, check the list of files'
-                # Display the main menu since the splitting is done.
-                choice = 'M'
-                show_main_menu('main')
-        except (ValueError,KeyError) as e:
+                    show_main_menu('split')      
+        except (ValueError, KeyError) as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
-            print('ERROR 2: the selected file number is not in the correct range ' + correct_range + '.')
+            print('ERROR 3: the selected file number is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            show_main_menu('split')
-        # Column showing the X data for all split CSV files
-        try:
-            
-        except ValueError as e:
-            print('ERROR 4: the selected number of column is not correct.')
-            time.sleep(4)  # Pause so the user has time to understand the error.
-            # Display trim menu
-            show_main_menu('split')
-
+            show_main_menu('split')            
 
 # Main program
 show_main_menu('main')
