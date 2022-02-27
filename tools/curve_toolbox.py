@@ -200,7 +200,7 @@ def trim_commands():
 
             # Export trimmed curve with a prefix on the file name with index column.
             file_output = 'trimmed_' + file_dic[int(file_input)]
-            df_in.to_csv(file_output, index=False)
+            df_in.to_csv(file_output, index=False, encoding='utf-8')
             # Update the status with trimmed curve filename
             status = 'curve trimmed and saved as ' + file_output
             # Display main menu since the trimming is done.
@@ -289,7 +289,7 @@ def split_commands():
                         i += 1
                         # Remove CSV extension on file name, add file number and add back CSV extension name
                         file_output = file_dic[int(file_input)][:-4] + '_' + str(i) + '.csv'
-                        df_temp.to_csv(file_output, index=False)
+                        df_temp.to_csv(file_output, index=False, encoding='utf-8')
                     else:
                         # This dataframe is not interesting
                         pass
@@ -340,7 +340,4 @@ Convert data file to CSV format [C]
     Export en file_pv.csv.
     Lister les fichiers
     Back [back]
-Split a CSV file into several CSV files [S] -> uniquement pour les fichiers partageant le même X
-    Export en file_1.csv
-export_data(file_out, sep=',', encoding=UTF-8)
 """
