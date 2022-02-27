@@ -215,7 +215,6 @@ def trim_commands():
 
 def split_commands():
     """Split a CSV file into several CSV files based on the column for X data"""
-    global space
     global file_dic
     global choice
     global status
@@ -227,52 +226,32 @@ def split_commands():
     print('Warning: the CSV file to be split should contain more than 2 columns.')
     print('Split menu:')
     print(space, '[M]', line, 'Go back to main menu', sep='')
-
     temp = input(space + 'Enter the number of CSV file to split: ')
-    # Convert file selection to upper to simplify next if statement.
+    # Convert file selection to upper case to simplify next if statement.
     file_input = temp.upper()
 
     # 'M' is entered: go back to the main menu
     if file_input == 'M':
-        global command  # Necessary as the namespace if different from above
-        command = 'main'  # Trigger main menu in 'show_main_menu'
         status = 'back to main menu.'
-        reset_choice()
-        show_main_menu()
-    # Nothing is entered: launch again the complete display for trim menu
+        choice = 'M'
+        show_main_menu('main')
+    # Nothing is entered: launch again the complete display for split menu
     elif file_input =='':
-        clear_console()
-        show_title()
-        list_files()
+        show_title_files()
         split_commands()
     # Launch trimming.
     else:
         # CSV file reading based on 'file_dic' key.
-        try:
-            print(space, 'Reading: ', file_dic[int(file_input)], sep='')
+        try:    
             df_in = pd.read_csv(file_dic[int(file_input)])
             # Allow the user to check it is the selected file is the right one.
-            print('Printing the first 5 lines of ' + file_dic[int(file_input)])
-            print(df_in.head(5))
-            col_dic = {}
-            # Update 'col_dic': key is a number starting at 1
-            a = df_in.columns
-            a = a[10:]
-            print(a)
-            #for col in file_dic[int(file_input)].columns:
-            #    index = temp_list_files.index(name) + 1  # Get index of current list item
-            #    file_dic[index] = name
-            time.sleep(20)
-
-
+            file_head(file_dic[int(file_input)], df_in)
         except ValueError as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
             print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            clear_console()
-            show_title()
-            list_files()
+            show_title_files()
             split_commands()
         except KeyError as e:
             # Prepare the correct range of file selection.
@@ -281,59 +260,46 @@ def split_commands():
             print('ERROR: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
             # Display trim menu.
-            clear_console()
-            show_title()
-            list_files()
+            show_title_files()
             split_commands()
-        # First column (X data).
-        col_x =''
-""""
+        # Column showing the X data for all split CSV files
+        col_x_string = ''
         try:
-            col_x = input(space + 'Enter the number of first column (X data) for each new CSV files  : ')
-            if (col!='1') & (col!='2'):
-                print('ERROR: the number selected is not correct. It should be 1 or 2.')
+            col_x_string = input(space + 'Enter the number column to be used as first column (X data) for each new CSV files: ')
+            # Shift to 0-starting column index.
+            col_x = int(col_x_string) - 1
+            if col_x >= len(df_in.columns):
+                print('ERROR: the selected number of column is not correct.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
                 # Display trim menu to remove the error from display.
-                clear_console()
-                show_title()
-                list_files()
-                trim_commands()
-            elif col == '':
-                print('ERROR: the number selected is not correct. It should be 1 or 2.')
-                time.sleep(4)  # Pause so the user has time to understand the error.
-                clear_console()
-                show_title()
-                list_files()
-                trim_commands()
-            # Convert to dataframe column integer index (starting at 0)
-            col = int(col) - 1
-            start = float(input(space + 'Enter the value for the start of the trimmed curve: '))
-            end = float(input(space + 'Enter the value for the end of the trimmed curve: '))
-            # Check proper order otherwise the complete points are deleted.
-            if start <= end:
-                df_in = df_in[df_in.iloc[:, col] >= start]
-                df_in = df_in[df_in.iloc[:, col] <= end]
+                show_title_files()
+                split_commands()
             else:
-                print('ERROR: the start value should be lower than end value.')
-                time.sleep(4)  # Pause so the user has time to understand the error.
-                # Display trim menu.
-                clear_console()
-                show_title()
-                list_files()
-                trim_commands()
-
+                i = 0
+                for index in df_in.columns:
+                    #print('[df_in.iloc[:, col_x]]: ', [df_in.iloc[:, col_x]])
+                    #print('df_in[index]: ', df_in[index])
+                    if index != df_in.columns[col_x]:
+                        df_temp = pd.concat([df_in.iloc[:, col_x], df_in[index]], axis=1, join='outer')
+                        i += 1
+                        # Remove CSV extension on file name, add file number and add back CSV extension name
+                        file_output = file_dic[int(file_input)][:-4] + '_' + str(i) + '.csv'
+                        df_temp.to_csv(file_output, index=False)
+                    else:
+                        # This dataframe is not interesting
+                        pass
+            """
             # Export trimmed curve with a prefix on the file name with index column.
             file_output = 'trimmed_' + file_dic[int(file_input)]
             df_in.to_csv(file_output, index=False)
             # Update the status with trimmed curve filename
             status = 'curve trimmed and saved as ' + file_output
-            # Go back to main menu
-            reset_choice()
-            # Display main menu since the trimming is done.
-            command = 'main'
-            show_main_menu()
+            # Display the main menu since the splitting is done.
+            choice = 'M'
+            show_main_menu('main')
+            """
         except ValueError as e:
-"""
+            pass
 
 # Main program
 show_main_menu('main')
@@ -348,7 +314,7 @@ while choice != 'EXIT':
 
     elif choice == 'S':
         # Display split menu
-        show_main_menu('main')
+        show_main_menu('split')
 
     elif choice == 'T':
         # Display trim menu
