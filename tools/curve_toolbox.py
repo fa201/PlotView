@@ -12,7 +12,7 @@ try:
     import glob
     import os
     import time
-    from collections import defaultdict
+    from collections import OrderedDict
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
     print('Please check the required packages at https://github.com/fa201/PlotView.')
@@ -28,7 +28,7 @@ choice = 'M'
 separator = '~'*60
 line = '.' * 6
 space = ' ' * 3
-file_dic = {}
+file_dic = OrderedDict()  # Allows to keep the order given by glob for files
 status =' '
 
 
@@ -38,6 +38,7 @@ def show_title_files():
         Detect if OS is windows or Linux
         List all CSV files for the user to see which files will be processed
         CSV files must be in 'CSV_files' folder to be detected.
+        Files are sorted by name.
         Files will be selected in the menu through keys of 'file_dic'.
         'file_dic' keys are integer to ease selection through command menu.
     """
@@ -56,6 +57,8 @@ def show_title_files():
 
     # Add all CSV files in working directory into a list regardless of case for CSV extension
     temp_list_files = glob.glob('*.csv') + glob.glob('*.CSV')
+    # Sort files by name
+    temp_list_files = sorted(temp_list_files)
 
     # Reset file_dic in case the files changed while the script is running
     file_dic = {}
