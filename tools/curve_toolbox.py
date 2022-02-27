@@ -306,7 +306,11 @@ def split_commands():
             choice = 'M'
             show_main_menu('main')
         except ValueError as e:
-            pass
+            print('ERROR: the number selected is not correct.')
+            time.sleep(4)  # Pause so the user has time to understand the error.
+            # Display split menu
+            show_title_files()
+            split_commands()
 
 # Main program
 show_main_menu('main')
