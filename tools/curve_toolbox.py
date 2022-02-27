@@ -237,6 +237,37 @@ def split_commands():
                 print('ERROR 1: there is less than 3 columns in the file: ' + file_dic[int(file_input)] + '.')
                 time.sleep(6)  # Pause so the user has time to understand the error.
                 show_main_menu('split')
+            else:
+                col_x_string = ''
+                message_col = 'Enter the column number to be used as X data for each CSV files'
+                message_col += ' [1 to ' + str(len(df_in.columns)) + ']: '
+                col_x_string = input(space +  message_col)
+                # Shift to 0-starting column index.
+                col_x = int(col_x_string) - 1
+                if col_x >= len(df_in.columns):
+                    print('ERROR 3: the selected number of column is not correct.')
+                    time.sleep(4)  # Pause so the user has time to understand the error.
+                    # Display trim menu to remove the error from display.
+                    show_main_menu('split')
+                else:
+                    i = 0
+                    for index in df_in.columns:
+                        #print('[df_in.iloc[:, col_x]]: ', [df_in.iloc[:, col_x]])
+                        #print('df_in[index]: ', df_in[index])
+                        if index != df_in.columns[col_x]:
+                            df_temp = pd.concat([df_in.iloc[:, col_x], df_in[index]], axis=1, join='outer')
+                            i += 1
+                            # Remove CSV extension on file name, add file number and add back CSV extension name
+                            file_output = file_dic[int(file_input)][:-4] + '_' + str(i) + '.csv'
+                            df_temp.to_csv(file_output, index=False, encoding='utf-8')
+                        else:
+                            # This dataframe is not interesting
+                            pass
+                # Update the status with trimmed curve filename
+                status = 'curves split and saved, check the list of files'
+                # Display the main menu since the splitting is done.
+                choice = 'M'
+                show_main_menu('main')
         except (ValueError,KeyError) as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
@@ -245,36 +276,7 @@ def split_commands():
             show_main_menu('split')
         # Column showing the X data for all split CSV files
         try:
-            col_x_string = ''
-            message_col = 'Enter the column number to be used as X data for each CSV files'
-            message_col += ' [1 to ' + str(len(df_in.columns)) + ']: '
-            col_x_string = input(space +  message_col)
-            # Shift to 0-starting column index.
-            col_x = int(col_x_string) - 1
-            if col_x >= len(df_in.columns):
-                print('ERROR 3: the selected number of column is not correct.')
-                time.sleep(4)  # Pause so the user has time to understand the error.
-                # Display trim menu to remove the error from display.
-                show_main_menu('split')
-            else:
-                i = 0
-                for index in df_in.columns:
-                    #print('[df_in.iloc[:, col_x]]: ', [df_in.iloc[:, col_x]])
-                    #print('df_in[index]: ', df_in[index])
-                    if index != df_in.columns[col_x]:
-                        df_temp = pd.concat([df_in.iloc[:, col_x], df_in[index]], axis=1, join='outer')
-                        i += 1
-                        # Remove CSV extension on file name, add file number and add back CSV extension name
-                        file_output = file_dic[int(file_input)][:-4] + '_' + str(i) + '.csv'
-                        df_temp.to_csv(file_output, index=False, encoding='utf-8')
-                    else:
-                        # This dataframe is not interesting
-                        pass
-            # Update the status with trimmed curve filename
-            status = 'curves split and saved, check the list of files'
-            # Display the main menu since the splitting is done.
-            choice = 'M'
-            show_main_menu('main')
+            
         except ValueError as e:
             print('ERROR 4: the selected number of column is not correct.')
             time.sleep(4)  # Pause so the user has time to understand the error.
