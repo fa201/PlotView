@@ -127,7 +127,7 @@ def trim_commands():
     file_input = ''
 
     print('')
-    print('Warning: the CSV file to be trimmed should contain only 2 columns.')
+    #print('Warning: the CSV file to be trimmed should contain only 2 columns.')
     print('Trim menu:')
     print(space, '[M]', line, 'Go back to main menu', sep='')
     temp = input(space + 'Enter the number of CSV file to trim: ')
