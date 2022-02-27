@@ -20,6 +20,7 @@ except ModuleNotFoundError as e:
 
 # Move to the working directory for reading and writing CSV
 os.chdir('CSV_files')
+
 # GLOBAL VARIABLES
 # Choice of command for the main menu
 choice = 'M'
@@ -49,14 +50,15 @@ def show_title_files():
     else:
         _ = os.system('clear')
     title = 'Curve_toolbox: prepare CSV curves for plotting with PlotView'
-    #print('=' * len(title))  # Generate a line with the same width as the title
     print(separator)
     print(title)
     print(separator)
 
-    # Add all CSV files in working directory into a list
-    temp_list_files = glob.glob('*.csv')
+    # Add all CSV files in working directory into a list regardless of case for CSV extension
+    temp_list_files = glob.glob('*.csv') + glob.glob('*.CSV')
 
+    # Reset file_dic in case the files changed while the script is running
+    file_dic = {}
     # Update 'file_dic': key is a number starting at 1
     for name in temp_list_files:
         index = temp_list_files.index(name) + 1  # Get index of current list item
@@ -270,7 +272,9 @@ def split_commands():
         # Column showing the X data for all split CSV files
         col_x_string = ''
         try:
-            col_x_string = input(space + 'Enter the number column to be used as first column (X data) for each new CSV files: ')
+            message_col = 'Enter the column number to be used as X data for each CSV files'
+            message_col += ' [1 to ' + str(len(df_in.columns)) + ']: '
+            col_x_string = input(space +  message_col)
             # Shift to 0-starting column index.
             col_x = int(col_x_string) - 1
             if col_x >= len(df_in.columns):
