@@ -7,6 +7,9 @@
 """
 
 
+# TODO: ajouter T pout transform avec shif et offset
+
+
 try:
     import pandas as pd
     import glob
@@ -79,7 +82,8 @@ def main_commands():
     print('')
     print('Main menu - commands:')
     print(space, '[C]', line, 'Convert data file to CSV format', sep='')
-    print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')  # uniquement pour les fichiers partageant le même X
+    print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')
+    print(space, '[O]', line, 'Perform scale or shift operations on the curve', sep='')
     print(space, '[T]', line, 'Trim the beginning and or the end of the curve', sep='')
     print(space, '[L]', line, 'List CSV files', sep='')
     print(space, '[EXIT]...Exit program', sep='')
@@ -101,6 +105,8 @@ def show_main_menu(command):
         trim_commands()
     elif command == 'split':
         split_commands()
+    elif command == 'operation':
+        operation_commands()
     elif command == 'main':
         main_commands()
         # Status bar
@@ -167,7 +173,7 @@ def trim_commands():
                     show_main_menu('trim')
                 else:
                     # Convert to dataframe column integer index (starting at 0)
-                    col = int(col) - 1  
+                    col = int(col) - 1
                     start = float(input(space + 'Enter the value for the start of the trimmed curve: '))
                     end = float(input(space + 'Enter the value for the end of the trimmed curve: '))
                     # Check proper order otherwise the complete points are deleted.
@@ -225,10 +231,10 @@ def split_commands():
     # Nothing is entered: launch again the complete display for split menu
     elif file_input =='':
         show_main_menu('split')
-    # Launch trimming.
+    # Launch splitting.
     else:
         # CSV file reading based on 'file_dic' key.
-        try:    
+        try:
             df_in = pd.read_csv(file_dic[int(file_input)])
             # Allow the user to check it is the selected file is the right one.
             file_head(file_dic[int(file_input)], df_in)
@@ -273,13 +279,73 @@ def split_commands():
                     max_range = str(len(df_in.columns))
                     print('ERROR 4: the selected file column is not in the correct range [1 , ' + max_range + '].')
                     time.sleep(4)  # Pause so the user has time to understand the error.
-                    show_main_menu('split')      
+                    show_main_menu('split')
         except (ValueError, KeyError) as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
             print('ERROR 3: the selected file number is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
-            show_main_menu('split')            
+            show_main_menu('split')
+
+def operation_commands():
+    """Perform scale or shift operation on the curve"""
+    global file_dic
+    global choice
+    global status
+    global space
+    global command
+    file_input = ''
+
+    print('')
+    print('Scale = multiply by a given number all values of X or Y axis of the curve.')
+    print('Shift = add a given number to all values of X or Y axis of the curve.')
+    print('Operation menu:')
+    print(space, '[M]', line, 'Go back to main menu', sep='')
+    temp = input(space + 'Enter the number of CSV file to split: ')
+    # Convert file selection to upper case to simplify next if statement.
+    file_input = temp.upper()
+
+    # 'M' is entered: go back to the main menu
+    if file_input == 'M':
+        status = 'back to main menu.'
+        choice = 'M'
+        show_main_menu('main')
+    # Nothing is entered: launch again the complete display for split menu
+    elif file_input =='':
+        show_main_menu('operation')
+    # Launch operation.
+    else:
+        # CSV file reading based on 'file_dic' key.
+        try:
+            df_in = pd.read_csv(file_dic[int(file_input)])
+            # Allow the user to check it is the selected file is the right one.
+            file_head(file_dic[int(file_input)], df_in)
+            scale_x = ''
+            scale_y = ''
+            shift_x = ''
+            shift_y = ''
+            # Get x scale factor or use default value given by enter
+            scale_x = float(input('Enter the scale factor for X data [1.0]: ') or '1.0')
+            scale_y = float(input('Enter the scale factor for Y data [1.0]: ') or '1.0')
+            shift_x = float(input('Enter the shift value factor for X data [0.0]: ') or '0.0')
+            shift_y = float(input('Enter the shift value factor for Y data [0.0]: ') or '0.0')
+            print(scale_x, scale_y, shift_x, shift_y)
+            time.sleep(10)
+
+            #tester 0 pour scale
+
+
+            
+            #try:
+            #    file_output = 'trimmed_' + file_dic[int(file_input)]
+            #    df_in.to_csv(file_output, index=False, encoding='utf-8')
+            #    # Update the status with trimmed curve filename
+            #    status = 'operations are done and the curve is saved as ' + file_output
+            # Display main menu since the trimming is done.
+            choice = 'M'
+            show_main_menu('main')
+        except:
+            pass
 
 # Main program
 show_main_menu('main')
@@ -295,6 +361,10 @@ while choice != 'EXIT':
     elif choice == 'S':
         # Display split menu
         show_main_menu('split')
+
+    elif choice == 'O':
+        # Display operation menu
+        show_main_menu('operation')
 
     elif choice == 'T':
         # Display trim menu
