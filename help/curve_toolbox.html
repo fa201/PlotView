@@ -35,9 +35,18 @@
         <h2>Split</h2>
         <p>The purpose of this function is to split a CSV file containing more than 2 columns in CSV files containing only 2 columns for plotting. All these files will have the same first column (or X data) and different second column (or Y data).</p>
         <p>Here is an example of initial file selecting column 1 as X data: <br>
-        <img class="image_m" src="../image/curve_tool_box_split_example_1.png" title="Split - initial file" alt="Split - initial file"><br>
-        <img class="image_s" src="../image/curve_tool_box_split_example_2.png" title="Split - split file a" alt="Split - split file a"><img class="image_s" src="../image/curve_tool_box_split_example_3.png" title="Split - split file b" alt="Split - split file b"><img class="image_s" src="../image/curve_tool_box_split_example_4.png" title="Split - split file c" alt="Split - split file c"><img class="image_s" src="../image/curve_tool_box_split_example_4.png" title="Split - split file c" alt="Split - split file c"><img class="image_s" src="../image/curve_tool_box_split_example_4.png" title="Split - split file d" alt="Split - split file d">
+        <img class="image_m" src="../image/curve_tool_box_split_example_1.png" title="Split - initial file" alt="Split - initial file"></p>
+        <p>Here are the output files:<br>
+        <img class="image_s" src="../image/curve_tool_box_split_example_2.png" title="Split - split file a" alt="Split - split file a">
+        <img class="image_s" src="../image/curve_tool_box_split_example_3.png" title="Split - split file b" alt="Split - split file b">
+        <img class="image_s" src="../image/curve_tool_box_split_example_4.png" title="Split - split file c" alt="Split - split file c">
+        <img class="image_s" src="../image/curve_tool_box_split_example_5.png" title="Split - split file d" alt="Split - split file d">
         </p>
+
+        <h2>Operations on a curve: scale and shift</h2>
+        <p>This function allows to scale data (data in millimeters but you want to plot meters) or to shift to 0 a certain point in the curve (data recording starts at 0 second but the event starts a 3 seconds).</p>
+        <p><strong>This is applicable to files having 2 columns</strong> even if the script will process files with more than 2 columns. In this case only the first 2 columns will be modified.</p>
+        <p>After selecting a file, scale factors for X and Y columns are asked. So all values of a column will be multiplied by the given number. Note that <em>0 will be considered as an error</em>. Shifts for X and Y are also asked. So the given number will be added to all values of a column.</p>
 
         <h2>Trim</h2>
         <p>The purpose of this function is to "cut" one end or both end of a curve base on X values or Y values; </p>
