@@ -168,7 +168,7 @@ def trim_commands():
             try:
                 col = input(space + 'Enter the number of column to be considered [1] or [2] : ')
                 if (col!='1') & (col!='2'):
-                    print('ERROR 2: the number selected is not correct. It should be 1 or 2.')
+                    print('ERROR 1: the number selected is not correct. It should be 1 or 2.')
                     time.sleep(4)  # Pause so the user has time to understand the error.
                     show_main_menu('trim')
                 else:
@@ -189,12 +189,12 @@ def trim_commands():
                         choice = 'M'
                         show_main_menu('main')
                     else:
-                        print('ERROR 3: the start value should be lower than end value.')
+                        print('ERROR 2: the start value should be lower than end value.')
                         time.sleep(4)  # Pause so the user has time to understand the error.
                         # Display trim menu.
                         show_main_menu('trim')
             except ValueError as e:
-                print('ERROR 4: the number selected is not correct.')
+                print('ERROR 3: the number selected is not correct.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
                 # Display trim menu
                 show_main_menu('trim')
@@ -202,7 +202,7 @@ def trim_commands():
         except (ValueError, KeyError) as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
-            print('ERROR 1: the number selected is not in the correct range ' + correct_range + '.')
+            print('ERROR 4: the number selected is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
             show_main_menu('trim')
 
@@ -239,7 +239,7 @@ def split_commands():
             # Allow the user to check it is the selected file is the right one.
             file_head(file_dic[int(file_input)], df_in)
             if len(df_in.columns) < 3:
-                print('ERROR 1: there is less than 3 columns in the file: ' + file_dic[int(file_input)] + '.')
+                print('ERROR 5: there is less than 3 columns in the file: ' + file_dic[int(file_input)] + '.')
                 time.sleep(6)  # Pause so the user has time to understand the error.
                 show_main_menu('split')
             else:
@@ -252,7 +252,7 @@ def split_commands():
                     col_x = int(col_x_string) - 1
                     if col_x not in range(0, len(df_in.columns), 1):
                         max_range = str(len(df_in.columns))
-                        print('ERROR 2: the selected file column is not in the correct range [1 , ' + max_range + '].')
+                        print('ERROR 6: the selected file column is not in the correct range [1 , ' + max_range + '].')
                         time.sleep(4)  # Pause so the user has time to understand the error.
                         # Display trim menu to remove the error from display.
                         show_main_menu('split')
@@ -277,13 +277,13 @@ def split_commands():
                         show_main_menu('main')
                 except (ValueError, KeyError) as e:
                     max_range = str(len(df_in.columns))
-                    print('ERROR 4: the selected file column is not in the correct range [1 , ' + max_range + '].')
+                    print('ERROR 7: the selected file column is not in the correct range [1 , ' + max_range + '].')
                     time.sleep(4)  # Pause so the user has time to understand the error.
                     show_main_menu('split')
         except (ValueError, KeyError) as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
-            print('ERROR 3: the selected file number is not in the correct range ' + correct_range + '.')
+            print('ERROR 8: the selected file number is not in the correct range ' + correct_range + '.')
             time.sleep(4)  # Pause so the user has time to understand the error.
             show_main_menu('split')
 
@@ -334,24 +334,21 @@ def operation_commands():
             
             # Forbids scale factors equal to 0
             if scale_x == 0 or scale_y == 0:
-                print('ERROR 5: the scale factor cannot be 0.')
+                print('ERROR 9: the scale factor cannot be 0.')
                 time.sleep(4)  # Pause so the user has time to understand the error.
                 show_main_menu('operation')
             else:
                 df_in.iloc[:, 0] = df_in.iloc[:, 0] * scale_x + shift_x
                 df_in.iloc[:, 1] = df_in.iloc[:, 1] * scale_y + shift_y
-                file_head('modified curve', df_in)
-                time.sleep(15)  # Pause so the user has time to understand the error.
-                #try:
-                #    file_output = 'trimmed_' + file_dic[int(file_input)]
-                #    df_in.to_csv(file_output, index=False, encoding='utf-8')
-                #    # Update the status with trimmed curve filename
-                #    status = 'operations are done and the curve is saved as ' + file_output
+                file_output = 'operation_' + file_dic[int(file_input)]
+                df_in.to_csv(file_output, index=False, encoding='utf-8')
+                # Update the status with trimmed curve filename
+                status = 'operations are done and the curve is saved as ' + file_output
                 # Display main menu since the trimming is done.
                 choice = 'M'
                 show_main_menu('main')
         except ValueError as e:
-            print('ERROR 3: a number should be entered.')
+            print('ERROR 10: a number should be entered.')
             time.sleep(4)  # Pause so the user has time to understand the error.
             show_main_menu('operation')
 
