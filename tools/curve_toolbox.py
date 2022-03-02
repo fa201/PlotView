@@ -320,32 +320,40 @@ def operation_commands():
             df_in = pd.read_csv(file_dic[int(file_input)])
             # Allow the user to check it is the selected file is the right one.
             file_head(file_dic[int(file_input)], df_in)
+            
             scale_x = ''
             scale_y = ''
             shift_x = ''
             shift_y = ''
+
             # Get x scale factor or use default value given by enter
             scale_x = float(input('Enter the scale factor for X data [1.0]: ') or '1.0')
             scale_y = float(input('Enter the scale factor for Y data [1.0]: ') or '1.0')
             shift_x = float(input('Enter the shift value factor for X data [0.0]: ') or '0.0')
             shift_y = float(input('Enter the shift value factor for Y data [0.0]: ') or '0.0')
-            print(scale_x, scale_y, shift_x, shift_y)
-            time.sleep(10)
-
-            #tester 0 pour scale
-
-
             
-            #try:
-            #    file_output = 'trimmed_' + file_dic[int(file_input)]
-            #    df_in.to_csv(file_output, index=False, encoding='utf-8')
-            #    # Update the status with trimmed curve filename
-            #    status = 'operations are done and the curve is saved as ' + file_output
-            # Display main menu since the trimming is done.
-            choice = 'M'
-            show_main_menu('main')
-        except:
-            pass
+            # Forbids scale factors equal to 0
+            if scale_x == 0 or scale_y == 0:
+                print('ERROR 5: the scale factor cannot be 0.')
+                time.sleep(4)  # Pause so the user has time to understand the error.
+                show_main_menu('operation')
+            else:
+                df_in.iloc[:, 0] = df_in.iloc[:, 0] * scale_x + shift_x
+                df_in.iloc[:, 1] = df_in.iloc[:, 1] * scale_y + shift_y
+                file_head('modified curve', df_in)
+                time.sleep(15)  # Pause so the user has time to understand the error.
+                #try:
+                #    file_output = 'trimmed_' + file_dic[int(file_input)]
+                #    df_in.to_csv(file_output, index=False, encoding='utf-8')
+                #    # Update the status with trimmed curve filename
+                #    status = 'operations are done and the curve is saved as ' + file_output
+                # Display main menu since the trimming is done.
+                choice = 'M'
+                show_main_menu('main')
+        except ValueError as e:
+            print('ERROR 3: a number should be entered.')
+            time.sleep(4)  # Pause so the user has time to understand the error.
+            show_main_menu('operation')
 
 # Main program
 show_main_menu('main')
