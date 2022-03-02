@@ -7,9 +7,6 @@
 """
 
 
-# TODO: ajouter T pout transform avec shif et offset
-
-
 try:
     import pandas as pd
     import glob
@@ -320,7 +317,8 @@ def operation_commands():
             df_in = pd.read_csv(file_dic[int(file_input)])
             # Allow the user to check it is the selected file is the right one.
             file_head(file_dic[int(file_input)], df_in)
-            
+            if len(df_in.columns) > 2:
+                print('Warning: this file has more than 2 columns. Only the first 2 columns will be modified.')
             scale_x = ''
             scale_y = ''
             shift_x = ''
@@ -384,15 +382,3 @@ while choice != 'EXIT':
         status = 'unknown command. The list of command is shown above.'
         show_main_menu('main')
 print('\nExiting the program.')
-
-"""
-Convert data file to CSV format [C]
-    Choose data file [D]
-    Choose the delimiter between columns [SPACE], [COMMA] or [TAB]
-    Choose file format [UTF] for UTF-8, [EU] for ISO.... [ANSI] for US
-    Enter le line number for title of X and Y data
-    Enter the number of line to be skipped before the title. [0] for none.
-    Export en file_pv.csv.
-    Lister les fichiers
-    Back [back]
-"""
