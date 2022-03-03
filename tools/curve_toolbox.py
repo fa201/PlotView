@@ -8,10 +8,11 @@
 
 
 try:
-    import pandas as pd
+    import csv
     import glob
     import os
     import time
+    import pandas as pd
     from collections import OrderedDict
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
@@ -104,6 +105,8 @@ def show_main_menu(command):
         split_commands()
     elif command == 'operation':
         operation_commands()
+    elif command == 'convert':
+        convert_commands()
     elif command == 'main':
         main_commands()
         # Status bar
@@ -350,6 +353,60 @@ def operation_commands():
             time.sleep(4)  # Pause so the user has time to understand the error.
             show_main_menu('operation')
 
+def convert_commands():
+    """Convert CSV file into strict format"""
+    global file_dic
+    global choice
+    global status
+    global space
+    global command
+    file_input = ''
+
+    print('')
+    print('Attempt to convert the input file into strict CSV format.')
+    print('Convert menu:')
+    print(space, '[M]', line, 'Go back to main menu', sep='')
+    temp = input(space + 'Enter the number of CSV file to split: ')
+    # Convert file selection to upper case to simplify next if statement.
+    file_input = temp.upper()
+
+    # 'M' is entered: go back to the main menu
+    if file_input == 'M':
+        status = 'back to main menu.'
+        choice = 'M'
+        show_main_menu('main')
+    # Nothing is entered: launch again the complete display for split menu
+    elif file_input =='':
+        show_main_menu('convert')
+    # Launch splitting.
+    else:
+        # CSV file reading based on 'file_dic' key.
+        with open(file_dic[int(file_input)], 'r') as file_in:
+            # Read 1024 characters to determine dialect attributes
+            sample = file_in.read(2000)
+            dial = csv.Sniffer().sniff(sample)
+        #print('"CSV Dialect" parameters:')
+        #print('Delimiter: ', dial.delimiter)
+        #print('Doublequote: ', dial.doublequote)
+        #print('Escapechar: ', dial.escapechar)
+        #print('Lineterminator: ', dial.lineterminator)
+        #print('Quotechar: ', dial.quotechar)
+        #print('Skipinitialspace: ', dial.skipinitialspace)
+        #time.sleep(15)
+        # Use dialect attributes as input for read_csv.
+        df_in = pd.read_csv(file_dic[int(file_input)], dialect=dial)
+        # Show the begining of datatrame.
+        file_head(file_dic[int(file_input)], df_in)
+        answer = input('Press a key to continue')
+        # Write CSV file
+        file_output = 'convert_' + file_dic[int(file_input)]
+        df_in.to_csv(file_output, index=False, encoding='utf-8')
+        status = 'CSV file is converted and saved as ' + file_output
+        # Display main menu since the trimming is done.
+        choice = 'M'
+        show_main_menu('main')
+
+
 # Main program
 show_main_menu('main')
 while choice != 'EXIT':
@@ -359,7 +416,7 @@ while choice != 'EXIT':
         show_main_menu('main')
 
     elif choice == 'C':
-        show_main_menu()
+        show_main_menu('convert')
 
     elif choice == 'S':
         # Display split menu
