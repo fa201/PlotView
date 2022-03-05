@@ -20,17 +20,21 @@ matplotlib *Figure* and *Navigation Tool Bar* will be embedded in tkinter GUI si
 
 ## Expected CSV format
 **Each file contain 1 curve** (X and Y coordinates for each point of the curve). The CSV file will be prepared beforehand, using pandas for example, to produce a **strict CSV format with a comma as delimiter between both columns**. The first row should contain the type of value for X and Y.
+**tools/curve_toolbox.py** can help to prepare the CSV files.
+
 
 ## Folders and files
+* *fresh_session.pv* is a session file which enables to clear the current data in PlotView.
 * *help* folder gathers HTML help files launched through the *help* menu.
 * *image* folder contains a few pictures of plot examples.
 * *test* folder contains a few test curves.
+* *tools* folder contains a python script *curve_toolbox.py* to help prepare the CSV files before plotting them.
 * *plotview.py* is the python script.
 * *session.pv* is a session file which enables to bring back the session shown on the picture: curves will be load, colors, titles and annotation are updated.
 
 # Required Python packages.
 PlotView needs the following packages to run.
-* Python 3
+* python 3
 * pandas 1.0.1
 * matplotlib 3.2.0
 * tkinter 8.6
