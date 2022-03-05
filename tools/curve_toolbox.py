@@ -354,7 +354,7 @@ def operation_commands():
             show_main_menu('operation')
 
 def convert_commands():
-    """Convert CSV file into strict format"""
+    """Convert input file into CSV strict format"""
     global file_dic
     global choice
     global status
@@ -366,7 +366,7 @@ def convert_commands():
     print('Attempt to convert the input file into strict CSV format.')
     print('Convert menu:')
     print(space, '[M]', line, 'Go back to main menu', sep='')
-    temp = input(space + 'Enter the number of CSV file to split: ')
+    temp = input(space + 'Enter the number of CSV file to read: ')
     # Convert file selection to upper case to simplify next if statement.
     file_input = temp.upper()
 
@@ -381,30 +381,40 @@ def convert_commands():
     # Launch splitting.
     else:
         # CSV file reading based on 'file_dic' key.
-        with open(file_dic[int(file_input)], 'r') as file_in:
-            # Read 1024 characters to determine dialect attributes
-            sample = file_in.read(2000)
-            dial = csv.Sniffer().sniff(sample)
-        #print('"CSV Dialect" parameters:')
-        #print('Delimiter: ', dial.delimiter)
-        #print('Doublequote: ', dial.doublequote)
-        #print('Escapechar: ', dial.escapechar)
-        #print('Lineterminator: ', dial.lineterminator)
-        #print('Quotechar: ', dial.quotechar)
-        #print('Skipinitialspace: ', dial.skipinitialspace)
-        #time.sleep(15)
-        # Use dialect attributes as input for read_csv.
-        df_in = pd.read_csv(file_dic[int(file_input)], dialect=dial)
-        # Show the begining of datatrame.
-        file_head(file_dic[int(file_input)], df_in)
-        answer = input('Press a key to continue')
-        # Write CSV file
-        file_output = 'convert_' + file_dic[int(file_input)]
-        df_in.to_csv(file_output, index=False, encoding='utf-8')
-        status = 'CSV file is converted and saved as ' + file_output
-        # Display main menu since the trimming is done.
-        choice = 'M'
-        show_main_menu('main')
+        print('Python CSV sniffer attempts to determine the CSV dialect.')
+        try:
+            with open(file_dic[int(file_input)], 'r') as file_in:
+                # Read 1024 characters to determine dialect attributes
+                sample = file_in.read(2000)
+                dial = csv.Sniffer().sniff(sample)
+            print('"CSV Dialect" parameters are written between > and <:')
+            print('Separator: >', dial.delimiter, '<', sep='')
+            print('Doublequote: ', dial.doublequote)
+            print('Escapechar: >', dial.escapechar, '<', sep='')   
+            print('Lineterminator: ', dial.lineterminator)
+            print('Quotechar: >', dial.quotechar, '<', sep='')
+            print('Skipinitialspace after separator: ', dial.skipinitialspace)
+            answer = input('Press [ENTER] to continue.')
+            # Use dialect attributes as input for read_csv.
+            df_in = pd.read_csv(file_dic[int(file_input)], dialect=dial)
+            # Show the begining of datatrame.
+            file_head(file_dic[int(file_input)], df_in)
+            answer = input('Press [ENTER] to continue')
+            # Write CSV file in UTF-8
+            file_output = 'convert_' + file_dic[int(file_input)]
+            df_in.to_csv(file_output, index=False)
+            status = 'CSV file is converted and saved as ' + file_output
+            # Display main menu since the trimming is done.
+            choice = 'M'
+            show_main_menu('main')
+        except:
+            print('ERROR 10: CSV sniff attempt failed.')
+            print('Try to convert this file with a spreadsheet (MS-Excel, LibreOffice Calc, etc).')
+            time.sleep(8)
+            status = 'CSV file conversion failed.'
+            # Display main menu since the trimming is done.
+            choice = 'M'
+            show_main_menu('main')
 
 
 # Main program
