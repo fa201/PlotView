@@ -51,7 +51,7 @@ def show_title_files():
     # Linux and macOS clear command
     else:
         _ = os.system('clear')
-    title = 'Curve_toolbox_' + str(VERSION) +': prepare CSV curves for plotting with PlotView'
+    title = 'Curve_toolbox_' + str(VERSION) +' - Prepare CSV curves for plotting with PlotView'
     print(separator)
     print(title)
     print(separator)
@@ -81,7 +81,7 @@ def main_commands():
     print('Main menu - commands:')
     print(space, '[C]', line, 'Convert data file to CSV format', sep='')
     print(space, '[S]', line, 'Split a CSV file into several CSV files', sep='')
-    print(space, '[O]', line, 'Perform scale or shift operations on the curve', sep='')
+    print(space, '[O]', line, 'Perform scale or offset operations on the curve', sep='')
     print(space, '[T]', line, 'Trim the beginning and or the end of the curve', sep='')
     print(space, '[L]', line, 'List CSV files', sep='')
     print(space, '[Q]', line, 'Exit program', sep='')
@@ -119,8 +119,8 @@ def show_main_menu(command):
 
 def file_head(file, dataframe):
     """Show the head of a dataframe and its file """
-    print(space, 'Reading: ', file, sep='')
-    print(space, 'Printing the first 5 lines of ' + file, ':', sep='')
+    print('\nReading: ', file, sep='')
+    print('Printing the first 5 lines of ' + file, ':', sep='')
     print(dataframe.head(5))
 
 def trim_commands():
@@ -166,7 +166,7 @@ def trim_commands():
             end = None
             # Trimming parameter: column number, 'start' and 'end'.
             try:
-                col = input(space + 'Enter the number of column to be considered [1] or [2] : ')
+                col = input('\nEnter the number of column to be considered [1] or [2] : ')
                 if (col!='1') & (col!='2'):
                     print('ERROR 1: the number selected is not correct. It should be 1 or 2.')
                     _ = input('Press [ENTER] to continue.')
@@ -174,8 +174,8 @@ def trim_commands():
                 else:
                     # Convert to dataframe column integer index (starting at 0)
                     col = int(col) - 1
-                    start = float(input(space + 'Enter the value for the start of the trimmed curve: '))
-                    end = float(input(space + 'Enter the value for the end of the trimmed curve: '))
+                    start = float(input('Enter the value for the start of the trimmed curve: '))
+                    end = float(input('Enter the value for the end of the trimmed curve: '))
                     # Check proper order otherwise the complete points are deleted.
                     if start <= end:
                         df_in = df_in[df_in.iloc[:, col] >= start]
@@ -184,7 +184,7 @@ def trim_commands():
                         file_output = 'trimmed_' + file_dic[int(file_input)]
                         df_in.to_csv(file_output, index=False, encoding='utf-8')
                         # Update the status with trimmed curve filename
-                        status = 'curve trimmed and saved as ' + file_output
+                        status = 'curve trimmed and saved as ' + file_output + '.'
                         # Display main menu since the trimming is done.
                         choice = 'M'
                         show_main_menu('main')
@@ -216,7 +216,7 @@ def split_commands():
     file_input = ''
 
     print('')
-    print('Warning: the CSV file to be split should contain more than 2 columns.')
+    print('WARNING: the CSV file to be split should contain more than 2 columns.')
     print('Split menu:')
     print(space, '[M]', line, 'Go back to main menu', sep='')
     temp = input(space + 'Enter the number of CSV file to split: ')
@@ -247,7 +247,7 @@ def split_commands():
                 message_col = 'Enter the column number to be used as X data for each CSV files'
                 message_col += ' [1 , ' + str(len(df_in.columns)) + ']: '
                 try:
-                    col_x_string = input(space +  message_col)
+                    col_x_string = input(message_col)
                     # Shift to 0-starting column index.
                     col_x = int(col_x_string) - 1
                     if col_x not in range(0, len(df_in.columns), 1):
@@ -271,7 +271,7 @@ def split_commands():
                                 # This dataframe is not interesting
                                 pass
                         # Update the status with trimmed curve filename
-                        status = 'curves split and saved, check the list of files'
+                        status = 'curves split and saved, check the list of files.'
                         # Display the main menu since the splitting is done.
                         choice = 'M'
                         show_main_menu('main')
@@ -288,7 +288,7 @@ def split_commands():
             show_main_menu('split')
 
 def operation_commands():
-    """Perform scale or shift operation on the curve"""
+    """Perform scale or offset operation on the curve"""
     global file_dic
     global choice
     global status
@@ -297,11 +297,11 @@ def operation_commands():
     file_input = ''
 
     print('')
-    print('Scale = multiply by a given number all values of X or Y axis of the curve.')
-    print('Shift = add a given number to all values of X or Y axis of the curve.')
+    print('Scale = multiply by a given number all values of X or Y axis.')
+    print('Offset = add a given number to all values of X or Y axis.')
     print('Operation menu:')
     print(space, '[M]', line, 'Go back to main menu', sep='')
-    temp = input(space + 'Enter the number of CSV file to split: ')
+    temp = input(space + 'Enter the number of CSV file to modify: ')
     # Convert file selection to upper case to simplify next if statement.
     file_input = temp.upper()
 
@@ -321,17 +321,17 @@ def operation_commands():
             # Allow the user to check it is the selected file is the right one.
             file_head(file_dic[int(file_input)], df_in)
             if len(df_in.columns) > 2:
-                print('Warning: this file has more than 2 columns. Only the first 2 columns will be modified.')
+                print('WARNING: this file has more than 2 columns. Only the first 2 columns will be modified.')
             scale_x = ''
             scale_y = ''
-            shift_x = ''
-            shift_y = ''
+            offset_x = ''
+            offset_y = ''
 
             # Get x scale factor or use default value given by enter
-            scale_x = float(input('Enter the scale factor for X data [1.0]: ') or '1.0')
+            scale_x = float(input('\nEnter the scale factor for X data [1.0]: ') or '1.0')
             scale_y = float(input('Enter the scale factor for Y data [1.0]: ') or '1.0')
-            shift_x = float(input('Enter the shift value factor for X data [0.0]: ') or '0.0')
-            shift_y = float(input('Enter the shift value factor for Y data [0.0]: ') or '0.0')
+            offset_x = float(input('Enter the offset value factor for X data [0.0]: ') or '0.0')
+            offset_y = float(input('Enter the offset value factor for Y data [0.0]: ') or '0.0')
             
             # Forbids scale factors equal to 0
             if scale_x == 0 or scale_y == 0:
@@ -339,12 +339,12 @@ def operation_commands():
                 _ = input('Press [ENTER] to continue.')
                 show_main_menu('operation')
             else:
-                df_in.iloc[:, 0] = df_in.iloc[:, 0] * scale_x + shift_x
-                df_in.iloc[:, 1] = df_in.iloc[:, 1] * scale_y + shift_y
+                df_in.iloc[:, 0] = df_in.iloc[:, 0] * scale_x + offset_x
+                df_in.iloc[:, 1] = df_in.iloc[:, 1] * scale_y + offset_y
                 file_output = 'operation_' + file_dic[int(file_input)]
                 df_in.to_csv(file_output, index=False, encoding='utf-8')
                 # Update the status with trimmed curve filename
-                status = 'operations are done and the curve is saved as ' + file_output
+                status = 'operations are done and the curve is saved as ' + file_output + '.'
                 # Display main menu since the trimming is done.
                 choice = 'M'
                 show_main_menu('main')
@@ -381,13 +381,13 @@ def convert_commands():
     # Launch splitting.
     else:
         # CSV file reading based on 'file_dic' key.
-        print('Python CSV sniffer attempts to determine the CSV dialect.')
+        print('\nPython CSV sniffer attempts to determine the CSV dialect.')
         try:
             with open(file_dic[int(file_input)], 'r') as file_in:
                 # Read 1024 characters to determine dialect attributes
                 sample = file_in.read(2000)
                 dial = csv.Sniffer().sniff(sample)
-            print('"CSV Dialect" parameters are written between > and <:')
+            print("CSV Dialect parameters are written between '>' and '<':")
             print('Separator: >', dial.delimiter, '<', sep='')
             print('Doublequote: >', dial.doublequote, '<', sep='')
             print('Escapechar: >', dial.escapechar, '<', sep='')   
@@ -403,7 +403,7 @@ def convert_commands():
             # Write CSV file in UTF-8
             file_output = 'convert_' + file_dic[int(file_input)]
             df_in.to_csv(file_output, index=False)
-            status = 'CSV file is converted and saved as ' + file_output
+            status = 'CSV file is converted and saved as ' + file_output + '.'
             # Display main menu since the trimming is done.
             choice = 'M'
             show_main_menu('main')
@@ -426,6 +426,7 @@ while choice != 'Q':
         show_main_menu('main')
 
     elif choice == 'C':
+        # Display convert menu
         show_main_menu('convert')
 
     elif choice == 'S':
