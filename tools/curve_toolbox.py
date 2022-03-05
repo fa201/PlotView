@@ -8,10 +8,10 @@
 
 
 try:
-    import pandas as pd
+    import csv
     import glob
     import os
-    import time
+    import pandas as pd
     from collections import OrderedDict
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
@@ -104,6 +104,8 @@ def show_main_menu(command):
         split_commands()
     elif command == 'operation':
         operation_commands()
+    elif command == 'convert':
+        convert_commands()
     elif command == 'main':
         main_commands()
         # Status bar
@@ -166,7 +168,7 @@ def trim_commands():
                 col = input(space + 'Enter the number of column to be considered [1] or [2] : ')
                 if (col!='1') & (col!='2'):
                     print('ERROR 1: the number selected is not correct. It should be 1 or 2.')
-                    time.sleep(4)  # Pause so the user has time to understand the error.
+                    _ = input('Press [ENTER] to continue.')
                     show_main_menu('trim')
                 else:
                     # Convert to dataframe column integer index (starting at 0)
@@ -187,12 +189,12 @@ def trim_commands():
                         show_main_menu('main')
                     else:
                         print('ERROR 2: the start value should be lower than end value.')
-                        time.sleep(4)  # Pause so the user has time to understand the error.
+                        _ = input('Press [ENTER] to continue.')
                         # Display trim menu.
                         show_main_menu('trim')
             except ValueError as e:
                 print('ERROR 3: the number selected is not correct.')
-                time.sleep(4)  # Pause so the user has time to understand the error.
+                _ = input('Press [ENTER] to continue.')
                 # Display trim menu
                 show_main_menu('trim')
 
@@ -200,7 +202,7 @@ def trim_commands():
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
             print('ERROR 4: the number selected is not in the correct range ' + correct_range + '.')
-            time.sleep(4)  # Pause so the user has time to understand the error.
+            _ = input('Press [ENTER] to continue.')
             show_main_menu('trim')
 
 def split_commands():
@@ -237,7 +239,7 @@ def split_commands():
             file_head(file_dic[int(file_input)], df_in)
             if len(df_in.columns) < 3:
                 print('ERROR 5: there is less than 3 columns in the file: ' + file_dic[int(file_input)] + '.')
-                time.sleep(6)  # Pause so the user has time to understand the error.
+                _ = input('Press [ENTER] to continue.')
                 show_main_menu('split')
             else:
                 col_x_string = ''
@@ -250,7 +252,7 @@ def split_commands():
                     if col_x not in range(0, len(df_in.columns), 1):
                         max_range = str(len(df_in.columns))
                         print('ERROR 6: the selected file column is not in the correct range [1 , ' + max_range + '].')
-                        time.sleep(4)  # Pause so the user has time to understand the error.
+                        _ = input('Press [ENTER] to continue.')
                         # Display trim menu to remove the error from display.
                         show_main_menu('split')
                     else:
@@ -275,13 +277,13 @@ def split_commands():
                 except (ValueError, KeyError) as e:
                     max_range = str(len(df_in.columns))
                     print('ERROR 7: the selected file column is not in the correct range [1 , ' + max_range + '].')
-                    time.sleep(4)  # Pause so the user has time to understand the error.
+                    _ = input('Press [ENTER] to continue.')
                     show_main_menu('split')
         except (ValueError, KeyError) as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
             print('ERROR 8: the selected file number is not in the correct range ' + correct_range + '.')
-            time.sleep(4)  # Pause so the user has time to understand the error.
+            _ = input('Press [ENTER] to continue.')
             show_main_menu('split')
 
 def operation_commands():
@@ -333,7 +335,7 @@ def operation_commands():
             # Forbids scale factors equal to 0
             if scale_x == 0 or scale_y == 0:
                 print('ERROR 9: the scale factor cannot be 0.')
-                time.sleep(4)  # Pause so the user has time to understand the error.
+                _ = input('Press [ENTER] to continue.')
                 show_main_menu('operation')
             else:
                 df_in.iloc[:, 0] = df_in.iloc[:, 0] * scale_x + shift_x
@@ -347,8 +349,72 @@ def operation_commands():
                 show_main_menu('main')
         except ValueError as e:
             print('ERROR 10: a number should be entered.')
-            time.sleep(4)  # Pause so the user has time to understand the error.
+            _ = input('Press [ENTER] to continue.')
             show_main_menu('operation')
+
+def convert_commands():
+    """Convert input file into CSV strict format"""
+    global file_dic
+    global choice
+    global status
+    global space
+    global command
+    file_input = ''
+
+    print('')
+    print('Attempt to convert the input file into strict CSV format.')
+    print('Convert menu:')
+    print(space, '[M]', line, 'Go back to main menu', sep='')
+    temp = input(space + 'Enter the number of CSV file to read: ')
+    # Convert file selection to upper case to simplify next if statement.
+    file_input = temp.upper()
+
+    # 'M' is entered: go back to the main menu
+    if file_input == 'M':
+        status = 'back to main menu.'
+        choice = 'M'
+        show_main_menu('main')
+    # Nothing is entered: launch again the complete display for split menu
+    elif file_input =='':
+        show_main_menu('convert')
+    # Launch splitting.
+    else:
+        # CSV file reading based on 'file_dic' key.
+        print('Python CSV sniffer attempts to determine the CSV dialect.')
+        try:
+            with open(file_dic[int(file_input)], 'r') as file_in:
+                # Read 1024 characters to determine dialect attributes
+                sample = file_in.read(2000)
+                dial = csv.Sniffer().sniff(sample)
+            print('"CSV Dialect" parameters are written between > and <:')
+            print('Separator: >', dial.delimiter, '<', sep='')
+            print('Doublequote: >', dial.doublequote, '<', sep='')
+            print('Escapechar: >', dial.escapechar, '<', sep='')   
+            #print('Lineterminator: >', dial.lineterminator, '<', sep='')
+            print('Quotechar: >', dial.quotechar, '<', sep='')
+            print('Skipinitialspace after separator: >', dial.skipinitialspace, '<', sep='')
+            _ = input('Press [ENTER] to continue.')
+            # Use dialect attributes as input for read_csv.
+            df_in = pd.read_csv(file_dic[int(file_input)], dialect=dial)
+            # Show the begining of datatrame.
+            file_head(file_dic[int(file_input)], df_in)
+            _ = input('Press [ENTER] to continue.')
+            # Write CSV file in UTF-8
+            file_output = 'convert_' + file_dic[int(file_input)]
+            df_in.to_csv(file_output, index=False)
+            status = 'CSV file is converted and saved as ' + file_output
+            # Display main menu since the trimming is done.
+            choice = 'M'
+            show_main_menu('main')
+        except:
+            print('ERROR 10: CSV sniff attempt failed.')
+            print('Try to convert this file with a spreadsheet (MS-Excel, LibreOffice Calc, etc).')
+            _ = input('Press [ENTER] to continue.')
+            status = 'CSV file conversion failed.'
+            # Display main menu since the trimming is done.
+            choice = 'M'
+            show_main_menu('main')
+
 
 # Main program
 show_main_menu('main')
@@ -359,7 +425,7 @@ while choice != 'EXIT':
         show_main_menu('main')
 
     elif choice == 'C':
-        show_main_menu()
+        show_main_menu('convert')
 
     elif choice == 'S':
         # Display split menu
