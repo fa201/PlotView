@@ -17,7 +17,8 @@ except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
     print('Please check the required packages at https://github.com/fa201/PlotView.')
 
-
+# Version of script
+VERSION = 1.0
 # Move to the working directory for reading and writing CSV
 os.chdir('CSV_files')
 
@@ -25,7 +26,7 @@ os.chdir('CSV_files')
 # Choice of command for the main menu
 choice = 'M'
 # Parameters for display variables
-separator = '~'*60
+separator = '~'*65
 line = '.' * 6
 space = ' ' * 3
 file_dic = OrderedDict()  # Allows to keep the order given by glob for files
@@ -50,7 +51,7 @@ def show_title_files():
     # Linux and macOS clear command
     else:
         _ = os.system('clear')
-    title = 'Curve_toolbox: prepare CSV curves for plotting with PlotView'
+    title = 'Curve_toolbox_' + str(VERSION) +': prepare CSV curves for plotting with PlotView'
     print(separator)
     print(title)
     print(separator)
@@ -83,7 +84,7 @@ def main_commands():
     print(space, '[O]', line, 'Perform scale or shift operations on the curve', sep='')
     print(space, '[T]', line, 'Trim the beginning and or the end of the curve', sep='')
     print(space, '[L]', line, 'List CSV files', sep='')
-    print(space, '[EXIT]...Exit program', sep='')
+    print(space, '[Q]', line, 'Exit program', sep='')
 
 def show_main_menu(command):
     """Display main menu commands
@@ -407,7 +408,7 @@ def convert_commands():
             choice = 'M'
             show_main_menu('main')
         except:
-            print('ERROR 10: CSV sniff attempt failed.')
+            print('ERROR 11: CSV sniff attempt failed.')
             print('Try to convert this file with a spreadsheet (MS-Excel, LibreOffice Calc, etc).')
             _ = input('Press [ENTER] to continue.')
             status = 'CSV file conversion failed.'
@@ -418,7 +419,7 @@ def convert_commands():
 
 # Main program
 show_main_menu('main')
-while choice != 'EXIT':
+while choice != 'Q':
     if choice == 'M':
         # Display main menu
         status = ''
