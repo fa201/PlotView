@@ -11,7 +11,6 @@ try:
     import csv
     import glob
     import os
-    import time
     import pandas as pd
     from collections import OrderedDict
 except ModuleNotFoundError as e:
@@ -169,7 +168,7 @@ def trim_commands():
                 col = input(space + 'Enter the number of column to be considered [1] or [2] : ')
                 if (col!='1') & (col!='2'):
                     print('ERROR 1: the number selected is not correct. It should be 1 or 2.')
-                    time.sleep(4)  # Pause so the user has time to understand the error.
+                    _ = input('Press [ENTER] to continue.')
                     show_main_menu('trim')
                 else:
                     # Convert to dataframe column integer index (starting at 0)
@@ -190,12 +189,12 @@ def trim_commands():
                         show_main_menu('main')
                     else:
                         print('ERROR 2: the start value should be lower than end value.')
-                        time.sleep(4)  # Pause so the user has time to understand the error.
+                        _ = input('Press [ENTER] to continue.')
                         # Display trim menu.
                         show_main_menu('trim')
             except ValueError as e:
                 print('ERROR 3: the number selected is not correct.')
-                time.sleep(4)  # Pause so the user has time to understand the error.
+                _ = input('Press [ENTER] to continue.')
                 # Display trim menu
                 show_main_menu('trim')
 
@@ -203,7 +202,7 @@ def trim_commands():
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
             print('ERROR 4: the number selected is not in the correct range ' + correct_range + '.')
-            time.sleep(4)  # Pause so the user has time to understand the error.
+            _ = input('Press [ENTER] to continue.')
             show_main_menu('trim')
 
 def split_commands():
@@ -240,7 +239,7 @@ def split_commands():
             file_head(file_dic[int(file_input)], df_in)
             if len(df_in.columns) < 3:
                 print('ERROR 5: there is less than 3 columns in the file: ' + file_dic[int(file_input)] + '.')
-                time.sleep(6)  # Pause so the user has time to understand the error.
+                _ = input('Press [ENTER] to continue.')
                 show_main_menu('split')
             else:
                 col_x_string = ''
@@ -253,7 +252,7 @@ def split_commands():
                     if col_x not in range(0, len(df_in.columns), 1):
                         max_range = str(len(df_in.columns))
                         print('ERROR 6: the selected file column is not in the correct range [1 , ' + max_range + '].')
-                        time.sleep(4)  # Pause so the user has time to understand the error.
+                        _ = input('Press [ENTER] to continue.')
                         # Display trim menu to remove the error from display.
                         show_main_menu('split')
                     else:
@@ -278,13 +277,13 @@ def split_commands():
                 except (ValueError, KeyError) as e:
                     max_range = str(len(df_in.columns))
                     print('ERROR 7: the selected file column is not in the correct range [1 , ' + max_range + '].')
-                    time.sleep(4)  # Pause so the user has time to understand the error.
+                    _ = input('Press [ENTER] to continue.')
                     show_main_menu('split')
         except (ValueError, KeyError) as e:
             correct_range = str(file_dic.keys())
             correct_range = correct_range[10:-1]
             print('ERROR 8: the selected file number is not in the correct range ' + correct_range + '.')
-            time.sleep(4)  # Pause so the user has time to understand the error.
+            _ = input('Press [ENTER] to continue.')
             show_main_menu('split')
 
 def operation_commands():
@@ -336,7 +335,7 @@ def operation_commands():
             # Forbids scale factors equal to 0
             if scale_x == 0 or scale_y == 0:
                 print('ERROR 9: the scale factor cannot be 0.')
-                time.sleep(4)  # Pause so the user has time to understand the error.
+                _ = input('Press [ENTER] to continue.')
                 show_main_menu('operation')
             else:
                 df_in.iloc[:, 0] = df_in.iloc[:, 0] * scale_x + shift_x
@@ -350,7 +349,7 @@ def operation_commands():
                 show_main_menu('main')
         except ValueError as e:
             print('ERROR 10: a number should be entered.')
-            time.sleep(4)  # Pause so the user has time to understand the error.
+            _ = input('Press [ENTER] to continue.')
             show_main_menu('operation')
 
 def convert_commands():
@@ -389,17 +388,17 @@ def convert_commands():
                 dial = csv.Sniffer().sniff(sample)
             print('"CSV Dialect" parameters are written between > and <:')
             print('Separator: >', dial.delimiter, '<', sep='')
-            print('Doublequote: ', dial.doublequote)
+            print('Doublequote: >', dial.doublequote, '<', sep='')
             print('Escapechar: >', dial.escapechar, '<', sep='')   
-            print('Lineterminator: ', dial.lineterminator)
+            #print('Lineterminator: >', dial.lineterminator, '<', sep='')
             print('Quotechar: >', dial.quotechar, '<', sep='')
-            print('Skipinitialspace after separator: ', dial.skipinitialspace)
-            answer = input('Press [ENTER] to continue.')
+            print('Skipinitialspace after separator: >', dial.skipinitialspace, '<', sep='')
+            _ = input('Press [ENTER] to continue.')
             # Use dialect attributes as input for read_csv.
             df_in = pd.read_csv(file_dic[int(file_input)], dialect=dial)
             # Show the begining of datatrame.
             file_head(file_dic[int(file_input)], df_in)
-            answer = input('Press [ENTER] to continue')
+            _ = input('Press [ENTER] to continue.')
             # Write CSV file in UTF-8
             file_output = 'convert_' + file_dic[int(file_input)]
             df_in.to_csv(file_output, index=False)
@@ -410,7 +409,7 @@ def convert_commands():
         except:
             print('ERROR 10: CSV sniff attempt failed.')
             print('Try to convert this file with a spreadsheet (MS-Excel, LibreOffice Calc, etc).')
-            time.sleep(8)
+            _ = input('Press [ENTER] to continue.')
             status = 'CSV file conversion failed.'
             # Display main menu since the trimming is done.
             choice = 'M'
