@@ -51,6 +51,18 @@
         <p><strong>This is applicable to files having 2 columns</strong> even if the script will process files with more than 2 columns. In this case only the first 2 columns will be modified.</p>
         <p>After selecting a file, scale factors for X and Y columns are asked. So all values of a column will be multiplied by the given number. Note that <em>0 will be considered as an error</em>. Shifts for X and Y are also asked. So the given number will be added to all values of a column.</p>
 
+        <h3>Recommended workflow</h3>
+        <p>
+            <ul>
+                <li>Plot the inital curve without any operation with PlotView</li>
+                <li>Scale the curve in X and/or Y as needed</li>
+                <li>Offset the curve in X and/or Y as needed</li>
+                <li>Copy the initial CSV file into <code>tools/CSV_files</code></li>
+                <li>Launch <code>curve_toolbox.py</code> make the scale and offset operations</li>
+                <li>Plot the modified curve with PlotView</li>
+            </ul>
+        </p>
+
         <h2>Trim</h2>
         <p>It is recommended to <em>plot a CSV curve before trimming it</em>. Then it is possible to zoom to the desired area and get a good approximation of any point on the curve by moving the pointer onto a point: X and Y coordinates of the pointer on the lower right corner of the plot. <br><img class="image_m" src="../image/curve_tool_box_coord.png" title="Pointer coordinates" alt="Pointer coordinates"></p>
 
