@@ -361,7 +361,8 @@ class Application(tk.Tk):
         self.canvas.draw()
         # Creates the Matplotlib navigation tool bar for figures.
         self.toolbar = NavigationToolbar2Tk(self.canvas, self.mat_frame)
-        self.toolbar.draw()
+        #self.toolbar.draw() shows a bug with matplotlib 3.5
+        self.toolbar.update()
         self.canvas.get_tk_widget().pack()
 
     def app_quit(self):
