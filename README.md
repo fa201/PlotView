@@ -8,6 +8,7 @@ My goals are:
 * Make a tool which will be useable to plot test data at work.
 
 ![PlotView_example](./image/PlotView_example_1.png)
+![PlotView use case](./help/01_basic_usage.gif)
 
 # Useful informations
 The GUI will be make with **Tkinter** due to:
@@ -25,7 +26,7 @@ matplotlib *Figure* and *Navigation Tool Bar* will be embedded in tkinter GUI si
 
 ## Folders and files
 * *fresh_session.pv* is a session file which enables to clear the current data in PlotView.
-* *help* folder gathers HTML help files launched through the *help* menu.
+* *help* folder gathers HTML help files launched through the *help* menu. There are also **animated GIFs showing some use cases**.
 * *image* folder contains a few pictures of plot examples.
 * *test* folder contains a few test curves.
 * *tools* folder contains a python script *curve_toolbox.py* to help prepare the CSV files before plotting them.
