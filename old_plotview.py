@@ -31,17 +31,17 @@ except ModuleNotFoundError as e:
 
 # Constants for curve styling properties.
 # Set of color for a white background. Change the set for a black background.
-my_colors = {'white_bg': ['white', 'black', 'grey', 'red', 'darksalmon', 
-						  'sienna', 'tan', 'gold', 'green', 'dodgerblue', 
-						  'blueviolet', 'hotpink', 'orange', 'peru', 
-						  'limegreen', 'turquoise', 'royalblue'
-			             ],
-			 'black_bg': ['black', 'white', 'grey', 'red', 'darksalmon', 
-			  			  'sienna', 'tan', 'gold', 'green', 'dodgerblue', 
-			  			  'blueviolet', 'hotpink', 'orange', 'peru', 
-			  			  'limegreen', 'turquoise', 'royalblue'
-			             ]
-			}
+my_colors = {'white_bg': ['white', 'black', 'grey', 'red', 'darksalmon',
+                          'sienna', 'tan', 'gold', 'green', 'dodgerblue',
+                          'blueviolet', 'hotpink', 'orange', 'peru',
+                          'limegreen', 'turquoise', 'royalblue'
+                         ],
+             'black_bg': ['black', 'white', 'grey', 'red', 'darksalmon',
+                          'sienna', 'tan', 'gold', 'green', 'dodgerblue',
+                          'blueviolet', 'hotpink', 'orange', 'peru',
+                          'limegreen', 'turquoise', 'royalblue'
+                         ]
+            }
 my_linestyles = ['solid', 'dashed', 'dotted']
 
 
@@ -140,7 +140,7 @@ class Curve:
             The extrema values displayed on GUI are rounded but printed values are not.
         """
         print('Extrema values for curve', self.name, 'without rounding:')
-        
+
         # X min
         temp_ext_x_min = self.data_out.iloc[:, 0].min()
         self.ext_x_min = round(temp_ext_x_min, app.ROUND)
@@ -149,7 +149,7 @@ class Curve:
         self.ext_x_min_y = round(temp_ext_x_min_y, app.ROUND)
         print('X min:', temp_ext_x_min, ' @ Y:', temp_ext_x_min_y)
         app.extrema_x_min.set('X min ' + str(self.ext_x_min) + ' @ Y ' + str(self.ext_x_min_y))
-        
+
         # X max
         temp_ext_x_max = self.data_out.iloc[:, 0].max()
         self.ext_x_max = round(temp_ext_x_max, app.ROUND)
@@ -219,7 +219,7 @@ class Application(tk.Tk):
         # Parameters for widgets on RH tool panel.
         # Padding for all containers to uniformize the look
         self.CONTAINER_PADX = 10
-        self.CONTAINER_PADY = 6.5 
+        self.CONTAINER_PADY = 6.5
         # Padding for all widgets inside a container
         self.WIDGET_PADX = 2.5
         self.WIDGET_PADY = 2.5
@@ -250,6 +250,7 @@ class Application(tk.Tk):
         s.theme_use('alt')
         # Buttons
         s.configure('w4.TButton', width=4)
+        # TODO: error for width 6 and 9 -> same variable name as for width = 4
         s.configure('w4.TButton', width=6)
         s.configure('w4.TButton', width=9)
 
@@ -405,12 +406,12 @@ class Application(tk.Tk):
         """
         session_file = filedialog.asksaveasfilename(
             initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Save as PlotView session file')
-        # Case if CANCEL is clicked after selecting a session file. Then session_file=''. 
+        # Case if CANCEL is clicked after selecting a session file. Then session_file=''.
         if session_file == '':
-            self.set_status('No session file selected.')   
-        # Case if CANCEL is clicked without selecting a session file. Then session_file=(), empty tuple. 
+            self.set_status('No session file selected.')
+        # Case if CANCEL is clicked without selecting a session file. Then session_file=(), empty tuple.
         elif isinstance(session_file, tuple):
-            self.set_status('No session file selected.')    
+            self.set_status('No session file selected.')
         else:
             config = configparser.ConfigParser()
             # Plot data
@@ -468,7 +469,7 @@ class Application(tk.Tk):
             self.set_status('Session file is saved at: ' + session_file)
 
     def load_session(self):
-        """ Load session file 
+        """ Load session file
 
             Curve data are read.
             Plot data are read.
@@ -480,7 +481,7 @@ class Application(tk.Tk):
             initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Open PlotView session file')
         # Case if CANCEL is clicked without selecting a session file. Then session_file=(), empty tuple.
         if isinstance(session_file, tuple):
-            self.set_status('No session file selected.')    
+            self.set_status('No session file selected.')
         # Make sure the path to session file exists.
         elif os.path.exists(session_file):
             config.read(session_file)
@@ -552,7 +553,7 @@ class Application(tk.Tk):
             self.plot_curves()
         else:
             # Case if CANCEL is clicked after selecting a session file.
-            self.set_status('No session file selected.')       
+            self.set_status('No session file selected.')
 
     def curve_tab(self):
         """ First tab managing curve creation.
@@ -578,7 +579,7 @@ class Application(tk.Tk):
         ttk.Label(self.create_curve_frame,
                  textvariable=self.work_dir_txt
                  ).grid(row=0, column=1)
-        
+
         # CSV file widget
         ttk.Button(self.create_curve_frame, text='CSV file',
                   command=self.choose_file, style='w9.TButton'
@@ -604,7 +605,7 @@ class Application(tk.Tk):
         # Allow the column to expand for children
         for i in range(0, 5):
             self.curve_prop_frame.columnconfigure(index=i, weight=1)
-    
+
         # Active curve selection
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
         select_curve_label = ttk.Label(self.curve_prop_frame, text='Select curve')
@@ -726,7 +727,7 @@ class Application(tk.Tk):
         # For self.curve_tab frame
         for frame in self.curve_tab.winfo_children():
             frame.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
-                                 padx=self.CONTAINER_PADX, 
+                                 padx=self.CONTAINER_PADX,
                                  pady=self.CONTAINER_PADY
                                 )
         # For self.create_curve_frame self.curve_prop_frame frames
@@ -734,11 +735,11 @@ class Application(tk.Tk):
                       set(self.curve_prop_frame.winfo_children())
                      )
         for widget in union_list:
-            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
-                                  padx=self.WIDGET_PADX, 
+            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
+                                  padx=self.WIDGET_PADX,
                                   pady=self.WIDGET_PADY
                                  )
-        
+
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
 
@@ -869,7 +870,7 @@ class Application(tk.Tk):
                             )
             except ValueError:
                 msg.showerror('Error', 'The values of X min, X max, Y min and Y max must be numbers.')
-    
+
         # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
             # print('Visibility ', Curve.dic[str(i)].name, Curve.dic[str(i)].visibility)
@@ -1067,7 +1068,7 @@ class Application(tk.Tk):
         # User defined
         ttk.Label(self.range_frame, text='User defined ranges:'
                 ).grid(row=1, column=0, columnspan=2)
-    
+
         # X min
         x_min_label = ttk.Label(self.range_frame, text='X min'
                 )
@@ -1086,7 +1087,7 @@ class Application(tk.Tk):
         # y_min_label.configure(anchor='center')
         self.y_min_range = tk.StringVar()
         self.y_min_range.set('0')
-        self.y_min_entry = ttk.Entry(self.range_frame, textvariable=self.y_min_range, width=8, 
+        self.y_min_entry = ttk.Entry(self.range_frame, textvariable=self.y_min_range, width=8,
                  justify=tk.CENTER)
         self.y_min_entry.configure(state='disabled')
         self.y_min_entry.grid(row=2, column=3)
@@ -1097,7 +1098,7 @@ class Application(tk.Tk):
         # x_max_label.configure(anchor='center')
         self.x_max_range = tk.StringVar()
         self.x_max_range.set('100')
-        self.x_max_entry = ttk.Entry(self.range_frame, textvariable=self.x_max_range, width=8, 
+        self.x_max_entry = ttk.Entry(self.range_frame, textvariable=self.x_max_range, width=8,
                  justify=tk.CENTER)
         self.x_max_entry.configure(state='disabled')
         self.x_max_entry.grid(row=3, column=1)
@@ -1108,7 +1109,7 @@ class Application(tk.Tk):
         # y_max_label.configure(anchor='center')
         self.y_max_range = tk.StringVar()
         self.y_max_range.set('100')
-        self.y_max_entry = ttk.Entry(self.range_frame, textvariable=self.y_max_range, width=8, 
+        self.y_max_entry = ttk.Entry(self.range_frame, textvariable=self.y_max_range, width=8,
                  justify=tk.CENTER)
         self.y_max_entry.configure(state='disabled')
         self.y_max_entry.grid(row=3, column=3)
@@ -1168,7 +1169,7 @@ class Application(tk.Tk):
         self.custom_frame = ttk.LabelFrame(self.plot_tab, text='Customize plot')
         self.custom_frame.grid(row=3, column=0)
 
-        # Background color 
+        # Background color
         x_min_label = ttk.Label(self.custom_frame, text='Background color'
                 )
         x_min_label.grid(row=0, column=0, columnspan=2)
@@ -1177,10 +1178,10 @@ class Application(tk.Tk):
         self.fig_color_flag = tk.IntVar()
         self.fig_color_flag.set(0)
         ttk.Radiobutton(self.custom_frame, text='White', variable=self.fig_color_flag,
-        				value=0, command=self.update_plot_bg_color
+                        value=0, command=self.update_plot_bg_color
                       ).grid(row=0, column=2)
-        ttk.Radiobutton(self.custom_frame, text='Black', variable=self.fig_color_flag, 
-        				value=1, command=self.update_plot_bg_color
+        ttk.Radiobutton(self.custom_frame, text='Black', variable=self.fig_color_flag,
+                        value=1, command=self.update_plot_bg_color
                       ).grid(row=0, column=3)
         # Show grid
         self.grid_state = tk.IntVar()
@@ -1197,7 +1198,7 @@ class Application(tk.Tk):
         # For self.plot_tab frame
         for frame in self.plot_tab.winfo_children():
             frame.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
-                                 padx=self.CONTAINER_PADX, 
+                                 padx=self.CONTAINER_PADX,
                                  pady=self.CONTAINER_PADY
                                 )
         # For self.plot_frame, self.range_frame,  frames
@@ -1207,8 +1208,8 @@ class Application(tk.Tk):
                       set(self.custom_frame.winfo_children())
                      )
         for widget in union_list:
-            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
-                                  padx=self.WIDGET_PADX, 
+            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
+                                  padx=self.WIDGET_PADX,
                                   pady=self.WIDGET_PADY
                                  )
 
@@ -1241,7 +1242,7 @@ class Application(tk.Tk):
         # Comment
         ttk.Label(self.annot_tab, text='X and Y positions refer to data coordinate system.',
                  justify=tk.LEFT).grid(row=0, column=0)
-    
+
         # TEXT PANEL
         self.text_frame = ttk.LabelFrame(self.annot_tab, text='Annotation')
         self.text_frame.grid(row=1, column=0)
@@ -1303,7 +1304,7 @@ class Application(tk.Tk):
         # No callback since 'Apply all' redraw the plot with or without the annotation.
         ttk.Checkbutton(self.text_frame, text='Show the annotation on the plot', variable=self.annot_state
                        ).grid(row=3, column=0, columnspan=4)
-        
+
         # ARROW PANEL
         self.arrow_frame = ttk.LabelFrame(self.annot_tab, text='Arrow properties')
         self.arrow_frame.grid(row=3, column=0,  columnspan=2)
@@ -1384,7 +1385,7 @@ class Application(tk.Tk):
         # For self.annot_tab
         for frame in self.annot_tab.winfo_children():
             frame.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
-                                 padx=self.CONTAINER_PADX, 
+                                 padx=self.CONTAINER_PADX,
                                  pady=self.CONTAINER_PADY
                                 )
         # For all frames
@@ -1392,8 +1393,8 @@ class Application(tk.Tk):
                       set(self.arrow_frame.winfo_children())
                      )
         for widget in union_list:
-            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
-                                  padx=self.WIDGET_PADX, 
+            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
+                                  padx=self.WIDGET_PADX,
                                   pady=self.WIDGET_PADY
                                  )
 
@@ -1457,11 +1458,11 @@ class Application(tk.Tk):
         extrema_y_max_label.grid(row=6, column=0, columnspan=4)
 
         # For all frames
-        union_list = (set(self.extrema_tab.winfo_children()) 
+        union_list = (set(self.extrema_tab.winfo_children())
                      )
         for widget in union_list:
-            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
-                                  padx=self.WIDGET_PADX, 
+            widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
+                                  padx=self.WIDGET_PADX,
                                   pady=self.WIDGET_PADY
                                  )
 
@@ -1482,10 +1483,10 @@ class Application(tk.Tk):
             self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
 
     def update_plot_bg_color(self):
-    	if self.fig_color_flag.get() == 0:
-    		self.plot_fig_color = 'white_bg'
-    	elif self.fig_color_flag.get() == 1:
-    		self.plot_fig_color = 'black_bg'
+        if self.fig_color_flag.get() == 0:
+            self.plot_fig_color = 'white_bg'
+        elif self.fig_color_flag.get() == 1:
+            self.plot_fig_color = 'black_bg'
 
 
 if __name__ == '__main__':
