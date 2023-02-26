@@ -183,21 +183,6 @@ class Application(tk.Tk):
     def __init__(self):
         """ Initialize the main window.
 
-            The window is launched with a size of 1280 x 720 but it can be resized.
-            The matplotlib are is defined 16 x 12 in which is bigger than the available space.
-            Yet it is not a problem because it is handled by tk window manager.
-
-            Constants:
-            - PV_VERSION: string -> plot view version as shown by git tag.
-            - WIN_RESIZABLE: boolean -> prevents the user from resizing the root window.
-            - WIN_SIZE_POS: string -> window size (width x height) and position relative
-                                      to top left corner.
-            - FONT_SIZE: integer -> size of font to be used for all widget texts.
-            - PLOT_WIDTH: float -> width (in) of matplotlib figure.
-            - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
-            - MAX_STR_CREATE_CURVE: int -> number of caracters to be displayed to show the
-                                           working directory.
-
             Variables:
             - work_dir: string -> directory path showing working directory.
             - work_dir_txt: string -> end of directory path showing working directory.
@@ -206,26 +191,6 @@ class Application(tk.Tk):
 
             Methods: they launch the window layout setup, and create the tab on the RH side for tools.
         """
-        super().__init__()
-
-        # ATTRIBUTES
-        # Main window parameters.
-        self.PV_VERSION = '1.8'
-        self.WIN_SIZE_POS = '1280x780'
-        self.FONT_SIZE = 9
-        # Matplotlib parameters.
-        self.PLOT_WIDTH = 16
-        self.PLOT_HEIGHT = 12
-        # Parameters for widgets on RH tool panel.
-        # Padding for all containers to uniformize the look
-        self.CONTAINER_PADX = 10
-        self.CONTAINER_PADY = 6.5
-        # Padding for all widgets inside a container
-        self.WIDGET_PADX = 2.5
-        self.WIDGET_PADY = 2.5
-        # Max length of string showed by 'Create curve' labels.
-        # This is related to window width, font, and font size.
-        self.MAX_STR_CREATE_CURVE = 39
 
         # Working directory variables.
         # 'work_dir_set' defines the directory for the CSV filedialog.
@@ -241,22 +206,7 @@ class Application(tk.Tk):
         self.curve_label = tk.StringVar(self)
         self.curve_label.set('No CSV files selected.')
 
-        # Number of decimals for rounding operation
-        self.ROUND = 5
-
-        # TTK styling. Does not work for TEntry, TCombobox
-        s = ttk.Style()
-        # Options: default, clam, alt, classic
-        s.theme_use('alt')
-        # Buttons
-        s.configure('w4.TButton', width=4)
-        # TODO: error for width 6 and 9 -> same variable name as for width = 4
-        s.configure('w4.TButton', width=6)
-        s.configure('w4.TButton', width=9)
-
         # METHODS
-        # Allows root window to be closed by the closing icon.
-        self.protocol('WM_DELETE_WINDOW', self.app_quit)
         # Setup the loayout of the main window.
         self.window_setup()
         # Create the tool 'Curve' tab on the RH side
@@ -281,26 +231,11 @@ class Application(tk.Tk):
     def window_setup(self):
         """ Some basic setup is done on the GUI.
 
-            Title is set.
-            The size and location of the windows is set.
-            The size cannot be changed at the moment because it is simpler.
-            A font is used with a lower size to pack more widgets and fixed sapcing.
             A status bar is created at the bottom. It shows text message through 'set_status'.
             The matplotlib area is draw on the left side.
             The tool widgets on the right side will be in a notebook to have tabs to save room on layout.
             The menu is created at top with disabled buttons when functions are not implemented.
         """
-        # WINDOW
-        self.title('PlotView ' + self.PV_VERSION)
-        self.geometry(self.WIN_SIZE_POS)
-
-        # FONT
-        # https://stackoverflow.com/questions/31918073/tkinter-how-to-set-font-for-text
-        my_font = tk.font.nametofont('TkDefaultFont')
-        my_font.configure(size=self.FONT_SIZE)
-        # Apply previous change to all widgets created since now.
-        self.option_add("*Font", my_font)
-
         # MENUS
         menu_main = tk.Menu(self)
         # Menu tear off is disabled.
@@ -365,11 +300,6 @@ class Application(tk.Tk):
         #self.toolbar.draw() shows a bug with matplotlib 3.5
         self.toolbar.update()
         self.canvas.get_tk_widget().pack()
-
-    def app_quit(self):
-        """ Quit the application and free the stack."""
-        self.destroy()
-        sys.exit(0)
 
     def help_message(self):
         """ Give directions to help files."""
