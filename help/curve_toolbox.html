@@ -29,7 +29,7 @@
         <p>In the folder <code>tools</code>, there is another Python script called <code>curve_toolbox.py</code>. <em>The purpose of this script is to process the curve files before plotting them with PlotView</em>.</p>
         <p>The script <code>curve_toolbox.py</code> <strong>expects the CSV curve files in the folder</strong> <code>tools/CSV_files</code>. After processing, the modified CSV files is saved in the same folder with a modified file name. For example: <code>trimmed_xsinx.csv</code> after trimming the input file <code>xsinx.csv</code>. The folder <code>test</code> contains some examples of CSV files.</p>
         <p>This script is a console script. Commands are selected through letters either lower case or upper case in brackets '[' and ']'. The CSV files in <code>CSV_files</code> are listed and referenced with numbers for selection.</p>
-        <p><img class="image_l" src="../image/curve_tool_box_main.png" title="Curve_toolbox main menu" alt="Curve_toolbox main menu"></p>
+        <p><img class="image_l" src="image/curve_tool_box_main.png" title="Curve_toolbox main menu" alt="Curve_toolbox main menu"></p>
 
         <h2>Convert</h2>
         <p>This function tries to convert the input file into the proper CSV format. This uses a python <em>CSV sniffer</em> which tries to guess the format of the input CSV file. If it succeeds then the file is saved with the <code>convert_</code> prefix to the input file name. If it fails then a manual conversion with a text editor or a spreadsheet (MS-Excel, LibreOffice Calc, etc).</p>
@@ -38,12 +38,12 @@
         <h2>Split</h2>
         <p>The purpose of this function is to split a CSV file containing more than 2 columns in CSV files containing only 2 columns for plotting. All these files will have the same first column (or X data) and different second column (or Y data).</p>
         <p>Here is an example of initial file selecting column 1 as X data: <br>
-        <img class="image_m" src="../image/curve_tool_box_split_example_1.png" title="Split - initial file" alt="Split - initial file"></p>
+        <img class="image_m" src="image/curve_tool_box_split_example_1.png" title="Split - initial file" alt="Split - initial file"></p>
         <p>Here are the output files:<br>
-        <img class="image_s" src="../image/curve_tool_box_split_example_2.png" title="Split - split file a" alt="Split - split file a">
-        <img class="image_s" src="../image/curve_tool_box_split_example_3.png" title="Split - split file b" alt="Split - split file b">
-        <img class="image_s" src="../image/curve_tool_box_split_example_4.png" title="Split - split file c" alt="Split - split file c">
-        <img class="image_s" src="../image/curve_tool_box_split_example_5.png" title="Split - split file d" alt="Split - split file d">
+        <img class="image_s" src="image/curve_tool_box_split_example_2.png" title="Split - split file a" alt="Split - split file a">
+        <img class="image_s" src="image/curve_tool_box_split_example_3.png" title="Split - split file b" alt="Split - split file b">
+        <img class="image_s" src="image/curve_tool_box_split_example_4.png" title="Split - split file c" alt="Split - split file c">
+        <img class="image_s" src="image/curve_tool_box_split_example_5.png" title="Split - split file d" alt="Split - split file d">
         </p>
 
         <h2>Operations on a curve: scale and shift</h2>
@@ -64,7 +64,7 @@
         </p>
 
         <h2>Trim</h2>
-        <p>It is recommended to <em>plot a CSV curve before trimming it</em>. Then it is possible to zoom to the desired area and get a good approximation of any point on the curve by moving the pointer onto a point: X and Y coordinates of the pointer on the lower right corner of the plot. <br><img class="image_m" src="../image/curve_tool_box_coord.png" title="Pointer coordinates" alt="Pointer coordinates"></p>
+        <p>It is recommended to <em>plot a CSV curve before trimming it</em>. Then it is possible to zoom to the desired area and get a good approximation of any point on the curve by moving the pointer onto a point: X and Y coordinates of the pointer on the lower right corner of the plot. <br><img class="image_m" src="image/curve_tool_box_coord.png" title="Pointer coordinates" alt="Pointer coordinates"></p>
 
         <p>The purpose of this function is to "cut" one end or both end of a curve base on X values or Y values; </p>
 
@@ -72,7 +72,7 @@
         <p>It is possible by entering the desired value for one end and the first or last value for the other end.</p>
 
         <h3>Possible issues</h3>
-        <p>The following image shows an issue with a curve having several identical Y values.  In this case trimming in the Y axis with <code>start = 0</code> and <code>end = 16</code> cuts <em>all the parts of the curve out of this range</em> and not only the last peak for values above 16. In this case, trimming in X allows to "shorten" the curve.<br><img class="image_l" src="../image/curve_tool_box_trim.png" title="Trimming issues" alt="Trimming issues"></p>
+        <p>The following image shows an issue with a curve having several identical Y values.  In this case trimming in the Y axis with <code>start = 0</code> and <code>end = 16</code> cuts <em>all the parts of the curve out of this range</em> and not only the last peak for values above 16. In this case, trimming in X allows to "shorten" the curve.<br><img class="image_l" src="image/curve_tool_box_trim.png" title="Trimming issues" alt="Trimming issues"></p>
 
         <p class="retour_haut_page"><a href="#">Top of page</a></p>
     </article>
