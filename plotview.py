@@ -25,7 +25,7 @@ try:
     import tkinter.ttk as ttk
     #import webbrowser
 
-    #from src.application import Application
+    from src.menus import Menus
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
     print('Please check the required packages at https://github.com/fa201/PlotView.')
@@ -62,6 +62,7 @@ class Application(tk.Tk):
         self.setup_GUI_look()
         # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
+        self.menus = Menus(self)
 
     def define_window_parameters(self):
         """Define main window parameter: title, size, position."""
