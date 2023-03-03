@@ -11,12 +11,11 @@ try:
     #from tkinter import filedialog
     import tkinter.ttk as ttk
     import webbrowser
-
-    #from src.application import Application
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
     print('Please check the required packages at https://github.com/fa201/PlotView.')
     # TODO how to use same exception for all imports. Class? 
+
 
 class Menus():
     """All menus of GUI"""

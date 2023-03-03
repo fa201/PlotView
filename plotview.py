@@ -26,6 +26,8 @@ try:
     #import webbrowser
 
     from src.menus import Menus
+    from src.status_bar import StatusBar
+    from src.create_curve_tab import CreateCurveTab
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
     print('Please check the required packages at https://github.com/fa201/PlotView.')
@@ -49,8 +51,7 @@ class Application(tk.Tk):
         - FONT_SIZE: integer -> size of font to be used for all widget texts.
         - PLOT_WIDTH: float -> width (in) of matplotlib figure.
         - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
-        - MAX_STR_CREATE_CURVE: int -> number of caracters to be displayed to show the
-                                        working directory.
+        
 
         Variables: to be completed
 
@@ -63,6 +64,8 @@ class Application(tk.Tk):
         # Allows root window to be closed by the closing icon.
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
         self.menus = Menus(self)
+        self.status_bar = StatusBar(self)
+        #self.create_curve_tab = CreateCurveTab(self)
 
     def define_window_parameters(self):
         """Define main window parameter: title, size, position."""
@@ -93,12 +96,14 @@ class Application(tk.Tk):
         self.my_style.configure('w4.TButton', width=4)
         self.my_style.configure('w6.TButton', width=6)
         self.my_style.configure('w9.TButton', width=9)
-
+        # Fonts
         self.FONT_SIZE = 9
         my_font = tk.font.nametofont('TkDefaultFont')
         my_font.configure(size=self.FONT_SIZE)
         # Apply font change to all widgets created from now on.
         self.option_add("*Font", my_font)
+
+        
 
         # Matplotlib parameters.
         #self.PLOT_WIDTH = 16
@@ -110,9 +115,7 @@ class Application(tk.Tk):
         # Padding for all widgets inside a container
         #self.WIDGET_PADX = 2.5
         #self.WIDGET_PADY = 2.5
-        # Max length of string showed by 'Create curve' labels.
-        # This is related to window width, font, and font size.
-        #self.MAX_STR_CREATE_CURVE = 39
+        
         # Number of decimals for rounding operation
         self.ROUND = 5
 
