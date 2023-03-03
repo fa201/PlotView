@@ -11,9 +11,9 @@
 try:
     #from collections import OrderedDict
     #import configparser
-    #import matplotlib.pyplot as plt
-    #from matplotlib.backends.backend_tkagg import (
-    #    FigureCanvasTkAgg, NavigationToolbar2Tk)
+    import matplotlib.pyplot as plt
+    from matplotlib.backends.backend_tkagg import (
+        FigureCanvasTkAgg, NavigationToolbar2Tk)
     #from matplotlib.ticker import MaxNLocator
     #import os
     #import pandas as pd
@@ -65,6 +65,9 @@ class Application(tk.Tk):
         self.protocol('WM_DELETE_WINDOW', self.app_quit)
         self.menus = Menus(self)
         self.status_bar = StatusBar(self)
+        self.create_main_panels()
+        
+        
         #self.create_curve_tab = CreateCurveTab(self)
 
     def define_window_parameters(self):
@@ -96,6 +99,7 @@ class Application(tk.Tk):
         self.my_style.configure('w4.TButton', width=4)
         self.my_style.configure('w6.TButton', width=6)
         self.my_style.configure('w9.TButton', width=9)
+        
         # Fonts
         self.FONT_SIZE = 9
         my_font = tk.font.nametofont('TkDefaultFont')
@@ -103,11 +107,6 @@ class Application(tk.Tk):
         # Apply font change to all widgets created from now on.
         self.option_add("*Font", my_font)
 
-        
-
-        # Matplotlib parameters.
-        #self.PLOT_WIDTH = 16
-        #self.PLOT_HEIGHT = 12
         # Parameters for widgets on RH tool panel.
         # Padding for all containers to uniformize the look
         #self.CONTAINER_PADX = 10
@@ -119,10 +118,50 @@ class Application(tk.Tk):
         # Number of decimals for rounding operation
         self.ROUND = 5
 
+    def create_main_panels(self):
+        """Create 2 panels containing the matplotlib and tabs widgets
+
+        On the right, a frame 'tool_frame' holds the notebook showing curve related tabs. It needs to be created before the matplotlib frame.
+
+        On the left, a frame 'mat_frame' embeds the matplotlib plot and tool bar.
+        This frame contains the canvas holding the matplotlib figure and tool bar.
+        The size of the figure needs to large to fill all the space on large screen.
+
+        Help on layout: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
+
+        Attributes:
+        - PLOT_WIDTH: width of matplotlib plot in inches.
+        - PLOT_HEIGHT: height of matplotlib plot in inches.
+        - fig: matplotlib figure holding the unique plot (1 axes)
+        """
+        # CREATE RH TOOL PANEL
+        self.tool_frame = ttk.Frame(self)
+        self.tool_frame.pack(expand=False, fill=tk.BOTH, side=tk.RIGHT)
+        self.tool_notebook = ttk.Notebook(self.tool_frame)
+        self.tool_notebook.pack(expand=True, fill=tk.BOTH)
+        # CREATE LH MATPLOTLIB PANEL
+        self.PLOT_WIDTH = 20 
+        self.PLOT_HEIGHT = 12
+        self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
+        self.ax = self.fig.add_subplot(111)
+        # plot_fig_color is initialized here but the value will be updated based on radiobutton state in plot curve tab.
+        self.plot_fig_color = 'white_bg'
+        self.mat_frame = ttk.Frame(self)
+        self.mat_frame.pack(expand=True, fill=tk.BOTH, side=tk.LEFT)
+        # Creates a drawing area to put the Figure
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
+        self.canvas.draw()  # Draw the canvas
+        # Creates the Matplotlib navigation tool bar for figures.
+        self.toolbar = NavigationToolbar2Tk(self.canvas, self.mat_frame)
+        # draw() shows a bug with matplotlib 3.5 and it is replaced by update()
+        self.toolbar.update()  # Show the tool bar
+        self.canvas.get_tk_widget().pack()
+
     def app_quit(self):
             """ Quit the application and free the stack."""
             self.destroy()
             sys.exit()
+
 
 
 if __name__ == '__main__':

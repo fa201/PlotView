@@ -18,6 +18,9 @@ class StatusBar():
     """Manage the status bar showing messages.
     
     Help: https://stackoverflow.com/questions/73704408/tkinter-pack-add-space-beteen-elements
+    
+    Method:
+    - set_status: update the status bar with a message.
     """
 
     def __init__(self, parent):
