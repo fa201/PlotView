@@ -90,10 +90,8 @@ class CreateCurveTab():
         # ttk.Button(self.create_curve_frame, text='CSV file',
         #           command=self.choose_file, style='w9.TButton'
         #           ).grid(row=1, column=0)
-        """
         ttk.Button(self.create_curve_frame, text='CSV file',
                    command=self.choose_file).grid(row=1, column=0)
-        """
         ttk.Label(self.create_curve_frame, textvariable=self.work_file_txt
                   ).grid(row=1, column=1)
         # Curve name widget
@@ -120,7 +118,8 @@ class CreateCurveTab():
             Process the string of working directory to have no more than MAX_STR_CREATE_CURVE
             characters. This gives no change in layout when selecting long or short path.
             The length of string displayed should be the same as for choose_file.
-            BUG if the path is shorter than MAX_STR_CREATE_CURVE
+
+            CAUTION: if the folder path is shorter than MAX_STR_CREATE_CURVE then the frame width is kept only due to curve name entry.
         """
         self.work_dir = filedialog.askdirectory(
             title='Choose a working directory for CSV files')
@@ -136,7 +135,35 @@ class CreateCurveTab():
             self.parent.status_bar.set_status(
                 ''.join(['Working directory is set at: ', self.work_dir]))
         else:
-            # Dialog CANCEL return empty string. So the initial value is reassigned to keep the layout.
+            # Dialog CANCEL returns empty string. So the initial value is reassigned to keep the layout.
             self.work_dir_txt.set(self.create_underscores())
             self.parent.status_bar.set_status(
                 'WARNING - No working directory selected.')
+
+    def choose_file(self):
+        """ Get the path to the CSV file to open.
+
+            A file dialog allows to select the file path.
+            Process the string of working directory to have no more than 'MAX_STR_CREATE_CURVE'
+            characters. This gives no change in layout when selecting long or short path.
+            The length of string displayed should be the same as for 'choose_dir'.
+
+            CAUTION: if the folder path is shorter than MAX_STR_CREATE_CURVE then the frame width is kept only due to curve name entry.
+        """
+        self.work_file = filedialog.askopenfilename(
+            initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
+        if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
+            temp = ''.join(
+                ['...', self.work_file[-self.MAX_STR_CREATE_CURVE+3:]])
+            self.work_file_txt.set(temp)
+            self.parent.status_bar.set_status(
+                ''.join(['CSV file selected: ', self.work_file]))
+        elif 0 < len(self.work_file) < (self.MAX_STR_CREATE_CURVE-3):
+            self.work_file_txt.set(self.work_file)
+            self.parent.status_bar.set_status(
+                ''.join(['CSV file selected: ', self.work_file]))
+        else:
+            # Dialog CANCEL returns empty string. So the initial value is reassigned to keep the layout.
+            self.work_file_txt.set(self.create_underscores())
+            self.parent.status_bar.set_status(
+                'WARNING - A CSV file has to be selected.')
