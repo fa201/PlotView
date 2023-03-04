@@ -9,21 +9,21 @@
 
 
 try:
-    #from collections import OrderedDict
-    #import configparser
+    # from collections import OrderedDict
+    # import configparser
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_tkagg import (
         FigureCanvasTkAgg, NavigationToolbar2Tk)
-    #from matplotlib.ticker import MaxNLocator
-    #import os
-    #import pandas as pd
+    # from matplotlib.ticker import MaxNLocator
+    # import os
+    # import pandas as pd
     import sys
     import tkinter as tk
     from tkinter import font
-    #from tkinter import messagebox as msg
-    #from tkinter import filedialog
+    # from tkinter import messagebox as msg
+    # from tkinter import filedialog
     import tkinter.ttk as ttk
-    #import webbrowser
+    # import webbrowser
 
     from src.menus import Menus
     from src.status_bar import StatusBar
@@ -31,11 +31,31 @@ try:
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
     print('Please check the required packages at https://github.com/fa201/PlotView.')
-    # TODO how to use same exception for all imports. Class? 
+    # TODO how to use same exception for all imports. Class?
+
+
+"""TODO Gets and prints the spreadsheet's header columns
+
+Args:
+    file_loc (str): The file location of the spreadsheet
+    print_cols (bool): A flag used to print the columns to the console
+        (default is False)
+
+Attributes:
+    zjbnzjbn
+    
+
+Returns:
+    list: a list of strings representing the header columns
+    
+Raises:
+    jnaemrj eaj
+"""
 
 
 class Application(tk.Tk):
     """"It defines the main window of GUI."""
+
     def __init__(self):
         """ Initialize the main window.
 
@@ -51,14 +71,14 @@ class Application(tk.Tk):
         - FONT_SIZE: integer -> size of font to be used for all widget texts.
         - PLOT_WIDTH: float -> width (in) of matplotlib figure.
         - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
-        
 
         Variables: to be completed
 
         Methods: to be completed
         """
         super().__init__()
-        self.PV_VERSION = '1.9'  # Version is positioned here to be easy to find.
+        # Version is positioned here to be easy to find.
+        self.PV_VERSION = '1.9'
         self.define_window_parameters()
         self.setup_GUI_look()
         # Allows root window to be closed by the closing icon.
@@ -66,9 +86,7 @@ class Application(tk.Tk):
         self.menus = Menus(self)
         self.status_bar = StatusBar(self)
         self.create_main_panels()
-        
-        
-        #self.create_curve_tab = CreateCurveTab(self)
+        self.create_curve_tab = CreateCurveTab(self)
 
     def define_window_parameters(self):
         """Define main window parameter: title, size, position."""
@@ -79,7 +97,7 @@ class Application(tk.Tk):
 
     def setup_GUI_look(self):
         """Define ttk style, font, button sizes 
-        
+
         ttk style
             - Do not work for TEntry, TCombobox
             - Optional themes: default, clam, alt, classic
@@ -89,17 +107,20 @@ class Application(tk.Tk):
             - Help:
                 https://stackoverflow.com/questions/31918073/tkinter-how-to-set-font-for-text
                 https://stackoverflow.com/questions/15462647/how-to-modify-the-default-font-in-tkinter
-        
+
         Define 3 sizes of TButtons to be used for most buttons: 4, 6, 9
         """
         self.my_style = ttk.Style()
         self.my_style.theme_use('alt')
-        
-        # Buttons size
+
+        # Buttons size. Help https://tkdocs.com/shipman/ttk-style-layer.html
+        # TODO https://stackoverflow.com/questions/49230658/tkinter-how-to-apply-customized-ttk-stylename-that-is-defined-in-one-class-to-o
+        """
         self.my_style.configure('w4.TButton', width=4)
         self.my_style.configure('w6.TButton', width=6)
         self.my_style.configure('w9.TButton', width=9)
-        
+        """
+
         # Fonts
         self.FONT_SIZE = 9
         my_font = tk.font.nametofont('TkDefaultFont')
@@ -109,12 +130,12 @@ class Application(tk.Tk):
 
         # Parameters for widgets on RH tool panel.
         # Padding for all containers to uniformize the look
-        #self.CONTAINER_PADX = 10
-        #self.CONTAINER_PADY = 6.5
+        # self.CONTAINER_PADX = 10
+        # self.CONTAINER_PADY = 6.5
         # Padding for all widgets inside a container
-        #self.WIDGET_PADX = 2.5
-        #self.WIDGET_PADY = 2.5
-        
+        # self.WIDGET_PADX = 2.5
+        # self.WIDGET_PADY = 2.5
+
         # Number of decimals for rounding operation
         self.ROUND = 5
 
@@ -130,9 +151,9 @@ class Application(tk.Tk):
         Help on layout: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
 
         Attributes:
-        - PLOT_WIDTH: width of matplotlib plot in inches.
-        - PLOT_HEIGHT: height of matplotlib plot in inches.
-        - fig: matplotlib figure holding the unique plot (1 axes)
+            PLOT_WIDTH: width of matplotlib plot in inches.
+            PLOT_HEIGHT: height of matplotlib plot in inches.
+            fig: matplotlib figure holding the unique plot (1 axes)
         """
         # CREATE RH TOOL PANEL
         self.tool_frame = ttk.Frame(self)
@@ -140,7 +161,7 @@ class Application(tk.Tk):
         self.tool_notebook = ttk.Notebook(self.tool_frame)
         self.tool_notebook.pack(expand=True, fill=tk.BOTH)
         # CREATE LH MATPLOTLIB PANEL
-        self.PLOT_WIDTH = 20 
+        self.PLOT_WIDTH = 20
         self.PLOT_HEIGHT = 12
         self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
         self.ax = self.fig.add_subplot(111)
@@ -148,20 +169,17 @@ class Application(tk.Tk):
         self.plot_fig_color = 'white_bg'
         self.mat_frame = ttk.Frame(self)
         self.mat_frame.pack(expand=True, fill=tk.BOTH, side=tk.LEFT)
-        # Creates a drawing area to put the Figure
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
         self.canvas.draw()  # Draw the canvas
-        # Creates the Matplotlib navigation tool bar for figures.
         self.toolbar = NavigationToolbar2Tk(self.canvas, self.mat_frame)
         # draw() shows a bug with matplotlib 3.5 and it is replaced by update()
         self.toolbar.update()  # Show the tool bar
         self.canvas.get_tk_widget().pack()
 
     def app_quit(self):
-            """ Quit the application and free the stack."""
-            self.destroy()
-            sys.exit()
-
+        """ Quit the application and free the stack."""
+        self.destroy()
+        sys.exit()
 
 
 if __name__ == '__main__':
