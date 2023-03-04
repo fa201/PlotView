@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
 try:
-    #from collections import OrderedDict
-    #import configparser
-    #import os
-    #import pandas as pd
+    # from collections import OrderedDict
+    # import configparser
+    # import os
+    # import pandas as pd
     import tkinter as tk
     from tkinter import font
     from tkinter import messagebox as msg
-    #from tkinter import filedialog
+    # from tkinter import filedialog
     import tkinter.ttk as ttk
     import webbrowser
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
     print('Please check the required packages at https://github.com/fa201/PlotView.')
-    # TODO how to use same exception for all imports. Class? 
+    # TODO how to use same exception for all imports. Class?
 
 
 class Menus():
@@ -33,13 +33,17 @@ class Menus():
         # Link of main menu to root window
         self.parent.config(menu=self.menu_main)
         # File Menu
-        self.menu_file.add_command(label='Load session', command=self.load_session)
-        self.menu_file.add_command(label='Save session', command=self.save_session)
+        self.menu_file.add_command(
+            label='Load session', command=self.load_session)
+        self.menu_file.add_command(
+            label='Save session', command=self.save_session)
         self.menu_file.add_separator()
         self.menu_file.add_command(label='Quit', command=self.parent.app_quit)
         # Help Menu
-        self.menu_help.add_command(label='Help files', command=self.help_message)
-        self.menu_help.add_command(label='Licence', command=self.licence_message)
+        self.menu_help.add_command(
+            label='Help files', command=self.help_message)
+        self.menu_help.add_command(
+            label='Licence', command=self.licence_message)
         self.menu_help.add_separator()
         self.menu_help.add_command(label='About', command=self.about_redirect)
 
@@ -60,7 +64,8 @@ class Menus():
     def about_redirect(self):
         """ PlotView repository is shown in the web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/')
-        # TODO self.set_status('The PlotView repository on github was opened in your web browser.')
+        self.parent.status_bar.set_status(
+            'The PlotView repository on github was opened in your web browser.')
 
     def save_session(self):
         pass
