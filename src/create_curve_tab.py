@@ -114,26 +114,29 @@ class CreateCurveTab():
         self.parent.tool_notebook.add(self.curve_tab, text='Curve')
 
     def choose_dir(self):
-        """ Get the working directory path with file dialog
+        """ Set the working directory to process several curves in a row.
 
-            Process the string of working directory to have no more than 'MAX_STR_CREATE_CURVE'
+            A file dialog allows to select the working directory path.
+            Process the string of working directory to have no more than MAX_STR_CREATE_CURVE
             characters. This gives no change in layout when selecting long or short path.
-            The length of string displayed should be the same as for 'choose_file'.
+            The length of string displayed should be the same as for choose_file.
+            BUG if the path is shorter than MAX_STR_CREATE_CURVE
         """
         self.work_dir = filedialog.askdirectory(
             title='Choose a working directory for CSV files')
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
         if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
-            temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE+3:]
+            temp = ''.join(
+                ['...', self.work_dir[-self.MAX_STR_CREATE_CURVE+3:]])
             self.work_dir_txt.set(temp)
             self.parent.status_bar.set_status(
-                'Working directory is set at:'+self.work_dir)
+                ''.join(['Working directory is set at: ', self.work_dir]))
         elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
             self.work_dir_txt.set(self.work_dir)
             self.parent.status_bar.set_status(
-                'Working directory is set at:'+self.work_dir)
+                ''.join(['Working directory is set at: ', self.work_dir]))
         else:
-            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
+            # Dialog CANCEL return empty string. So the initial value is reassigned to keep the layout.
             self.work_dir_txt.set(self.create_underscores())
             self.parent.status_bar.set_status(
                 'WARNING - No working directory selected.')
