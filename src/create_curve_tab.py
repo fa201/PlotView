@@ -4,7 +4,7 @@ try:
     import tkinter as tk
     from tkinter import font
     # from tkinter import messagebox as msg
-    # from tkinter import filedialog
+    from tkinter import filedialog
     import tkinter.ttk as ttk
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
@@ -81,14 +81,11 @@ class CreateCurveTab():
         # Working directory widgets TODO style à définir
         # ttk.Button(self.create_curve_frame, text='Work dir.',
         #           command=self.choose_dir, style='w9.TButton').grid(row=0, column=0)
-        """
         ttk.Button(self.create_curve_frame, text='Work dir.',
                    command=self.choose_dir).grid(row=0, column=0)
-        """
         ttk.Label(self.create_curve_frame,
                   textvariable=self.work_dir_txt
                   ).grid(row=0, column=1)
-
         # CSV file widget
         # ttk.Button(self.create_curve_frame, text='CSV file',
         #           command=self.choose_file, style='w9.TButton'
@@ -114,5 +111,29 @@ class CreateCurveTab():
         ttk.Button(self.create_curve_frame, text='Create curve',
                    command=self.curve_create).grid(row=3, column=0, columnspan=2)
         """
-
         self.parent.tool_notebook.add(self.curve_tab, text='Curve')
+
+    def choose_dir(self):
+        """ Get the working directory path with file dialog
+
+            Process the string of working directory to have no more than 'MAX_STR_CREATE_CURVE'
+            characters. This gives no change in layout when selecting long or short path.
+            The length of string displayed should be the same as for 'choose_file'.
+        """
+        self.work_dir = filedialog.askdirectory(
+            title='Choose a working directory for CSV files')
+        # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
+        if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
+            temp = '...' + self.work_dir[-self.MAX_STR_CREATE_CURVE+3:]
+            self.work_dir_txt.set(temp)
+            self.parent.status_bar.set_status(
+                'Working directory is set at:'+self.work_dir)
+        elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
+            self.work_dir_txt.set(self.work_dir)
+            self.parent.status_bar.set_status(
+                'Working directory is set at:'+self.work_dir)
+        else:
+            # CANCEL return empty string. So I reaffect the initial value to keep the layout.
+            self.work_dir_txt.set(self.create_underscores())
+            self.parent.status_bar.set_status(
+                'WARNING - No working directory selected.')
