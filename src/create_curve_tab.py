@@ -38,13 +38,11 @@ class CreateCurveTab():
         Labels showing directory and files pathes have a somewhat constant width to look better in the GUI layout. Empty characters are replaced by '_'. 
 
         Attributes:
-        - MAX_STR_CREATE_CURVE: int -> number of characters. Depends on window width, font and font size.
         - work_dir: string -> directory path to CSV file
         - work_dir_txt: string -> above path shortened to fit in the label. Only the end part is kept.
         - work_file: string -> file path to CSV file
         - work_file_txt: string -> above path shortened to fit in the label. Only the end part is kept.
         """
-        self.MAX_STR_CREATE_CURVE = 39
         self.work_dir = ''
         self.work_dir_txt = tk.StringVar(value=self.create_underscores())
         self.work_file = ''
@@ -59,7 +57,7 @@ class CreateCurveTab():
         This way, the label layout is visually more consistent.
         """
         underscores = list()
-        for i in range(0, self.MAX_STR_CREATE_CURVE):
+        for i in range(0, self.parent.cst.MAX_STR_CREATE_CURVE):
             underscores.append('_')
         return ''.join(underscores)
 
@@ -124,13 +122,13 @@ class CreateCurveTab():
         self.work_dir = filedialog.askdirectory(
             title='Choose a working directory for CSV files')
         # MAX_STR_CREATE_CURVE-3 to take into account the '...' prefix to the final string.
-        if len(self.work_dir) > (self.MAX_STR_CREATE_CURVE-3):
+        if len(self.work_dir) > (self.parent.cst.MAX_STR_CREATE_CURVE-3):
             temp = ''.join(
-                ['...', self.work_dir[-self.MAX_STR_CREATE_CURVE+3:]])
+                ['...', self.work_dir[-self.parent.cst.MAX_STR_CREATE_CURVE+3:]])
             self.work_dir_txt.set(temp)
             self.parent.status_bar.set_status(
                 ''.join(['Working directory is set at: ', self.work_dir]))
-        elif 0 < len(self.work_dir) < (self.MAX_STR_CREATE_CURVE-3):
+        elif 0 < len(self.work_dir) < (self.parent.cst.MAX_STR_CREATE_CURVE-3):
             self.work_dir_txt.set(self.work_dir)
             self.parent.status_bar.set_status(
                 ''.join(['Working directory is set at: ', self.work_dir]))
@@ -152,13 +150,13 @@ class CreateCurveTab():
         """
         self.work_file = filedialog.askopenfilename(
             initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
-        if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
+        if len(self.work_file) > (self.parent.cst.MAX_STR_CREATE_CURVE-3):
             temp = ''.join(
-                ['...', self.work_file[-self.MAX_STR_CREATE_CURVE+3:]])
+                ['...', self.work_file[-self.parent.cst.MAX_STR_CREATE_CURVE+3:]])
             self.work_file_txt.set(temp)
             self.parent.status_bar.set_status(
                 ''.join(['CSV file selected: ', self.work_file]))
-        elif 0 < len(self.work_file) < (self.MAX_STR_CREATE_CURVE-3):
+        elif 0 < len(self.work_file) < (self.parent.cst.MAX_STR_CREATE_CURVE-3):
             self.work_file_txt.set(self.work_file)
             self.parent.status_bar.set_status(
                 ''.join(['CSV file selected: ', self.work_file]))

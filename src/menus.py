@@ -18,7 +18,7 @@ except ModuleNotFoundError as e:
 
 
 class Menus():
-    """All menus of GUI"""
+    """All menus of GUI. TODO use constant for messages ?"""
 
     def __init__(self, parent):
         self.parent = parent

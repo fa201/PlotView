@@ -2,13 +2,13 @@
 
 try:
     from collections import OrderedDict
-    #import configparser
-    #import os
+    # import configparser
+    # import os
     import pandas as pd
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
     print('Please check the required packages at https://github.com/fa201/PlotView.')
-    # TODO how to use same exception for all imports. Class? 
+    # TODO how to use same exception for all imports. Class?
 
 
 class Curve():
@@ -41,6 +41,18 @@ class Curve():
     # Dictionary of curve instances.
     # Ordered dictionary is kept as the user can remind in which order the curves are created.
     dic = OrderedDict()
+    my_colors = {'white_bg': ['white', 'black', 'grey', 'red', 'darksalmon',
+                              'sienna', 'tan', 'gold', 'green', 'dodgerblue',
+                              'blueviolet', 'hotpink', 'orange', 'peru',
+                              'limegreen', 'turquoise', 'royalblue'
+                              ],
+                 'black_bg': ['black', 'white', 'grey', 'red', 'darksalmon',
+                              'sienna', 'tan', 'gold', 'green', 'dodgerblue',
+                              'blueviolet', 'hotpink', 'orange', 'peru',
+                              'limegreen', 'turquoise', 'royalblue'
+                              ]
+                 }
+    my_linestyles = ['solid', 'dashed', 'dotted', 'dashdot']
 
     def __init__(self, parent, path):
         """ Create a Curve instance based on CSV file path.
@@ -54,9 +66,9 @@ class Curve():
         self.data_type = self.get_data_types()
         self.data_out = self.create_data_out(self.data_in)
         self.visibility = True
-        self.color = my_colors[app.plot_fig_color][1]
+        self.color = Curve.my_colors[app.plot_fig_color][1]
         self.width = 1.0
-        self.style = my_linestyles[0]
+        self.style = Curve.my_linestyles[0]
         self.x_offset = 0.0
         self.y_offset = 0.0
         self.x_scale = 1.0
@@ -71,7 +83,7 @@ class Curve():
         self.ext_y_max_x = 0.0
         Curve.count += 1
 
-    #def read_file(self, path):
+    # def read_file(self, path):
         """ Read the curve CSV file.
 
             It is necessary to convert data to float in 'read_csv' in order to plot.
@@ -92,7 +104,7 @@ class Curve():
             Application.choose_file(app)
         # TODO: handle following exceptions: no column, more than 2 columns, strings, missing values, etc.
 """
-    #def get_data_types(self):
+    # def get_data_types(self):
         """temp = {}
         temp['x_type'] = self.data_in.columns[0]
         temp['y_type'] = self.data_in.columns[1]
@@ -102,7 +114,7 @@ class Curve():
         temp = df.copy()
         return temp
 """
-    #def find_extrema(self):
+    # def find_extrema(self):
         """ all values are round to 10 -> use a variable and update first label in extrema plot (number of digits)
 
             since pd.round() gives error on Windows, rounding is done on the float.

@@ -28,6 +28,7 @@ try:
     from src.menus import Menus
     from src.status_bar import StatusBar
     from src.create_curve_tab import CreateCurveTab
+    from src.constants import Constants
 except ModuleNotFoundError as e:
     print('The necessary Python packages are not installed.\n' + str(e))
     print('Please check the required packages at https://github.com/fa201/PlotView.')
@@ -63,22 +64,14 @@ class Application(tk.Tk):
         The matplotlib area is defined 16 x 12 in which is bigger than the available space.
         Yet it is not a problem because it is handled by tk window manager.
 
-        Constants:
-        - PV_VERSION: string -> plot view version as shown by git tag.
-        - WIN_RESIZABLE: boolean -> prevents the user from resizing the root window.
-        - WIN_SIZE_POS: string -> window size (width x height) and position relative
-                                    to top left corner.
-        - FONT_SIZE: integer -> size of font to be used for all widget texts.
-        - PLOT_WIDTH: float -> width (in) of matplotlib figure.
-        - PLOT_HEIGHT: float -> height (in) of matplotlib figure.
+        Constants are imported from Constant class.
 
         Variables: to be completed
 
         Methods: to be completed
         """
         super().__init__()
-        # Version is positioned here to be easy to find.
-        self.PV_VERSION = '1.9'
+        self.cst = Constants()
         self.define_window_parameters()
         self.setup_GUI_look()
         # Allows root window to be closed by the closing icon.
@@ -90,10 +83,8 @@ class Application(tk.Tk):
 
     def define_window_parameters(self):
         """Define main window parameter: title, size, position."""
-        self.title(' '.join(['PlotView', self.PV_VERSION]))
-        # Window size should be OK for most cases. Window positioned at top left corner.
-        self.WIN_SIZE_POS = '1280x780+0+0'
-        self.geometry(self.WIN_SIZE_POS)
+        self.title(' '.join(['PlotView', self.cst.PV_VERSION]))
+        self.geometry(self.cst.WIN_SIZE_POS)
 
     def setup_GUI_look(self):
         """Define ttk style, font, button sizes 
@@ -122,22 +113,10 @@ class Application(tk.Tk):
         """
 
         # Fonts
-        self.FONT_SIZE = 9
         my_font = tk.font.nametofont('TkDefaultFont')
-        my_font.configure(size=self.FONT_SIZE)
+        my_font.configure(size=self.cst.FONT_SIZE)
         # Apply font change to all widgets created from now on.
         self.option_add("*Font", my_font)
-
-        # Parameters for widgets on RH tool panel.
-        # Padding for all containers to uniformize the look
-        # self.CONTAINER_PADX = 10
-        # self.CONTAINER_PADY = 6.5
-        # Padding for all widgets inside a container
-        # self.WIDGET_PADX = 2.5
-        # self.WIDGET_PADY = 2.5
-
-        # Number of decimals for rounding operation
-        self.ROUND = 5
 
     def create_main_panels(self):
         """Create 2 panels containing the matplotlib and tabs widgets
@@ -146,13 +125,10 @@ class Application(tk.Tk):
 
         On the left, a frame 'mat_frame' embeds the matplotlib plot and tool bar.
         This frame contains the canvas holding the matplotlib figure and tool bar.
-        The size of the figure needs to large to fill all the space on large screen.
 
         Help on layout: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
 
         Attributes:
-            PLOT_WIDTH: width of matplotlib plot in inches.
-            PLOT_HEIGHT: height of matplotlib plot in inches.
             fig: matplotlib figure holding the unique plot (1 axes)
         """
         # CREATE RH TOOL PANEL
@@ -161,9 +137,8 @@ class Application(tk.Tk):
         self.tool_notebook = ttk.Notebook(self.tool_frame)
         self.tool_notebook.pack(expand=True, fill=tk.BOTH)
         # CREATE LH MATPLOTLIB PANEL
-        self.PLOT_WIDTH = 20
-        self.PLOT_HEIGHT = 12
-        self.fig = plt.Figure(figsize=(self.PLOT_WIDTH, self.PLOT_HEIGHT))
+        self.fig = plt.Figure(
+            figsize=(self.cst.PLOT_WIDTH, self.cst.PLOT_HEIGHT))
         self.ax = self.fig.add_subplot(111)
         # plot_fig_color is initialized here but the value will be updated based on radiobutton state in plot curve tab.
         self.plot_fig_color = 'white_bg'
@@ -192,6 +167,6 @@ if __name__ == '__main__':
     print('Screen width', screen_width)
     """
     # Define the min size for the window. It should be enough even for old screens.
-    app.minsize(800, 610)
+    app.minsize(app.cst.WIN_MIN_WIDTH, app.cst.WIN_MIN_HEIGHT)
     # Launch the GUI mainloop which should always be the last instruction!
     app.mainloop()
