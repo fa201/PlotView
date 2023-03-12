@@ -24,7 +24,6 @@ try:
     # from tkinter import filedialog
     import tkinter.ttk as ttk
     # import webbrowser
-
     from src.menus import Menus
     from src.status_bar import StatusBar
     from src.create_curve_tab import CreateCurveTab
