@@ -18,21 +18,21 @@ except ModuleNotFoundError as e:
 
 
 class Menus():
-    """All menus of GUI. TODO use constant for messages ?"""
+    """All menus of GUI. TODO use constant for messages ?
+
+    Menu tear-off is disabled as it is for modern applications.
+    """
 
     def __init__(self, parent):
         self.parent = parent
+
         self.menu_main = tk.Menu(self.parent)
-        # Menu tear off is disabled.
         self.menu_file = tk.Menu(self.menu_main, tearoff='False')
-        self.menu_pref = tk.Menu(self.menu_main, tearoff='False')
+        # TODO self.menu_pref = tk.Menu(self.menu_main, tearoff='False')
         self.menu_help = tk.Menu(self.menu_main, tearoff='False')
-        # Add menu_file in menu_main
-        self.menu_main.add_cascade(label='File', menu=self.menu_file)
-        self.menu_main.add_cascade(label='Help', menu=self.menu_help)
-        # Link of main menu to root window
-        self.parent.config(menu=self.menu_main)
+
         # File Menu
+        self.menu_main.add_cascade(label='File', menu=self.menu_file)
         self.menu_file.add_command(
             label='Load session', command=self.load_session)
         self.menu_file.add_command(
@@ -40,33 +40,38 @@ class Menus():
         self.menu_file.add_separator()
         self.menu_file.add_command(
             label='Quit', command=self.parent.quit_application)
+
         # Help Menu
+        self.menu_main.add_cascade(label='Help', menu=self.menu_help)
         self.menu_help.add_command(
-            label='Help files', command=self.help_message)
+            label='Help files', command=self.show_help_dialog)
         self.menu_help.add_command(
-            label='Licence', command=self.licence_message)
+            label='Licence', command=self.show_licence_dialog)
         self.menu_help.add_separator()
-        self.menu_help.add_command(label='About', command=self.about_redirect)
+        self.menu_help.add_command(
+            label='About', command=self.show_about_redirect_to_repository)
 
-    def help_message(self):
+        # Addition of main menu to application window
+        self.parent.config(menu=self.menu_main)
+
+    def show_help_dialog(self):
         """ Give directions to help files."""
-        m1 = 'Help is available in the "test" folder with the "index.html" file. '
-        m2 = 'In case you have not downloaded this folder, it is available at:\n'
-        m3 = 'https://github.com/fa201/PlotView'
-        msg.showinfo('Help', ''.join([m1, m2, m3]))
+        m1 = 'Help is available in the "help" folder with the file "index.html".\n'
+        m2 = 'In case you do not have this folder, please visit the Github repository: menu HELP > ABOUT.'
+        msg.showinfo('Help', ''.join([m1, m2]))
 
-    def licence_message(self):
+    def show_licence_dialog(self):
         """ Give directions to the licence file."""
-        m1 = 'PlotView is licensed under GNU GPL-3.0. '
-        m2 = 'In case you have not downloaded the "LICENSE" file, it is available at:\n'
-        m3 = 'https://github.com/fa201/PlotView'
+        m1 = 'PlotView is licensed under GNU GPL-3.0.\n'
+        m2 = 'The "LICENSE" file is available in the same folder as "plotview.py".\n'
+        m3 = 'In case you do not have this file, please visit the Github repository: menu HELP > ABOUT.'
         msg.showinfo('License', ''.join([m1, m2, m3]))
 
-    def about_redirect(self):
+    def show_about_redirect_to_repository(self):
         """ PlotView repository is shown in the web browser."""
         webbrowser.open_new_tab('https://github.com/fa201/PlotView/')
         self.parent.status_bar.set_status(
-            'The PlotView repository on github was opened in your web browser.')
+            'The PlotView repository on Github was opened in your web browser.')
 
     def save_session(self):
         pass

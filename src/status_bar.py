@@ -30,18 +30,18 @@ class StatusBar():
         # The status frame should extend on all width of the main window.
         self.status_frame.pack(expand=False, fill=tk.X, side=tk.BOTTOM)
         # The status is initialized with left aligned.
-        self.status = ttk.Label(self.status_frame,
-                                text='',
-                                relief=tk.SUNKEN,
-                                anchor=tk.W
-                                )
+        self.status_bar = ttk.Label(self.status_frame,
+                                    text='',
+                                    relief=tk.SUNKEN,
+                                    anchor=tk.W
+                                    )
         # The label should expand on the total available space.
-        self.status.pack(fill=tk.BOTH, expand=False)
+        self.status_bar.pack(fill=tk.BOTH, expand=False)
         self.set_status('Ready.')
 
     def set_status(self, message):
         """ Update the status bar message.
 
-        A space is added on the left to give more room relative to the window border.
+        A space is added on the left to give more room relative to the window left border.
         """
-        self.status.config(text=''.join([' ', message]))
+        self.status_bar.config(text=''.join([' ', message]))
