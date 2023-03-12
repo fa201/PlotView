@@ -33,6 +33,7 @@ class Constants():
         # ==============
         # For all PV widgets
         self.FONT_SIZE = 9
+
         # Size of matplotlib figure holding the plot.
         # The size of the figure needs to large to fill all the space on large screen.
         self.PLOT_WIDTH = 20

@@ -38,7 +38,8 @@ class Menus():
         self.menu_file.add_command(
             label='Save session', command=self.save_session)
         self.menu_file.add_separator()
-        self.menu_file.add_command(label='Quit', command=self.parent.app_quit)
+        self.menu_file.add_command(
+            label='Quit', command=self.parent.quit_application)
         # Help Menu
         self.menu_help.add_command(
             label='Help files', command=self.help_message)

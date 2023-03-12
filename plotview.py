@@ -70,20 +70,28 @@ class Application(tk.Tk):
         Methods: to be completed
         """
         super().__init__()
+        # APPLICATION SETUP
         self.cst = Constants()
-        self.define_window_parameters()
+        self.define_application_parameters()
         self.setup_GUI_look()
-        # Allows root window to be closed by the closing icon.
-        self.protocol('WM_DELETE_WINDOW', self.app_quit)
+        # It should be possible to close the application window by the closing icon.
+        self.protocol('WM_DELETE_WINDOW', self.quit_application)
+
+        # TOP LEVEL WIDGETS FOR APPLICATION
         self.menus = Menus(self)
         self.status_bar = StatusBar(self)
-        self.create_main_panels()
+        self.create_application_main_panels()
+
+        # TABBED MENUS ON RH SIDE OF APPLICATION
         self.create_curve_tab = CreateCurveTab(self)
 
-    def define_window_parameters(self):
-        """Define main window parameter: title, size, position."""
+    def define_application_parameters(self):
+        """Define application parameters: title, size, position."""
         self.title(' '.join(['PlotView', self.cst.PV_VERSION]))
+        # SET THE POSITION AND SIZE OF THE APPLICATION
         self.geometry(self.cst.WIN_SIZE_POS)
+        # The minimum size for the applicaiton should be enough for old screens.
+        self.minsize(self.cst.WIN_MIN_WIDTH, self.cst.WIN_MIN_HEIGHT)
 
     def setup_GUI_look(self):
         """Define ttk style, font, button sizes 
@@ -103,7 +111,14 @@ class Application(tk.Tk):
         self.my_style = ttk.Style()
         self.my_style.theme_use('alt')
 
-        # Buttons size. Help https://tkdocs.com/shipman/ttk-style-layer.html
+        # FONTS
+        my_font = tk.font.nametofont('TkDefaultFont')
+        my_font.configure(size=self.cst.FONT_SIZE)
+        # Apply font change to widgets created from now on to have consistent font everywhere.
+        self.option_add("*Font", my_font)
+
+        # BUTTONS
+        # Help https://tkdocs.com/shipman/ttk-style-layer.html
         # TODO https://stackoverflow.com/questions/49230658/tkinter-how-to-apply-customized-ttk-stylename-that-is-defined-in-one-class-to-o
         """
         self.my_style.configure('w4.TButton', width=4)
@@ -111,46 +126,42 @@ class Application(tk.Tk):
         self.my_style.configure('w9.TButton', width=9)
         """
 
-        # Fonts
-        my_font = tk.font.nametofont('TkDefaultFont')
-        my_font.configure(size=self.cst.FONT_SIZE)
-        # Apply font change to all widgets created from now on.
-        self.option_add("*Font", my_font)
+        # MATPLOTLIB
+        # plot_fig_color is initialized here but the value will be updated based on radiobutton state in plot curve tab.
+        self.plot_fig_color = 'white_bg'
 
-    def create_main_panels(self):
-        """Create 2 panels containing the matplotlib and tabs widgets
+    def create_application_main_panels(self):
+        """Create 2 panels containing the matplotlib and tabbed menus
 
-        On the right, a frame 'tool_frame' holds the notebook showing curve related tabs. It needs to be created before the matplotlib frame.
+        On the right, a frame 'tool_frame' holds the notebook showing curve related tabs. It needs to be created before the matplotlib frame. It cannot expand in size.
 
         On the left, a frame 'mat_frame' embeds the matplotlib plot and tool bar.
-        This frame contains the canvas holding the matplotlib figure and tool bar.
+        This frame contains the canvas holding the matplotlib figure and tool bar. It can expands in size to fit the remaining areas once the RH panel and status bar are packed.
 
         Help on layout: https://stackoverflow.com/questions/29432683/resizing-a-matplotlib-plot-in-a-tkinter-toplevel
 
         Attributes:
             fig: matplotlib figure holding the unique plot (1 axes)
         """
-        # CREATE RH TOOL PANEL
+        # RH TOOL PANEL
         self.tool_frame = ttk.Frame(self)
         self.tool_frame.pack(expand=False, fill=tk.BOTH, side=tk.RIGHT)
         self.tool_notebook = ttk.Notebook(self.tool_frame)
         self.tool_notebook.pack(expand=True, fill=tk.BOTH)
-        # CREATE LH MATPLOTLIB PANEL
+
+        # LH MATPLOTLIB PANEL
         self.fig = plt.Figure(
             figsize=(self.cst.PLOT_WIDTH, self.cst.PLOT_HEIGHT))
         self.ax = self.fig.add_subplot(111)
-        # plot_fig_color is initialized here but the value will be updated based on radiobutton state in plot curve tab.
-        self.plot_fig_color = 'white_bg'
         self.mat_frame = ttk.Frame(self)
         self.mat_frame.pack(expand=True, fill=tk.BOTH, side=tk.LEFT)
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.mat_frame)
         self.canvas.draw()  # Draw the canvas
         self.toolbar = NavigationToolbar2Tk(self.canvas, self.mat_frame)
-        # draw() shows a bug with matplotlib 3.5 and it is replaced by update()
-        self.toolbar.update()  # Show the tool bar
+        self.toolbar.update()  # draw() is deprecated in matplotlib and it is replaced by update()
         self.canvas.get_tk_widget().pack()
 
-    def app_quit(self):
+    def quit_application(self):
         """ Quit the application and free the stack."""
         self.destroy()
         sys.exit()
@@ -165,7 +176,5 @@ if __name__ == '__main__':
     print('Screen height', screen_height)
     print('Screen width', screen_width)
     """
-    # Define the min size for the window. It should be enough even for old screens.
-    app.minsize(app.cst.WIN_MIN_WIDTH, app.cst.WIN_MIN_HEIGHT)
     # Launch the GUI mainloop which should always be the last instruction!
     app.mainloop()
