@@ -22,9 +22,9 @@ class Curve():
     Curve attributes:
         - name: string -> user-defined name. Can be changed in the PV session
         - path: string -> path to CSV file
-        - data_in: dataframe -> contains (X,Y) points as read in the CSV file
+        - input_data: dataframe -> contains (X,Y) points as read in the CSV file
         - data_type: dictionary -> contains X header and Y header
-        - data_out: dataframe -> data_in with offset and scale values to be plotted
+        - output_data: dataframe -> input_data with offset and scale values to be plotted
         - visibility: boolean -> flag to show the curve in the plot or not
         - color: string -> color of the curve line
         - width: float -> width of the curve line
@@ -62,9 +62,9 @@ class Curve():
         self.parent = parent
         self.name = 'Name'
         self.path = path
-        self.data_in = self.read_file(self.path)
-        self.data_type = self.get_data_types()
-        self.data_out = self.create_data_out(self.data_in)
+        self.input_data = self.read_CSV_file(self.path)
+        self.data_type = self.get_CSV_x_and_y_data_types()
+        self.output_data = self.create_output_data(self.input_data)
         self.visibility = True
         self.color = Curve.my_colors[app.plot_fig_color][1]
         self.width = 1.0
@@ -83,8 +83,8 @@ class Curve():
         self.ext_y_max_x = 0.0
         Curve.count += 1
 
-    # def read_file(self, path):
-        """ Read the curve CSV file.
+    # def read_CSV_file(self, path):
+        """ Read the curve file in CSV format.
 
             It is necessary to convert data to float in 'read_csv' in order to plot.
             Requirements on the file format:
@@ -104,13 +104,13 @@ class Curve():
             Application.choose_file(app)
         # TODO: handle following exceptions: no column, more than 2 columns, strings, missing values, etc.
 """
-    # def get_data_types(self):
+    # def get_CSV_x_and_y_data_types(self):
         """temp = {}
-        temp['x_type'] = self.data_in.columns[0]
-        temp['y_type'] = self.data_in.columns[1]
+        temp['x_type'] = self.input_data.columns[0]
+        temp['y_type'] = self.input_data.columns[1]
         return temp
 
-    def create_data_out(self, df):
+    def create_output_data(self, df):
         temp = df.copy()
         return temp
 """
@@ -123,37 +123,37 @@ class Curve():
         """print('Extrema values for curve', self.name, 'without rounding:')
 
         # X min
-        temp_ext_x_min = self.data_out.iloc[:, 0].min()
+        temp_ext_x_min = self.output_data.iloc[:, 0].min()
         self.ext_x_min = round(temp_ext_x_min, app.ROUND)
         # Find Y for X min
-        temp_ext_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1]
+        temp_ext_x_min_y = self.output_data.iloc[self.output_data.iloc[:, 0].idxmin(), 1]
         self.ext_x_min_y = round(temp_ext_x_min_y, app.ROUND)
         print('X min:', temp_ext_x_min, ' @ Y:', temp_ext_x_min_y)
         app.extrema_x_min.set('X min ' + str(self.ext_x_min) + ' @ Y ' + str(self.ext_x_min_y))
 
         # X max
-        temp_ext_x_max = self.data_out.iloc[:, 0].max()
+        temp_ext_x_max = self.output_data.iloc[:, 0].max()
         self.ext_x_max = round(temp_ext_x_max, app.ROUND)
         # Find Y for X max
-        temp_ext_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1]
+        temp_ext_x_max_y = self.output_data.iloc[self.output_data.iloc[:, 0].idxmax(), 1]
         self.ext_x_max_y = round(temp_ext_x_max_y, app.ROUND)
         print('X max:', temp_ext_x_max, ' @ Y:', temp_ext_x_max_y)
         app.extrema_x_max.set('X max ' + str(self.ext_x_max) + ' @ Y ' + str(self.ext_x_max_y))
 
         # Y min
-        temp_ext_y_min = self.data_out.iloc[:, 1].min()
+        temp_ext_y_min = self.output_data.iloc[:, 1].min()
         self.ext_y_min = round(temp_ext_y_min, app.ROUND)
         # Find X for Y min
-        temp_ext_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0]
+        temp_ext_y_min_x = self.output_data.iloc[self.output_data.iloc[:, 1].idxmin(), 0]
         self.ext_y_min_x = round(temp_ext_y_min_x, app.ROUND)
         print('Y min:', temp_ext_y_min, '@ X:', temp_ext_y_min_x)
         app.extrema_y_min.set('Y min ' + str(self.ext_y_min) + ' @ X ' + str(self.ext_y_min_x))
 
         # Y max
-        temp_ext_y_max = self.data_out.iloc[:, 1].max()
+        temp_ext_y_max = self.output_data.iloc[:, 1].max()
         self.ext_y_max = round(temp_ext_y_max, app.ROUND)
         # Find X for Y max
-        temp_ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0]
+        temp_ext_y_max_x = self.output_data.iloc[self.output_data.iloc[:, 1].idxmax(), 0]
         self.ext_y_max_x = round(temp_ext_y_max_x, app.ROUND)
         print('Y max:', temp_ext_y_max, '@ X:', temp_ext_y_max_x)
         app.extrema_y_max.set('Y max ' + str(self.ext_y_max) + ' @ X ' + str(self.ext_y_max_x))
