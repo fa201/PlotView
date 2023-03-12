@@ -54,7 +54,7 @@ Raises:
 
 
 class Application(tk.Tk):
-    """"It defines the main window of GUI."""
+    """"It defines the main window of application."""
 
     def __init__(self):
         """ Initialize the main window.
@@ -89,9 +89,10 @@ class Application(tk.Tk):
         """Define application parameters: title, size, position."""
         self.title(' '.join(['PlotView', self.cst.PV_VERSION]))
         # SET THE POSITION AND SIZE OF THE APPLICATION
-        self.geometry(self.cst.WIN_SIZE_POS)
+        self.geometry(self.cst.APPLICATION_SIZE_POS)
         # The minimum size for the applicaiton should be enough for old screens.
-        self.minsize(self.cst.WIN_MIN_WIDTH, self.cst.WIN_MIN_HEIGHT)
+        self.minsize(self.cst.APPLICATION_MIN_WIDTH,
+                     self.cst.APPLICATION_MIN_HEIGHT)
 
     def setup_GUI_look(self):
         """Define ttk style, font, button sizes 

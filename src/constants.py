@@ -5,36 +5,30 @@ class Constants():
     """All program constants are gathered.
 
     PV_VERSION: string -> plot view version as shown by git tag.
-    WIN_RESIZABLE: boolean -> prevents the user from resizing the root window.
-    WIN_SIZE_POS: string -> window size (width x height) and position relative
+    APPLICATION_SIZE_POS: string -> window size (width x height) and position relative
                               to top left corner.
-    FONT_SIZE: integer -> size of font to be used for all widget texts.
+    APPLICATION_MIN_WIDTH:int -> minium width of application
+    APPLICATION_MIN_HEIGHT:int -> minium height of application
+    FONT_SIZE: integer -> size of font to be used for all widgets.
     PLOT_WIDTH: float -> width (in) of matplotlib figure.
     PLOT_HEIGHT: float -> height (in) of matplotlib figure.
     MAX_STR_CREATE_CURVE: int -> number of characters. Depends on window width, font and font size.
-
+    ROUND: int -> number of deciamal for rounding operations on curves ?
     """
 
     def __init__(self):
 
         # APPLICATION
-        # ============
         self.PV_VERSION = '1.9'
         # Window size should be OK for most cases. Window positioned at top left corner.
-        self.WIN_SIZE_POS = '1280x780+0+0'
-        # Minimum window size is required to allow all widgets to be displayed on RH panel.
-        self.WIN_MIN_WIDTH = 800
-        self.WIN_MIN_HEIGHT = 610
-
-        # Number of decimals for rounding operation
-        self.ROUND = 5
+        self.APPLICATION_SIZE_POS = '1280x780+0+0'
+        # The minimum application size is required to allow all widgets to be displayed on tool and matplotlib panels.
+        self.APPLICATION_MIN_WIDTH = 800
+        self.APPLICATION_MIN_HEIGHT = 610
 
         # GUI APPEARANCE
-        # ==============
-        # For all PV widgets
         self.FONT_SIZE = 9
 
-        # Size of matplotlib figure holding the plot.
         # The size of the figure needs to large to fill all the space on large screen.
         self.PLOT_WIDTH = 20
         self.PLOT_HEIGHT = 12
@@ -47,4 +41,6 @@ class Constants():
         # self.WIDGET_PADX = 2.5
         # self.WIDGET_PADY = 2.5
 
+        # MISCELLEANOUS PARAMETERS
         self.MAX_STR_CREATE_CURVE = 39
+        self.ROUND = 5
