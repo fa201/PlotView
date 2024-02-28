@@ -186,7 +186,7 @@ class Application(tk.Tk):
             Constants:
             - PV_VERSION: string -> plot view version as shown by git tag.
             - WIN_RESIZABLE: boolean -> prevents the user from resizing the root window.
-            - WIN_SIZE_POS: string -> window size (width x height) and position relative
+            - APPLICATION_SIZE_AND_POSITION: string -> window size (width x height) and position relative
                                       to top left corner.
             - FONT_SIZE: integer -> size of font to be used for all widget texts.
             - PLOT_WIDTH: float -> width (in) of matplotlib figure.
@@ -207,11 +207,11 @@ class Application(tk.Tk):
         # ATTRIBUTES
         # Main window parameters.
         self.PV_VERSION = '2.0.1'
-        self.WIN_SIZE_POS = '1280x780'
+        self.APPLICATION_SIZE_AND_POSITION = '1280x780'
         self.FONT_SIZE = 9
-        # Matplotlib parameters.
-        self.PLOT_WIDTH = 16
-        self.PLOT_HEIGHT = 12
+        # Matplotlib plot size is set very high to fill all the available space.
+        self.PLOT_WIDTH = 25
+        self.PLOT_HEIGHT = 20  
         # Parameters for widgets on RH tool panel.
         # Padding for all containers to uniformize the look
         self.CONTAINER_PADX = 10
@@ -287,7 +287,7 @@ class Application(tk.Tk):
         """
         # WINDOW
         self.title('PlotView ' + self.PV_VERSION)
-        self.geometry(self.WIN_SIZE_POS)
+        self.geometry(self.APPLICATION_SIZE_AND_POSITION)
 
         # FONT
         # https://stackoverflow.com/questions/31918073/tkinter-how-to-set-font-for-text
