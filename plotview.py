@@ -81,8 +81,8 @@ class Curve:
         """
         self.name = 'Name'
         self.path = path
-        self.data = self.read_file(self.path)
-        self.data_type = self.get_data_types()
+        self.data = self.read_curve_file(self.path)
+        self.data_type = self.get_data_type_from_file()
         self.data_out = self.create_data_out(self.data)
         self.visibility = True
         self.color = my_colors[app.plot_fig_color][1]
@@ -96,7 +96,7 @@ class Curve:
         self.extrema_y_max = {'x': 0.0, 'y': 0.0}
         Curve.count += 1
 
-    def read_file(self, path):
+    def read_curve_file(self, path):
         """ Read the curve CSV file.
 
             It is necessary to convert data to float in 'read_csv' in order to plot.
@@ -117,17 +117,17 @@ class Curve:
             Application.choose_file(app)
         # TODO: handle following exceptions: no column, more than 2 columns, strings, missing values, etc.
 
-    def get_data_types(self):
+    def get_data_type_from_file(self):
         temp = {}
         temp['x_type'] = self.data.columns[0]
         temp['y_type'] = self.data.columns[1]
         return temp
 
-    def create_data_out(self, df):
+    def create_data_out(self, df):  # utile ? sinon on fait les opération sur data ?
         temp = df.copy()
         return temp
 
-    def find_extrema(self):
+    def find_extrema(self): # refactoriser avec le type d'extremum à chercher en paramètre
         """ all values are round to 10 -> use a variable and update first label in extrema plot (number of digits)
 
             since pd.round() gives error on Windows, rounding is done on the float.
