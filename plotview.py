@@ -92,10 +92,10 @@ class Curve:
         self.style = my_linestyles[0]
         self.offset_x_y = {'x': 0.0, 'y': 0.0}
         self.scale_x_y = {'x': 1.0, 'y': 1.0}
-        self.extrema_x_min = {'x': 0.0, 'y': 0.0}
-        self.extrema_x_max = {'x': 0.0, 'y': 0.0}
-        self.extrema_y_min = {'x': 0.0, 'y': 0.0}
-        self.extrema_y_max = {'x': 0.0, 'y': 0.0}
+        self.extremum_x_min = {'x': 0.0, 'y': 0.0}
+        self.extremum_x_max = {'x': 0.0, 'y': 0.0}
+        self.extremum_y_min = {'x': 0.0, 'y': 0.0}
+        self.extremum_y_max = {'x': 0.0, 'y': 0.0}
         Curve.count += 1
 
     def read_curve_file(self, path):
@@ -110,68 +110,70 @@ class Curve:
                 - decimal character is the point '.'
         """
         try:
-            df = pd.read_csv(self.path, delimiter=',', dtype=float)
+            dataframe = pd.read_csv(self.path, delimiter=',', dtype=float)
             print('CSV file read:', self.path)
-            print(df)
-            return df
+            print(dataframe)
+            return dataframe
         except (TypeError, ValueError, IndexError, AttributeError) as e:
             msg.showerror('Error', 'The format of CSV file is not correct.\nPlease refer to files in the "test" folder.')
             Application.choose_file(app)
         # TODO: handle following exceptions: no column, more than 2 columns, strings, missing values, etc.
 
     def get_data_type_from_file(self):
+        """Retrieve data type as written in the header of CSV file."""
         data_type = {}
         data_type['x_type'] = self.data.columns[0]
         data_type['y_type'] = self.data.columns[1]
         return data_type
 
-    def create_data_out(self, df):  # utile ? sinon on fait les opération sur data ?
+    def create_data_out(self, df):  # TODO: useful? If not processing will be done on data.
+        """Create a copy of data dataframe to keep read data unchanged."""
         temp = df.copy()
         return temp
 
-    def find_extrema(self): # refactoriser avec le type d'extremum à chercher en paramètre
+    def find_extrema(self): # TODO: refactor with the type of extremum to find in parameter
         """ all values are round to 10 -> use a variable and update first label in extrema plot (number of digits)
 
-            since pd.round() gives error on Windows, rounding is done on the float.
+            Since pd.round() gives error on Windows, rounding is done on the float.
             The extrema values displayed on GUI are rounded but printed values are not.
         """
         print('Extrema values for curve', self.name, 'without rounding:')
         
         # X min
-        temp_ext_x_min = self.data_out.iloc[:, 0].min()
-        self.extrema_x_min['x'] = round(temp_ext_x_min, app.ROUNDING_DECIMALS)
+        extremum_x_min = self.data_out.iloc[:, 0].min()
+        self.extremum_x_min['x'] = round(extremum_x_min, app.ROUNDING_DECIMALS)
         # Find Y for X min
-        temp_ext_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1]
-        self.extrema_x_min['y'] = round(temp_ext_x_min_y, app.ROUNDING_DECIMALS)
-        print('X min:', temp_ext_x_min, ' @ Y:', temp_ext_x_min_y)
-        app.extrema_x_min.set('X min ' + str(self.extrema_x_min['x']) + ' @ Y ' + str(self.extrema_x_min['y']))
+        extremum_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1]
+        self.extremum_x_min['y'] = round(extremum_x_min_y, app.ROUNDING_DECIMALS)
+        print('X min:', extremum_x_min, ' @ Y:', extremum_x_min_y)
+        app.extrema_x_min.set('X min ' + str(self.extremum_x_min['x']) + ' @ Y ' + str(self.extremum_x_min['y']))
         
         # X max
-        temp_ext_x_max = self.data_out.iloc[:, 0].max()
-        self.extrema_x_max['x']= round(temp_ext_x_max, app.ROUNDING_DECIMALS)
+        extremum_x_max = self.data_out.iloc[:, 0].max()
+        self.extremum_x_max['x']= round(extremum_x_max, app.ROUNDING_DECIMALS)
         # Find Y for X max
-        temp_ext_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1]
-        self.extrema_x_max['y']= round(temp_ext_x_max_y, app.ROUNDING_DECIMALS)
-        print('X max:', temp_ext_x_max, ' @ Y:', temp_ext_x_max_y)
-        app.extrema_x_max.set('X max ' + str(self.extrema_x_max['x']) + ' @ Y ' + str(self.extrema_x_max['y']))
+        extremum_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1]
+        self.extremum_x_max['y']= round(extremum_x_max_y, app.ROUNDING_DECIMALS)
+        print('X max:', extremum_x_max, ' @ Y:', extremum_x_max_y)
+        app.extrema_x_max.set('X max ' + str(self.extremum_x_max['x']) + ' @ Y ' + str(self.extremum_x_max['y']))
 
         # Y min
-        temp_ext_y_min = self.data_out.iloc[:, 1].min()
-        self.extrema_y_min['y'] = round(temp_ext_y_min, app.ROUNDING_DECIMALS)
+        extremum_y_min = self.data_out.iloc[:, 1].min()
+        self.extremum_y_min['y'] = round(extremum_y_min, app.ROUNDING_DECIMALS)
         # Find X for Y min
-        temp_ext_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0]
-        self.extrema_y_min['x'] = round(temp_ext_y_min_x, app.ROUNDING_DECIMALS)
-        print('Y min:', temp_ext_y_min, '@ X:', temp_ext_y_min_x)
-        app.extrema_y_min.set('Y min ' + str(self.extrema_y_min['y']) + ' @ X ' + str(self.extrema_y_min['x']))
+        extremum_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0]
+        self.extremum_y_min['x'] = round(extremum_y_min_x, app.ROUNDING_DECIMALS)
+        print('Y min:', extremum_y_min, '@ X:', extremum_y_min_x)
+        app.extrema_y_min.set('Y min ' + str(self.extremum_y_min['y']) + ' @ X ' + str(self.extremum_y_min['x']))
 
         # Y max
-        temp_ext_y_max = self.data_out.iloc[:, 1].max()
-        self.extrema_y_max['y'] = round(temp_ext_y_max, app.ROUNDING_DECIMALS)
+        extremum_y_max = self.data_out.iloc[:, 1].max()
+        self.extremum_y_max['y'] = round(temp_ext_y_max, app.ROUNDING_DECIMALS)
         # Find X for Y max
         temp_ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0]
-        self.extrema_y_max['x'] = round(temp_ext_y_max_x, app.ROUNDING_DECIMALS)
+        self.extremum_y_max['x'] = round(temp_ext_y_max_x, app.ROUNDING_DECIMALS)
         print('Y max:', temp_ext_y_max, '@ X:', temp_ext_y_max_x)
-        app.extrema_y_max.set('Y max ' + str(self.extrema_y_max['y']) + ' @ X ' + str(self.extrema_y_max['x']))
+        app.extrema_y_max.set('Y max ' + str(self.extremum_y_max['y']) + ' @ X ' + str(self.extremum_y_max['x']))
 
 
 class Application(tk.Tk):
