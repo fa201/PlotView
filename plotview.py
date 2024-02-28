@@ -56,16 +56,18 @@ class Curve:
             - name: string -> user-defined name. Can be changed in the PV session
             - path: string -> path to CSV file
             - data: dataframe -> contains (X,Y) points as read in the CSV file
-            - data_type: dictionary -> contains X header and Y header
+            - data_type: dictionary -> contains X header and Y header of CSV file
             - data_out: dataframe -> input_data with offset and scale values to be plotted
             - visibility: boolean -> flag to show the curve in the plot or not
             - color: string -> color of the curve line
             - width: float -> width of the curve line
             - style: string -> style of the curve line
-            - offset_X_Y['x']: float -> X data offset after X data scale
-            - y_offset: float -> Y data offset after Y data scale
-            - x_scale: float -> X data scaling
-            - y_scale: float -> Y data scaling
+            - offset_x_y: dictionnary -> X and Y offset values to be added to initial CSV data
+            - scale_x_y: dictionnary -> X and Y scale values to be multiplied to initial CSV data
+            - extrema_x_min: dictionnary -> X and Y coordinates of point with minimum for X
+            - extrema_x_max: dictionnary -> X and Y coordinates of point with maximum for X
+            - extrema_y_min: dictionnary -> X and Y coordinates of point with minimum for Y
+            - extrema_y_max: dictionnary -> X and Y coordinates of point with maximum for Y
             TODO: add fig, ax, canvas, work_dir etc.
         Methods:
             - method to read the CSV file
@@ -118,10 +120,10 @@ class Curve:
         # TODO: handle following exceptions: no column, more than 2 columns, strings, missing values, etc.
 
     def get_data_type_from_file(self):
-        temp = {}
-        temp['x_type'] = self.data.columns[0]
-        temp['y_type'] = self.data.columns[1]
-        return temp
+        data_type = {}
+        data_type['x_type'] = self.data.columns[0]
+        data_type['y_type'] = self.data.columns[1]
+        return data_type
 
     def create_data_out(self, df):  # utile ? sinon on fait les opération sur data ?
         temp = df.copy()
@@ -137,37 +139,37 @@ class Curve:
         
         # X min
         temp_ext_x_min = self.data_out.iloc[:, 0].min()
-        self.extrema_x_min['x'] = round(temp_ext_x_min, app.ROUND)
+        self.extrema_x_min['x'] = round(temp_ext_x_min, app.ROUNDING_DECIMALS)
         # Find Y for X min
         temp_ext_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1]
-        self.extrema_x_min['y'] = round(temp_ext_x_min_y, app.ROUND)
+        self.extrema_x_min['y'] = round(temp_ext_x_min_y, app.ROUNDING_DECIMALS)
         print('X min:', temp_ext_x_min, ' @ Y:', temp_ext_x_min_y)
         app.extrema_x_min.set('X min ' + str(self.extrema_x_min['x']) + ' @ Y ' + str(self.extrema_x_min['y']))
         
         # X max
         temp_ext_x_max = self.data_out.iloc[:, 0].max()
-        self.extrema_x_max['x']= round(temp_ext_x_max, app.ROUND)
+        self.extrema_x_max['x']= round(temp_ext_x_max, app.ROUNDING_DECIMALS)
         # Find Y for X max
         temp_ext_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1]
-        self.extrema_x_max['y']= round(temp_ext_x_max_y, app.ROUND)
+        self.extrema_x_max['y']= round(temp_ext_x_max_y, app.ROUNDING_DECIMALS)
         print('X max:', temp_ext_x_max, ' @ Y:', temp_ext_x_max_y)
         app.extrema_x_max.set('X max ' + str(self.extrema_x_max['x']) + ' @ Y ' + str(self.extrema_x_max['y']))
 
         # Y min
         temp_ext_y_min = self.data_out.iloc[:, 1].min()
-        self.extrema_y_min['y'] = round(temp_ext_y_min, app.ROUND)
+        self.extrema_y_min['y'] = round(temp_ext_y_min, app.ROUNDING_DECIMALS)
         # Find X for Y min
         temp_ext_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0]
-        self.extrema_y_min['x'] = round(temp_ext_y_min_x, app.ROUND)
+        self.extrema_y_min['x'] = round(temp_ext_y_min_x, app.ROUNDING_DECIMALS)
         print('Y min:', temp_ext_y_min, '@ X:', temp_ext_y_min_x)
         app.extrema_y_min.set('Y min ' + str(self.extrema_y_min['y']) + ' @ X ' + str(self.extrema_y_min['x']))
 
         # Y max
         temp_ext_y_max = self.data_out.iloc[:, 1].max()
-        self.extrema_y_max['y'] = round(temp_ext_y_max, app.ROUND)
+        self.extrema_y_max['y'] = round(temp_ext_y_max, app.ROUNDING_DECIMALS)
         # Find X for Y max
         temp_ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0]
-        self.extrema_y_max['x'] = round(temp_ext_y_max_x, app.ROUND)
+        self.extrema_y_max['x'] = round(temp_ext_y_max_x, app.ROUNDING_DECIMALS)
         print('Y max:', temp_ext_y_max, '@ X:', temp_ext_y_max_x)
         app.extrema_y_max.set('Y max ' + str(self.extrema_y_max['y']) + ' @ X ' + str(self.extrema_y_max['x']))
 
@@ -236,7 +238,7 @@ class Application(tk.Tk):
         self.curve_label.set('No CSV files selected.')
 
         # Number of decimals for rounding operation
-        self.ROUND = 5
+        self.ROUNDING_DECIMALS = 5
 
         # TTK styling. Does not work for TEntry, TCombobox
         s = ttk.Style()
@@ -1405,7 +1407,7 @@ class Application(tk.Tk):
         self.extrema_tab.columnconfigure(index=0, weight=1)
 
         # Label
-        txt = 'Values are rounded with ' + str(self.ROUND) + ' digits after decimal.'
+        txt = 'Values are rounded with ' + str(self.ROUNDING_DECIMALS) + ' digits after decimal.'
         comment = ttk.Label(self.extrema_tab, text=txt)
         comment.grid(row=0, column=0, columnspan=4)
         comment.configure(anchor=tk.W)
