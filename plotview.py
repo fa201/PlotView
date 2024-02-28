@@ -55,14 +55,14 @@ class Curve:
         Attributes:
             - name: string -> user-defined name. Can be changed in the PV session
             - path: string -> path to CSV file
-            - data_in: dataframe -> contains (X,Y) points as read in the CSV file
+            - data: dataframe -> contains (X,Y) points as read in the CSV file
             - data_type: dictionary -> contains X header and Y header
-            - data_out: dataframe -> data_in with offset and scale values to be plotted
+            - data_out: dataframe -> input_data with offset and scale values to be plotted
             - visibility: boolean -> flag to show the curve in the plot or not
             - color: string -> color of the curve line
             - width: float -> width of the curve line
             - style: string -> style of the curve line
-            - x_offset: float -> X data offset after X data scale
+            - offset_X_Y['x']: float -> X data offset after X data scale
             - y_offset: float -> Y data offset after Y data scale
             - x_scale: float -> X data scaling
             - y_scale: float -> Y data scaling
@@ -81,17 +81,16 @@ class Curve:
         """
         self.name = 'Name'
         self.path = path
-        self.data_in = self.read_file(self.path)
+        self.data = self.read_file(self.path)
         self.data_type = self.get_data_types()
-        self.data_out = self.create_data_out(self.data_in)
+        self.data_out = self.create_data_out(self.data)  # inutile ?
         self.visibility = True
         self.color = my_colors[app.plot_fig_color][1]
         self.width = 1.0
         self.style = my_linestyles[0]
-        self.x_offset = 0.0
-        self.y_offset = 0.0
-        self.x_scale = 1.0
-        self.y_scale = 1.0
+        self.offset_x_y = {'x': 0.0, 'y': 0.0}
+        self.scale_x_y = {'x': 1.0, 'y': 1.0}
+        # dictionnaire ?
         self.ext_x_min = 0.0
         self.ext_x_min_y = 0.0
         self.ext_x_max = 0.0
@@ -125,8 +124,8 @@ class Curve:
 
     def get_data_types(self):
         temp = {}
-        temp['x_type'] = self.data_in.columns[0]
-        temp['y_type'] = self.data_in.columns[1]
+        temp['x_type'] = self.data.columns[0]
+        temp['y_type'] = self.data.columns[1]
         return temp
 
     def create_data_out(self, df):
@@ -210,7 +209,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '1.8'
+        self.PV_VERSION = '2.0.1'
         self.WIN_SIZE_POS = '1280x780'
         self.FONT_SIZE = 9
         # Matplotlib parameters.
@@ -457,10 +456,10 @@ class Application(tk.Tk):
                              'line color': Curve.dic[str(i)].color,
                              'line width': Curve.dic[str(i)].width,
                              'line style': Curve.dic[str(i)].style,
-                             'offset in X': Curve.dic[str(i)].x_offset,
-                             'offset in Y': Curve.dic[str(i)].y_offset,
-                             'scale in X': Curve.dic[str(i)].x_scale,
-                             'scale in Y': Curve.dic[str(i)].y_scale
+                             'offset in X': Curve.dic[str(i)].offset_x_y['x'],
+                             'offset in Y': Curve.dic[str(i)].offset_x_y['y'],
+                             'scale in X': Curve.dic[str(i)].scale_x_y['x'],
+                             'scale in Y': Curve.dic[str(i)].scale_x_y['y']
                             }
             # Write the file and erase existing file.
             with open(session_file, 'w') as file:
@@ -536,10 +535,10 @@ class Application(tk.Tk):
                     Curve.dic[str(i)].color = config.get(str(i), 'line color')
                     Curve.dic[str(i)].width = config.get(str(i), 'line width')
                     Curve.dic[str(i)].style = config.get(str(i), 'line style')
-                    Curve.dic[str(i)].x_offset = config.getfloat(str(i), 'offset in X')
-                    Curve.dic[str(i)].y_offset = config.getfloat(str(i), 'offset in Y')
-                    Curve.dic[str(i)].x_scale = config.getfloat(str(i), 'scale in X')
-                    Curve.dic[str(i)].y_scale = config.getfloat(str(i), 'scale in Y')
+                    Curve.dic[str(i)].offset_x_y['x'] = config.getfloat(str(i), 'offset in X')
+                    Curve.dic[str(i)].offset_x_y['y'] = config.getfloat(str(i), 'offset in Y')
+                    Curve.dic[str(i)].scale_x_y['x'] = config.getfloat(str(i), 'scale in X')
+                    Curve.dic[str(i)].scale_x_y['y'] = config.getfloat(str(i), 'scale in Y')
                 else:
                     msg.showerror('Error', 'No CSV file were selected for curve'+str(i))
             # Update curve ID list to be able to continue working on curves.
@@ -831,16 +830,16 @@ class Application(tk.Tk):
             # Update scale and offset values for curve
             try:
                 if float(self.curve_x_scale.get()) != 0:
-                    Curve.dic[str(self.selected_curve)].x_scale = float(self.curve_x_scale.get())
-                    Curve.dic[str(self.selected_curve)].x_offset = float(self.curve_x_offset.get())
-                    Curve.dic[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 0]* Curve.dic[str(self.selected_curve)].x_scale + Curve.dic[str(self.selected_curve)].x_offset
+                    Curve.dic[str(self.selected_curve)].scale_x_y['x'] = float(self.curve_x_scale.get())
+                    Curve.dic[str(self.selected_curve)].offset_x_y['x'] = float(self.curve_x_offset.get())
+                    Curve.dic[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.dic[str(self.selected_curve)].data.iloc[:, 0]* Curve.dic[str(self.selected_curve)].scale_x_y['x'] + Curve.dic[str(self.selected_curve)].offset_x_y['x']
                 else:
                     # status message will be replaced by the one from 'plot_curves'.
                     msg.showerror('Error', 'The value of X scale cannot be 0.')
                 if float(self.curve_y_scale.get()) != 0:
-                    Curve.dic[str(self.selected_curve)].y_scale = float(self.curve_y_scale.get())
-                    Curve.dic[str(self.selected_curve)].y_offset = float(self.curve_y_offset.get())
-                    Curve.dic[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.dic[str(self.selected_curve)].data_in.iloc[:, 1]* Curve.dic[str(self.selected_curve)].y_scale + Curve.dic[str(self.selected_curve)].y_offset
+                    Curve.dic[str(self.selected_curve)].scale_x_y['y'] = float(self.curve_y_scale.get())
+                    Curve.dic[str(self.selected_curve)].offset_x_y['y'] = float(self.curve_y_offset.get())
+                    Curve.dic[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.dic[str(self.selected_curve)].data.iloc[:, 1]* Curve.dic[str(self.selected_curve)].scale_x_y['y'] + Curve.dic[str(self.selected_curve)].offset_x_y['y']
                 else:
                     # status message will be replaced by the one from 'plot_curves'.
                     msg.showerror('Error', 'The value of Y scale cannot be 0.')
@@ -875,8 +874,8 @@ class Application(tk.Tk):
             # print('Visibility ', Curve.dic[str(i)].name, Curve.dic[str(i)].visibility)
             #if Curve.dic[str(i)].data_out != None:
             # Curve data is computed again in case the curve are plot after reading a session file.
-            Curve.dic[str(i)].data_out.iloc[:, 0] = Curve.dic[str(i)].data_in.iloc[:, 0]* Curve.dic[str(i)].x_scale + Curve.dic[str(i)].x_offset
-            Curve.dic[str(i)].data_out.iloc[:, 1] = Curve.dic[str(i)].data_in.iloc[:, 1]* Curve.dic[str(i)].y_scale + Curve.dic[str(i)].y_offset
+            Curve.dic[str(i)].data_out.iloc[:, 0] = Curve.dic[str(i)].data.iloc[:, 0]* Curve.dic[str(i)].scale_x_y['x'] + Curve.dic[str(i)].offset_x_y['x']
+            Curve.dic[str(i)].data_out.iloc[:, 1] = Curve.dic[str(i)].data.iloc[:, 1]* Curve.dic[str(i)].scale_x_y['y'] + Curve.dic[str(i)].offset_x_y['y']
             if Curve.dic[str(i)].visibility:
                 self.ax.plot(Curve.dic[str(i)].data_out.iloc[:, 0],
                              Curve.dic[str(i)].data_out.iloc[:, 1],
@@ -967,10 +966,10 @@ class Application(tk.Tk):
             self.curve_color_combo.set(Curve.dic[str(self.selected_curve)].color)
             self.curve_width.set(Curve.dic[str(self.selected_curve)].width)
             self.curve_style_combo.set(Curve.dic[str(self.selected_curve)].style)
-            self.curve_x_scale.set(Curve.dic[str(self.selected_curve)].x_scale)
-            self.curve_y_scale.set(Curve.dic[str(self.selected_curve)].y_scale)
-            self.curve_x_offset.set(Curve.dic[str(self.selected_curve)].x_offset)
-            self.curve_y_offset.set(Curve.dic[str(self.selected_curve)].y_offset)
+            self.curve_x_scale.set(Curve.dic[str(self.selected_curve)].scale_x_y['x'])
+            self.curve_y_scale.set(Curve.dic[str(self.selected_curve)].scale_x_y['y'])
+            self.curve_x_offset.set(Curve.dic[str(self.selected_curve)].offset_x_y['x'])
+            self.curve_y_offset.set(Curve.dic[str(self.selected_curve)].offset_x_y['y'])
             self.set_status('Selected curve: '+Curve.dic[str(self.selected_curve)].name)
         else:
             print('ERROR - Curve ID not found. Please select again a curve ID.')
