@@ -83,22 +83,17 @@ class Curve:
         self.path = path
         self.data = self.read_file(self.path)
         self.data_type = self.get_data_types()
-        self.data_out = self.create_data_out(self.data)  # inutile ?
+        self.data_out = self.create_data_out(self.data)
         self.visibility = True
         self.color = my_colors[app.plot_fig_color][1]
         self.width = 1.0
         self.style = my_linestyles[0]
         self.offset_x_y = {'x': 0.0, 'y': 0.0}
         self.scale_x_y = {'x': 1.0, 'y': 1.0}
-        # dictionnaire ?
-        self.ext_x_min = 0.0
-        self.ext_x_min_y = 0.0
-        self.ext_x_max = 0.0
-        self.ext_x_max_y = 0.0
-        self.ext_y_min = 0.0
-        self.ext_y_min_x = 0.0
-        self.ext_y_max = 0.0
-        self.ext_y_max_x = 0.0
+        self.extrema_x_min = {'x': 0.0, 'y': 0.0}
+        self.extrema_x_max = {'x': 0.0, 'y': 0.0}
+        self.extrema_y_min = {'x': 0.0, 'y': 0.0}
+        self.extrema_y_max = {'x': 0.0, 'y': 0.0}
         Curve.count += 1
 
     def read_file(self, path):
@@ -142,39 +137,39 @@ class Curve:
         
         # X min
         temp_ext_x_min = self.data_out.iloc[:, 0].min()
-        self.ext_x_min = round(temp_ext_x_min, app.ROUND)
+        self.extrema_x_min['x'] = round(temp_ext_x_min, app.ROUND)
         # Find Y for X min
         temp_ext_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1]
-        self.ext_x_min_y = round(temp_ext_x_min_y, app.ROUND)
+        self.extrema_x_min['y'] = round(temp_ext_x_min_y, app.ROUND)
         print('X min:', temp_ext_x_min, ' @ Y:', temp_ext_x_min_y)
-        app.extrema_x_min.set('X min ' + str(self.ext_x_min) + ' @ Y ' + str(self.ext_x_min_y))
+        app.extrema_x_min.set('X min ' + str(self.extrema_x_min['x']) + ' @ Y ' + str(self.extrema_x_min['y']))
         
         # X max
         temp_ext_x_max = self.data_out.iloc[:, 0].max()
-        self.ext_x_max = round(temp_ext_x_max, app.ROUND)
+        self.extrema_x_max['x']= round(temp_ext_x_max, app.ROUND)
         # Find Y for X max
         temp_ext_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1]
-        self.ext_x_max_y = round(temp_ext_x_max_y, app.ROUND)
+        self.extrema_x_max['y']= round(temp_ext_x_max_y, app.ROUND)
         print('X max:', temp_ext_x_max, ' @ Y:', temp_ext_x_max_y)
-        app.extrema_x_max.set('X max ' + str(self.ext_x_max) + ' @ Y ' + str(self.ext_x_max_y))
+        app.extrema_x_max.set('X max ' + str(self.extrema_x_max['x']) + ' @ Y ' + str(self.extrema_x_max['y']))
 
         # Y min
         temp_ext_y_min = self.data_out.iloc[:, 1].min()
-        self.ext_y_min = round(temp_ext_y_min, app.ROUND)
+        self.extrema_y_min['y'] = round(temp_ext_y_min, app.ROUND)
         # Find X for Y min
         temp_ext_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0]
-        self.ext_y_min_x = round(temp_ext_y_min_x, app.ROUND)
+        self.extrema_y_min['x'] = round(temp_ext_y_min_x, app.ROUND)
         print('Y min:', temp_ext_y_min, '@ X:', temp_ext_y_min_x)
-        app.extrema_y_min.set('Y min ' + str(self.ext_y_min) + ' @ X ' + str(self.ext_y_min_x))
+        app.extrema_y_min.set('Y min ' + str(self.extrema_y_min['y']) + ' @ X ' + str(self.extrema_y_min['x']))
 
         # Y max
         temp_ext_y_max = self.data_out.iloc[:, 1].max()
-        self.ext_y_max = round(temp_ext_y_max, app.ROUND)
+        self.extrema_y_max['y'] = round(temp_ext_y_max, app.ROUND)
         # Find X for Y max
         temp_ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0]
-        self.ext_y_max_x = round(temp_ext_y_max_x, app.ROUND)
+        self.extrema_y_max['x'] = round(temp_ext_y_max_x, app.ROUND)
         print('Y max:', temp_ext_y_max, '@ X:', temp_ext_y_max_x)
-        app.extrema_y_max.set('Y max ' + str(self.ext_y_max) + ' @ X ' + str(self.ext_y_max_x))
+        app.extrema_y_max.set('Y max ' + str(self.extrema_y_max['y']) + ' @ X ' + str(self.extrema_y_max['x']))
 
 
 class Application(tk.Tk):
