@@ -3,8 +3,10 @@
 """ PlotView reads a data file and plots the data curve using matplotlib.
 
     Code hosted at: https://github.com/fa201/PlotView
-    Licence: GN GPL-3.0
-    PlotView is summarized as PV in variable names.
+    Author        : Fabrice Pépin 
+    Licence       : GNU GPL-3.0
+    
+    PEP-8 recommended lien width of 80 is not respected.
 """
 
 
@@ -186,7 +188,7 @@ class Application(tk.Tk):
             Yet it is not a problem because it is handled by tk window manager.
 
             Constants:
-            - PV_VERSION: string -> plot view version as shown by git tag.
+            - APPLICATION_VERSION: string -> plot view version as shown by git tag.
             - WIN_RESIZABLE: boolean -> prevents the user from resizing the root window.
             - APPLICATION_SIZE_AND_POSITION: string -> window size (width x height) and position relative
                                       to top left corner.
@@ -208,7 +210,7 @@ class Application(tk.Tk):
 
         # ATTRIBUTES
         # Main window parameters.
-        self.PV_VERSION = '2.0.1'
+        self.APPLICATION_VERSION = '2.0.1'
         self.APPLICATION_SIZE_AND_POSITION = '1280x780'
         self.FONT_SIZE = 9
         # Matplotlib plot size is set very high to fill all the available space on large screen.
@@ -288,7 +290,7 @@ class Application(tk.Tk):
             The menu is created at top with disabled buttons when functions are not implemented.
         """
         # WINDOW
-        self.title('PlotView ' + self.PV_VERSION)
+        self.title('PlotView ' + self.APPLICATION_VERSION)
         self.geometry(self.APPLICATION_SIZE_AND_POSITION)
 
         # FONT
