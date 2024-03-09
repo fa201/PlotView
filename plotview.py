@@ -33,16 +33,16 @@ except ModuleNotFoundError as e:
 
 # Constants for curve styling properties.
 # Set of color for a white background. Change the set for a black background.
-my_colors = {'white_bg': ['white', 'black', 'grey', 'red', 'darksalmon', 
-						  'sienna', 'tan', 'gold', 'green', 'dodgerblue', 
-						  'blueviolet', 'hotpink', 'orange', 'peru', 
-						  'limegreen', 'turquoise', 'royalblue'
-			             ],
-			 'black_bg': ['black', 'white', 'grey', 'red', 'darksalmon', 
-			  			  'sienna', 'tan', 'gold', 'green', 'dodgerblue', 
-			  			  'blueviolet', 'hotpink', 'orange', 'peru', 
-			  			  'limegreen', 'turquoise', 'royalblue'
-			             ]
+my_colors = {'white_bg': ['white', 'black', 'grey', 'red', 'darksalmon',
+                          'sienna', 'tan', 'gold', 'green', 'dodgerblue',
+                          'blueviolet', 'hotpink', 'orange', 'peru',
+                          'limegreen', 'turquoise', 'royalblue'
+                         ],
+             'black_bg': ['black', 'white', 'grey', 'red', 'darksalmon',
+                          'sienna', 'tan', 'gold', 'green', 'dodgerblue',
+                          'blueviolet', 'hotpink', 'orange', 'peru',
+                          'limegreen', 'turquoise', 'royalblue'
+                         ]
 			}
 my_linestyles = ['solid', 'dashed', 'dotted']
 
@@ -80,9 +80,9 @@ class Curve:
 
     def __init__(self, path):
         """ Create a Curve instance based on CSV file path.
-
-            TODO: add all attributes in parameter to create a Curve when reading session file
+        
         """
+        # TODO: add all attributes as parameters to create a Curve when reading a session file.
         self.name = 'Name'
         self.path = path
         self.data = self.read_curve_file(self.path)
