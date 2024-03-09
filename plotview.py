@@ -211,9 +211,9 @@ class Application(tk.Tk):
         self.PV_VERSION = '2.0.1'
         self.APPLICATION_SIZE_AND_POSITION = '1280x780'
         self.FONT_SIZE = 9
-        # Matplotlib plot size is set very high to fill all the available space.
-        self.PLOT_WIDTH = 25
-        self.PLOT_HEIGHT = 20  
+        # Matplotlib plot size is set very high to fill all the available space on large screen.
+        self.PLOT_WIDTH = 40
+        self.PLOT_HEIGHT = 40  
         # Parameters for widgets on RH tool panel.
         # Padding for all containers to uniformize the look
         self.CONTAINER_PADX = 10
