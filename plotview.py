@@ -168,11 +168,11 @@ class Curve:
 
         # Y max
         extremum_y_max = self.data_out.iloc[:, 1].max()
-        self.extremum_y_max['y'] = round(temp_ext_y_max, app.ROUNDING_DECIMALS)
+        self.extremum_y_max['y'] = round(extremum_y_max, app.ROUNDING_DECIMALS)
         # Find X for Y max
-        temp_ext_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0]
-        self.extremum_y_max['x'] = round(temp_ext_y_max_x, app.ROUNDING_DECIMALS)
-        print('Y max:', temp_ext_y_max, '@ X:', temp_ext_y_max_x)
+        extremum_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0]
+        self.extremum_y_max['x'] = round(extremum_y_max_x, app.ROUNDING_DECIMALS)
+        print('Y max:', extremum_y_max, '@ X:', extremum_y_max_x)
         app.extrema_y_max.set('Y max ' + str(self.extremum_y_max['y']) + ' @ X ' + str(self.extremum_y_max['x']))
 
 
