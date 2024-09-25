@@ -70,17 +70,17 @@ class Curve:
             - extrema_x_max: dictionnary -> X and Y coordinates of point with maximum for X
             - extrema_y_min: dictionnary -> X and Y coordinates of point with minimum for Y
             - extrema_y_max: dictionnary -> X and Y coordinates of point with maximum for Y
-            TODO: add fig, ax, canvas, work_dir etc.
         Methods:
             - method to read the CSV file
     """
+    # TODO: add fig, ax, canvas, work_dir etc. in docstring
     count = 0
     # Dictionary of curve instances.
     dic = OrderedDict()
 
     def __init__(self, path):
         """ Create a Curve instance based on CSV file path.
-        
+
         """
         # TODO: add all attributes as parameters to create a Curve when reading a session file.
         self.name = 'Name'
