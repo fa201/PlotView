@@ -5,7 +5,7 @@
     Code hosted at: https://github.com/fa201/PlotView
     Author        : Fabrice Pépin 
     Licence       : GNU GPL-3.0
-    
+
     PEP-8 recommended line width of 80 is not respected.
 """
 
@@ -15,7 +15,7 @@ try:
     import configparser
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_tkagg import (
-        FigureCanvasTkAgg, NavigationToolbar2Tk)
+            FigureCanvasTkAgg, NavigationToolbar2Tk)
     from matplotlib.ticker import MaxNLocator
     import os
     import pandas as pd
@@ -27,7 +27,7 @@ try:
     import tkinter.ttk as ttk
     import webbrowser
 except ModuleNotFoundError as e:
-        print('The necessary Python packages are not installed.\n' + str(e))
+    print('The necessary Python packages are not installed.\n' + str(e))
         print('Please check the required packages at https://github.com/fa201/PlotView.')
 
 
@@ -37,13 +37,13 @@ my_colors = {'white_bg': ['white', 'black', 'grey', 'red', 'darksalmon',
                           'sienna', 'tan', 'gold', 'green', 'dodgerblue',
                           'blueviolet', 'hotpink', 'orange', 'peru',
                           'limegreen', 'turquoise', 'royalblue'
-                         ],
+                          ],
              'black_bg': ['black', 'white', 'grey', 'red', 'darksalmon',
                           'sienna', 'tan', 'gold', 'green', 'dodgerblue',
                           'blueviolet', 'hotpink', 'orange', 'peru',
                           'limegreen', 'turquoise', 'royalblue'
-                         ]
-			}
+                          ]
+             }
 my_linestyles = ['solid', 'dashed', 'dotted']
 
 
@@ -75,7 +75,6 @@ class Curve:
     """
     # TODO: add fig, ax, canvas, work_dir etc. in docstring
     count = 0
-    # Dictionary of curve instances.
     curve_instances = OrderedDict()
 
     def __init__(self, path):
@@ -140,7 +139,7 @@ class Curve:
             The extrema values displayed on GUI are rounded but printed values are not.
         """
         print('Extrema values for curve', self.name, 'without rounding:')
-        
+
         # X min
         extremum_x_min = self.data_out.iloc[:, 0].min()
         self.extremum_x_min['x'] = round(extremum_x_min, app.ROUNDING_DECIMALS)
@@ -149,7 +148,7 @@ class Curve:
         self.extremum_x_min['y'] = round(extremum_x_min_y, app.ROUNDING_DECIMALS)
         print('X min:', extremum_x_min, ' @ Y:', extremum_x_min_y)
         app.extrema_x_min.set('X min ' + str(self.extremum_x_min['x']) + ' @ Y ' + str(self.extremum_x_min['y']))
-        
+
         # X max
         extremum_x_max = self.data_out.iloc[:, 0].max()
         self.extremum_x_max['x']= round(extremum_x_max, app.ROUNDING_DECIMALS)
@@ -331,10 +330,10 @@ class Application(tk.Tk):
         self.status_frame.pack(expand=False, fill=tk.X, side=tk.BOTTOM)
         # The status is initialized with empty message left aligned.
         self.status = ttk.Label(self.status_frame,
-                               text=' Ready.',
-                               relief=tk.SUNKEN,
-                               anchor=tk.W,
-                               )
+                                text=' Ready.',
+                                relief=tk.SUNKEN,
+                                anchor=tk.W,
+                                )
         # The label shoul expand on the total window width.
         self.status.pack(fill=tk.BOTH, expand=False)
 
@@ -404,15 +403,15 @@ class Application(tk.Tk):
             The session file will be created each time so the previous one is erased.
         """
         session_file = filedialog.asksaveasfilename(
-            initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Save as PlotView session file')
+                initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Save as PlotView session file')
         # Case if CANCEL is clicked after selecting a session file. Then session_file=''. 
         if session_file == '':
             self.set_status('No session file selected.')   
         # Case if CANCEL is clicked without selecting a session file. Then session_file=(), empty tuple. 
-        elif isinstance(session_file, tuple):
-            self.set_status('No session file selected.')    
-        else:
-            config = configparser.ConfigParser()
+    elif isinstance(session_file, tuple):
+        self.set_status('No session file selected.')    
+    else:
+        config = configparser.ConfigParser()
             # Plot data
             config['plot'] = {'main title': self.main_title.get(),
                               'x title': self.x_title.get(),
@@ -442,11 +441,11 @@ class Application(tk.Tk):
                                     'arrow color': self.arrow_color_combo.get(),
                                     'arrow line width': self.arrow_width.get(),
                                     'arrow state': self.arrow_state.get(),
-                                   }
+                                    }
             # Session info
             config['session'] = {'working directory': self.work_dir,
                                  'curve count': Curve.count,
-                                }
+                                 }
             # Curve data
             for i in range(1, Curve.count+1):
                 config[i] = {'name': Curve.curve_instances[str(i)].name,
@@ -461,7 +460,7 @@ class Application(tk.Tk):
                              'offset in Y': Curve.curve_instances[str(i)].offset_x_y['y'],
                              'scale in X': Curve.curve_instances[str(i)].scale_x_y['x'],
                              'scale in Y': Curve.curve_instances[str(i)].scale_x_y['y']
-                            }
+                             }
             # Write the file and erase existing file.
             with open(session_file, 'w') as file:
                 config.write(file)
@@ -477,13 +476,13 @@ class Application(tk.Tk):
         # TODO: Show a warning or ask a permission since the work will be lost ?
         # Read the sessionfile
         session_file = filedialog.askopenfilename(
-            initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Open PlotView session file')
+                initialdir=self.work_dir, filetypes=[('PV session file', '*.pv')], title='Open PlotView session file')
         # Case if CANCEL is clicked without selecting a session file. Then session_file=(), empty tuple.
         if isinstance(session_file, tuple):
             self.set_status('No session file selected.')    
         # Make sure the path to session file exists.
-        elif os.path.exists(session_file):
-            config.read(session_file)
+    elif os.path.exists(session_file):
+        config.read(session_file)
             # Process Plot section
             self.main_title.set(config.get('plot', 'main title'))
             self.x_title.set(config.get('plot', 'x title'))
@@ -573,30 +572,30 @@ class Application(tk.Tk):
 
         # Working directory widgets
         ttk.Button(self.create_curve_frame, text='Work dir.',
-                  command=self.choose_dir, style='w9.TButton'
-                  ).grid(row=0, column=0)
+                   command=self.choose_dir, style='w9.TButton'
+                   ).grid(row=0, column=0)
         ttk.Label(self.create_curve_frame,
-                 textvariable=self.work_dir_txt
-                 ).grid(row=0, column=1)
-        
+                  textvariable=self.work_dir_txt
+                  ).grid(row=0, column=1)
+
         # CSV file widget
         ttk.Button(self.create_curve_frame, text='CSV file',
-                  command=self.choose_file, style='w9.TButton'
-                 ).grid(row=1, column=0)
+                   command=self.choose_file, style='w9.TButton'
+                   ).grid(row=1, column=0)
         ttk.Label(self.create_curve_frame, textvariable=self.work_file_txt
-                ).grid(row=1, column=1)
+                  ).grid(row=1, column=1)
         # Curve name widget
         curve_name_label = ttk.Label(self.create_curve_frame, text='Curve name'
-                )
+                                     )
         curve_name_label.grid(row=2, column=0)
         self.curve_label = tk.StringVar()
         self.curve_label.set('Curve_name')
         ttk.Entry(self.create_curve_frame, textvariable=self.curve_label, width=30,
-                 justify=tk.CENTER).grid(row=2, column=1)
+                  justify=tk.CENTER).grid(row=2, column=1)
         # Curve create widget
         ttk.Button(self.create_curve_frame, text='Create curve',
-                  command=self.curve_create, style='w4.TButton'
-                 ).grid(row=3, column=0, columnspan=2)
+                   command=self.curve_create, style='w4.TButton'
+                   ).grid(row=3, column=0, columnspan=2)
 
         # CURVE PROPERTIES
         self.curve_prop_frame = ttk.LabelFrame(self.curve_tab, text='Curve properties')
@@ -604,7 +603,7 @@ class Application(tk.Tk):
         # Allow the column to expand for children
         for i in range(0, 5):
             self.curve_prop_frame.columnconfigure(index=i, weight=1)
-    
+
         # Active curve selection
         # Tip: https://stackoverflow.com/questions/54283975/python-tkinter-combobox-and-dictionary
         select_curve_label = ttk.Label(self.curve_prop_frame, text='Select curve')
@@ -623,23 +622,23 @@ class Application(tk.Tk):
         self.show_state = tk.IntVar()
         self.show_state.set(1)
         ttk.Checkbutton(self.curve_prop_frame, text='Show curve',
-                       variable=self.show_state
-                      ).grid(row=0, column=2, columnspan=2)
+                        variable=self.show_state
+                        ).grid(row=0, column=2, columnspan=2)
         # Curve Name
         self.active_curve_name = tk.StringVar()
         self.active_curve_name.set(' ')
         name_label = ttk.Label(self.curve_prop_frame, text='Curve name'
-                )
+                               )
         name_label.grid(row=1, column=0)
         ttk.Entry(self.curve_prop_frame, textvariable=self.active_curve_name,
-                 width=30, justify=tk.CENTER
-                ).grid(row=1, column=1, columnspan=3)
+                  width=30, justify=tk.CENTER
+                  ).grid(row=1, column=1, columnspan=3)
         # Curve X data type.
         self.active_curve_x_data = tk.StringVar()
         self.active_curve_x_data.set(' ')
         ttk.Label(self.curve_prop_frame, text='Title for X data').grid(row=2, column=0)
         self.x_data_label = ttk.Label(self.curve_prop_frame, textvariable=self.active_curve_x_data,
-                 width=30, justify=tk.CENTER)
+                                      width=30, justify=tk.CENTER)
         self.x_data_label.configure(anchor='center')
         self.x_data_label.grid(row=2, column=1, columnspan=3)
         # Curve Y data type.
@@ -647,80 +646,80 @@ class Application(tk.Tk):
         self.active_curve_y_data.set(' ')
         ttk.Label(self.curve_prop_frame, text='Title for Y data').grid(row=3, column=0)
         self.y_data_label = ttk.Label(self.curve_prop_frame, textvariable=self.active_curve_y_data,
-                 width=30, justify=tk.CENTER)
+                                      width=30, justify=tk.CENTER)
         self.y_data_label.configure(anchor='center')
         self.y_data_label.grid(row=3, column=1, columnspan=3)
         # Curve color
         line_color_label = ttk.Label(self.curve_prop_frame, text='Line color'
-                )
+                                     )
         line_color_label.grid(row=4, column=0)
         self.curve_color_combo = ttk.Combobox(self.curve_prop_frame,
-                                                values=my_colors[self.plot_fig_color],
-                                                justify=tk.CENTER,
-                                                width=12
-                                                )
+                                              values=my_colors[self.plot_fig_color],
+                                              justify=tk.CENTER,
+                                              width=12
+                                              )
         self.curve_color_combo.set(my_colors[self.plot_fig_color][1])
         self.curve_color_combo.grid(row=4, column=1, columnspan=2)
         self.curve_color_combo.bind('<<ComboboxSelected>>', self.change_curve_color)
         # Line width
         line_width_label = ttk.Label(self.curve_prop_frame, text='Line width'
-                )
+                                     )
         line_width_label.grid(row=5, column=0)
         self.curve_width = tk.StringVar()
         self.curve_width.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_width, width=4, justify=tk.CENTER).grid(
-                  row=5, column=1)
+                row=5, column=1)
         # Line style
         line_style_label = ttk.Label(self.curve_prop_frame,
-                text='Line style')
+                                     text='Line style')
         line_style_label.grid(row=5, column=2)
         self.curve_style_combo = ttk.Combobox(self.curve_prop_frame,
-                                                values=my_linestyles,
-                                                justify=tk.CENTER,
-                                                width=3
-                                                )
+                                              values=my_linestyles,
+                                              justify=tk.CENTER,
+                                              width=3
+                                              )
         self.curve_style_combo.set(my_linestyles[0])
         self.curve_style_combo.grid(row=5, column=3, sticky=tk.E+tk.W+tk.N+tk.S,
                                     padx=self.WIDGET_PADX, pady=self.WIDGET_PADY
-                                   )
+                                    )
         self.curve_style_combo.bind('<<ComboboxSelected>>', self.change_curve_style)
         # X scale
         x_scale_label = ttk.Label(self.curve_prop_frame, text='Scale X axis'
-                )
+                                  )
         x_scale_label.grid(row=6, column=0)
         self.curve_x_scale = tk.StringVar()
         self.curve_x_scale.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_x_scale, width=8,
-                 justify=tk.CENTER).grid(row=6, column=1)
+                  justify=tk.CENTER).grid(row=6, column=1)
         # Y scale
         y_scale_label = ttk.Label(self.curve_prop_frame, text='Scale Y axis'
-                )
+                                  )
         y_scale_label.grid(row=6, column=2)
         self.curve_y_scale = tk.StringVar()
         self.curve_y_scale.set('1')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_y_scale, width=8,
-                 justify=tk.CENTER).grid(row=6, column=3)
+                  justify=tk.CENTER).grid(row=6, column=3)
         # X offset
         x_offset_label = ttk.Label(self.curve_prop_frame, text='Offset X axis'
-                )
+                                   )
         x_offset_label.grid(row=7, column=0)
         self.curve_x_offset = tk.StringVar()
         self.curve_x_offset.set('0')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_x_offset, width=8,
-                 justify=tk.CENTER).grid(row=7, column=1)
+                  justify=tk.CENTER).grid(row=7, column=1)
         # Y offset
         y_offset_label = ttk.Label(self.curve_prop_frame, text='Offset Y axis'
-                )
+                                   )
         y_offset_label.grid(row=7, column=2)
         self.curve_y_offset = tk.StringVar()
         self.curve_y_offset.set('0')
         ttk.Entry(self.curve_prop_frame, textvariable=self.curve_y_offset, width=8,
-                 justify=tk.CENTER).grid(row=7, column=3)
+                  justify=tk.CENTER).grid(row=7, column=3)
 
         # APPLY BUTTON
         ttk.Button(self.curve_prop_frame, text='Apply curve properties',
-                  command=self.update_curve, style='w6.TButton'
-                 ).grid(row=8, column=0, columnspan=4)
+                   command=self.update_curve, style='w6.TButton'
+                   ).grid(row=8, column=0, columnspan=4)
 
         # APPLY PADDING AND STICKINESS ON WIDGETS CHILDREN AFTER THEY ARE CREATED
         # For self.curve_tab frame
@@ -728,17 +727,17 @@ class Application(tk.Tk):
             frame.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
                                  padx=self.CONTAINER_PADX, 
                                  pady=self.CONTAINER_PADY
-                                )
+                                 )
         # For self.create_curve_frame self.curve_prop_frame frames
         union_list = (set(self.create_curve_frame.winfo_children()) |
                       set(self.curve_prop_frame.winfo_children())
-                     )
+                      )
         for widget in union_list:
             widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
                                   padx=self.WIDGET_PADX, 
                                   pady=self.WIDGET_PADY
-                                 )
-        
+                                  )
+
         # Add this tab to the notebook.
         self.tool_notebook.add(self.curve_tab, text='Curve')
 
@@ -771,7 +770,7 @@ class Application(tk.Tk):
             The length of string displayed should be the same as for 'choose_dir'.
         """
         self.work_file = filedialog.askopenfilename(
-            initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
+                initialdir=self.work_dir, filetypes=[('CSV file', '*.csv')], title='Open CSV file')
         if len(self.work_file) > (self.MAX_STR_CREATE_CURVE-3):
             temp = '...' + self.work_file[-self.MAX_STR_CREATE_CURVE+3:]
             self.work_file_txt.set(temp)
@@ -866,10 +865,10 @@ class Application(tk.Tk):
                               float(self.x_max_range.get()),
                               float(self.y_min_range.get()),
                               float(self.y_max_range.get())]
-                            )
+                             )
             except ValueError:
                 msg.showerror('Error', 'The values of X min, X max, Y min and Y max must be numbers.')
-    
+
         # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
             # print('Visibility ', Curve.curve_instances[str(i)].name, Curve.curve_instances[str(i)].visibility)
@@ -892,27 +891,27 @@ class Application(tk.Tk):
         try:
             if self.annot_state.get() & self.arrow_state.get():
                 self.ax.annotate(self.annotation.get(),
-                        xy=(float(self.arrow_head_x.get()), float(self.arrow_head_y.get())),
-                        xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
-                        color=self.annot_color_combo.get(),
-                        fontsize=float(self.annot_size.get()),
-                        arrowprops=dict(color=self.arrow_color_combo.get(),
-                                        width=float(self.arrow_width.get()),
-                                        headwidth=float(self.arrow_head_width.get()),
-                                        headlength=float(self.arrow_head_length.get())
-                                       )
-                        )
+                                 xy=(float(self.arrow_head_x.get()), float(self.arrow_head_y.get())),
+                                 xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
+                                 color=self.annot_color_combo.get(),
+                                 fontsize=float(self.annot_size.get()),
+                                 arrowprops=dict(color=self.arrow_color_combo.get(),
+                                                 width=float(self.arrow_width.get()),
+                                                 headwidth=float(self.arrow_head_width.get()),
+                                                 headlength=float(self.arrow_head_length.get())
+                                                 )
+                                 )
             # Draw the annotation only. The arrowprops is removed to avoid drawing it
-            elif self.annot_state.get() & (not self.arrow_state.get()):
-                self.ax.annotate(self.annotation.get(),
-                        xy=(float(self.arrow_head_x.get()), float(self.arrow_head_y.get())),
-                        xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
-                        color=self.annot_color_combo.get(),
-                        fontsize=float(self.annot_size.get()),
-                        )
+        elif self.annot_state.get() & (not self.arrow_state.get()):
+            self.ax.annotate(self.annotation.get(),
+                             xy=(float(self.arrow_head_x.get()), float(self.arrow_head_y.get())),
+                             xytext=(float(self.annotation_x.get()), float(self.annotation_y.get())),
+                             color=self.annot_color_combo.get(),
+                             fontsize=float(self.annot_size.get()),
+                             )
             # Draw no annotation and no arrow
-            else:
-                pass
+        else:
+            pass
         except ValueError:
             message1 = 'For the annotation, the values of X and Y positions and the value of font size must be numbers.'
             message2 = '\nFor the arrow, the values of X and Y positions, the length and width of head and the line width must be numbers.'
@@ -1020,35 +1019,35 @@ class Application(tk.Tk):
         # TITLE PANEL
         self.plot_frame = ttk.LabelFrame(self.plot_tab, text='Plot titles')
         self.plot_frame.grid(row=0, column=0, sticky=tk.E+tk.W+tk.N+tk.S,
-                                     padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
+                             padx=self.CONTAINER_PADX, pady=self.CONTAINER_PADY)
         # Allow the column to expand for children
         for i in range(0, 4):
             self.plot_frame.columnconfigure(index=i, weight=1)
         # Main title
         main_title_label = ttk.Label(self.plot_frame, text='Main title'
-                )
+                                     )
         main_title_label.grid(row=0, column=0)
         # main_title_label.configure(anchor='center')
         self.main_title = tk.StringVar()
         self.main_title.set('Title')
         ttk.Entry(self.plot_frame, textvariable=self.main_title, width=30,
-                 justify=tk.CENTER).grid(row=0, column=1)
+                  justify=tk.CENTER).grid(row=0, column=1)
         # X axis title
         x_title_label = ttk.Label(self.plot_frame, text='X title'
-                )
+                                  )
         x_title_label.grid(row=1, column=0)
         self.x_title = tk.StringVar()
         self.x_title.set('X_data (units)')
         ttk.Entry(self.plot_frame, textvariable=self.x_title, width=30,
-                 justify=tk.CENTER).grid(row=1, column=1)
+                  justify=tk.CENTER).grid(row=1, column=1)
         # Y axis title
         y_title_label = ttk.Label(self.plot_frame, text='Y title'
-                )
+                                  )
         y_title_label.grid(row=2, column=0)
         self.y_title = tk.StringVar()
         self.y_title.set('Y_data (units)')
         ttk.Entry(self.plot_frame, textvariable=self.y_title, width=30,
-                 justify=tk.CENTER).grid(row=2, column=1)
+                  justify=tk.CENTER).grid(row=2, column=1)
 
         # RANGE PANEL
         self.range_frame = ttk.LabelFrame(self.plot_tab, text='Plot ranges for X and Y')
@@ -1060,80 +1059,80 @@ class Application(tk.Tk):
         self.autoscale = tk.IntVar()
         self.autoscale.set(0)
         ttk.Radiobutton(self.range_frame, text='Auto scale', variable=self.autoscale,
-                       value=0, command=self.update_user_state).grid(row=0, column=0, columnspan=2)
+                        value=0, command=self.update_user_state).grid(row=0, column=0, columnspan=2)
 
         ttk.Radiobutton(self.range_frame, text='User defined', variable=self.autoscale,
-                       value=1, command=self.update_user_state).grid(row=0, column=2, columnspan=2)
+                        value=1, command=self.update_user_state).grid(row=0, column=2, columnspan=2)
         # User defined
         ttk.Label(self.range_frame, text='User defined ranges:'
-                ).grid(row=1, column=0, columnspan=2)
-    
+                  ).grid(row=1, column=0, columnspan=2)
+
         # X min
         x_min_label = ttk.Label(self.range_frame, text='X min'
-                )
+                                )
         x_min_label.grid(row=2, column=0)
         # x_min_label.configure(anchor='center')
         self.x_min_range = tk.StringVar()
         self.x_min_range.set('0')
         self.x_min_entry = ttk.Entry(self.range_frame, textvariable=self.x_min_range, width=8,
-                 justify=tk.CENTER)
+                                     justify=tk.CENTER)
         self.x_min_entry.configure(state='disabled')
         self.x_min_entry.grid(row=2, column=1)
         # Y min
         y_min_label = ttk.Label(self.range_frame, text='Y min'
-                )
+                                )
         y_min_label.grid(row=2, column=2)
         # y_min_label.configure(anchor='center')
         self.y_min_range = tk.StringVar()
         self.y_min_range.set('0')
         self.y_min_entry = ttk.Entry(self.range_frame, textvariable=self.y_min_range, width=8, 
-                 justify=tk.CENTER)
+                                     justify=tk.CENTER)
         self.y_min_entry.configure(state='disabled')
         self.y_min_entry.grid(row=2, column=3)
         # X max
         x_max_label = ttk.Label(self.range_frame, text='X max'
-                )
+                                )
         x_max_label.grid(row=3, column=0)
         # x_max_label.configure(anchor='center')
         self.x_max_range = tk.StringVar()
         self.x_max_range.set('100')
         self.x_max_entry = ttk.Entry(self.range_frame, textvariable=self.x_max_range, width=8, 
-                 justify=tk.CENTER)
+                                     justify=tk.CENTER)
         self.x_max_entry.configure(state='disabled')
         self.x_max_entry.grid(row=3, column=1)
         # Y max
         y_max_label = ttk.Label(self.range_frame, text='Y max'
-                )
+                                )
         y_max_label.grid(row=3, column=2)
         # y_max_label.configure(anchor='center')
         self.y_max_range = tk.StringVar()
         self.y_max_range.set('100')
         self.y_max_entry = ttk.Entry(self.range_frame, textvariable=self.y_max_range, width=8, 
-                 justify=tk.CENTER)
+                                     justify=tk.CENTER)
         self.y_max_entry.configure(state='disabled')
         self.y_max_entry.grid(row=3, column=3)
 
         # Tick label
         ttk.Label(self.range_frame, text='Numbers of ticks:'
-                ).grid(row=4, column=0, columnspan=2)
+                  ).grid(row=4, column=0, columnspan=2)
         # X tick
         x_tick_label = ttk.Label(self.range_frame, text='X axis'
-                )
+                                 )
         x_tick_label.grid(row=5, column=0)
         # x_tick_label.configure(anchor='center')
         self.x_bin = tk.StringVar()
         self.x_bin.set('10')
         ttk.Entry(self.range_frame, textvariable=self.x_bin, width=8,
-                 justify=tk.CENTER).grid(row=5, column=1)
+                  justify=tk.CENTER).grid(row=5, column=1)
         # Y tick
         y_tick_label = ttk.Label(self.range_frame, text='Y axis'
-                )
+                                 )
         y_tick_label.grid(row=5, column=2)
         # y_tick_label.configure(anchor='center')
         self.y_bin = tk.StringVar()
         self.y_bin.set('10')
         ttk.Entry(self.range_frame, textvariable=self.y_bin, width=8,
-                 justify=tk.CENTER).grid(row=5, column=3)
+                  justify=tk.CENTER).grid(row=5, column=3)
 
         # LEGEND PANEL
         self.legend_frame = ttk.LabelFrame(self.plot_tab, text='Legend position')
@@ -1143,26 +1142,26 @@ class Application(tk.Tk):
             self.legend_frame.columnconfigure(index=i, weight=1)
         temp = "'Best' lets matplotlib decide the position."
         ttk.Label(self.legend_frame, text=temp
-                ).grid(row=0, column=0, columnspan=3)
+                  ).grid(row=0, column=0, columnspan=3)
         # Legend position
         self.legend = tk.IntVar()
         self.legend.set(4)
         ttk.Radiobutton(self.legend_frame, text='Upper left', variable=self.legend, value=0
-                      ).grid(row=1, column=0)
+                        ).grid(row=1, column=0)
         ttk.Radiobutton(self.legend_frame, text='Upper right', variable=self.legend, value=1
-                      ).grid(row=1, column=1)
+                        ).grid(row=1, column=1)
         ttk.Radiobutton(self.legend_frame, text='Lower left', variable=self.legend, value=2
-                      ).grid(row=2, column=0)
+                        ).grid(row=2, column=0)
         ttk.Radiobutton(self.legend_frame, text='Lower right', variable=self.legend, value=3
-                      ).grid(row=2, column=1)
+                        ).grid(row=2, column=1)
         ttk.Radiobutton(self.legend_frame, text='Best', variable=self.legend, value=4
-                      ).grid(row=1, column=2)
+                        ).grid(row=1, column=2)
         self.legend_var ={'0': 'upper left',
                           '1': 'upper right',
                           '2': 'lower left',
                           '3': 'lower right',
                           '4': 'best'
-                         }
+                          }
 
         # CUSTOMIZE PANEL
         self.custom_frame = ttk.LabelFrame(self.plot_tab, text='Customize plot')
@@ -1170,28 +1169,28 @@ class Application(tk.Tk):
 
         # Background color 
         x_min_label = ttk.Label(self.custom_frame, text='Background color'
-                )
+                                )
         x_min_label.grid(row=0, column=0, columnspan=2)
         # x_min_label.configure(anchor='center')
         # Matplotlib global color setting
         self.fig_color_flag = tk.IntVar()
         self.fig_color_flag.set(0)
         ttk.Radiobutton(self.custom_frame, text='White', variable=self.fig_color_flag,
-        				value=0, command=self.update_plot_bg_color
-                      ).grid(row=0, column=2)
+                        value=0, command=self.update_plot_bg_color
+                        ).grid(row=0, column=2)
         ttk.Radiobutton(self.custom_frame, text='Black', variable=self.fig_color_flag, 
-        				value=1, command=self.update_plot_bg_color
-                      ).grid(row=0, column=3)
+                        value=1, command=self.update_plot_bg_color
+                        ).grid(row=0, column=3)
         # Show grid
         self.grid_state = tk.IntVar()
         self.grid_state.set(1)
         ttk.Checkbutton(self.custom_frame, text='Show grid', variable=self.grid_state
-                      ).grid(row=1, column=0)
+                        ).grid(row=1, column=0)
 
         # APPLY BUTTON
         # Padding for apply needs to be the same for containers for layout consistency
         ttk.Button(self.plot_tab, text='Apply plot properties', command=self.plot_curves
-                 ).grid(row=4, column=0)
+                   ).grid(row=4, column=0)
 
         # APPLY PADDING AND STICKINESS ON WIDGETS CHILDREN AFTER THEY ARE CREATED
         # For self.plot_tab frame
@@ -1199,18 +1198,18 @@ class Application(tk.Tk):
             frame.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
                                  padx=self.CONTAINER_PADX, 
                                  pady=self.CONTAINER_PADY
-                                )
+                                 )
         # For self.plot_frame, self.range_frame,  frames
         union_list = (set(self.plot_frame.winfo_children()) |
                       set(self.range_frame.winfo_children()) |
                       set(self.legend_frame.winfo_children()) |
                       set(self.custom_frame.winfo_children())
-                     )
+                      )
         for widget in union_list:
             widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
                                   padx=self.WIDGET_PADX, 
                                   pady=self.WIDGET_PADY
-                                 )
+                                  )
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.plot_tab, text='Plot area')
@@ -1240,8 +1239,8 @@ class Application(tk.Tk):
 
         # Comment
         ttk.Label(self.annot_tab, text='X and Y positions refer to data coordinate system.',
-                 justify=tk.LEFT).grid(row=0, column=0)
-    
+                  justify=tk.LEFT).grid(row=0, column=0)
+
         # TEXT PANEL
         self.text_frame = ttk.LabelFrame(self.annot_tab, text='Annotation')
         self.text_frame.grid(row=1, column=0)
@@ -1250,60 +1249,60 @@ class Application(tk.Tk):
             self.text_frame.columnconfigure(index=i, weight=1)
         # Text
         text_label = ttk.Label(self.text_frame, text='Text'
-                )
+                               )
         text_label.grid(row=0, column=0)
         # text_label.configure(anchor='center')
         self.annotation = tk.StringVar()
         self.annotation.set('Annotation_text')
         ttk.Entry(self.text_frame, textvariable=self.annotation, width=30,
-                 justify=tk.CENTER).grid(row=0, column=1, columnspan=3)
+                  justify=tk.CENTER).grid(row=0, column=1, columnspan=3)
         # X position of annotation
         text_x_pos_label = ttk.Label(self.text_frame, text='X position'
-                )
+                                     )
         text_x_pos_label.grid(row=1, column=0)
         # text_x_pos_label.configure(anchor='center')
         self.annotation_x = tk.StringVar()
         self.annotation_x.set('0')
         ttk.Entry(self.text_frame, textvariable=self.annotation_x, width=8,
-                 justify=tk.CENTER).grid(row=1, column=1)
+                  justify=tk.CENTER).grid(row=1, column=1)
         # Y position of annotation
         text_y_pos_label = ttk.Label(self.text_frame, text='Y position'
-                )
+                                     )
         text_y_pos_label.grid(row=1, column=2)
         # text_y_pos_label.configure(anchor='center')
         self.annotation_y = tk.StringVar()
         self.annotation_y.set('0')
         ttk.Entry(self.text_frame, textvariable=self.annotation_y, width=8,
-                 justify=tk.CENTER).grid(row=1, column=3)
+                  justify=tk.CENTER).grid(row=1, column=3)
         # Color
         text_color_label = ttk.Label(self.text_frame, text='Text color'
-                )
+                                     )
         text_color_label.grid(row=2, column=0)
         # text_color_label.configure(anchor='center')
         self.annot_color_combo = ttk.Combobox(self.text_frame,
                                               values=my_colors[self.plot_fig_color],
                                               justify=tk.CENTER,
                                               width=8
-                                             )
+                                              )
         self.annot_color_combo.set(my_colors[self.plot_fig_color][1])
         self.annot_color_combo.grid(row=2, column=1)
         # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
         # Font size
         font_size_label = ttk.Label(self.text_frame, text='Font size'
-                )
+                                    )
         font_size_label.grid(row=2, column=2)
         # font_size_label.configure(anchor='center')
         self.annot_size = tk.StringVar()
         self.annot_size.set('10')
         ttk.Entry(self.text_frame, textvariable=self.annot_size, width=8,
-                 justify=tk.CENTER).grid(row=2, column=3)
+                  justify=tk.CENTER).grid(row=2, column=3)
         # Show annotation
         self.annot_state = tk.IntVar()
         self.annot_state.set(0)
         # No callback since 'Apply all' redraw the plot with or without the annotation.
         ttk.Checkbutton(self.text_frame, text='Show the annotation on the plot', variable=self.annot_state
-                       ).grid(row=3, column=0, columnspan=4)
-        
+                        ).grid(row=3, column=0, columnspan=4)
+
         # ARROW PANEL
         self.arrow_frame = ttk.LabelFrame(self.annot_tab, text='Arrow properties')
         self.arrow_frame.grid(row=3, column=0,  columnspan=2)
@@ -1312,73 +1311,73 @@ class Application(tk.Tk):
             self.arrow_frame.columnconfigure(index=i, weight=1)
         # X position of arrow head
         head_x_pos_label = ttk.Label(self.arrow_frame, text='Head X pos.'
-                )
+                                     )
         head_x_pos_label.grid(row=0, column=0)
         # head_x_pos_label.configure(anchor='center')
         self.arrow_head_x = tk.StringVar()
         self.arrow_head_x.set('0')
         ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_x, width=8,
-                 justify=tk.CENTER).grid(row=0, column=1)
+                  justify=tk.CENTER).grid(row=0, column=1)
         # Y position of arrow head
         head_y_pos_label = ttk.Label(self.arrow_frame, text='Head Y pos.'
-                )
+                                     )
         head_y_pos_label.grid(row=0, column=2)
         # head_y_pos_label.configure(anchor='center')
         self.arrow_head_y = tk.StringVar()
         self.arrow_head_y.set('0')
         ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_y, width=8,
-                 justify=tk.CENTER).grid(row=0, column=3)
+                  justify=tk.CENTER).grid(row=0, column=3)
         # Length of arrow head
         head_length_label = ttk.Label(self.arrow_frame, text='Head length'
-                )
+                                      )
         head_length_label.grid(row=1, column=0)
         # head_length_label.configure(anchor='center')
         self.arrow_head_length = tk.StringVar()
         self.arrow_head_length.set('10')
         ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_length, width=8,
-                 justify=tk.CENTER).grid(row=1, column=1)
+                  justify=tk.CENTER).grid(row=1, column=1)
         # Width of arrow head
         head_width_label = ttk.Label(self.arrow_frame, text='Head width'
-                )
+                                     )
         head_width_label.grid(row=1, column=2)
         # head_width_label.configure(anchor='center')
         self.arrow_head_width = tk.StringVar()
         self.arrow_head_width.set('4')
         ttk.Entry(self.arrow_frame, textvariable=self.arrow_head_width, width=8,
-                 justify=tk.CENTER).grid(row=1, column=3)
+                  justify=tk.CENTER).grid(row=1, column=3)
         # Color of arrow
         line_color_label = ttk.Label(self.arrow_frame, text='Line color')
         line_color_label.grid(row=2, column=0)
         # line_color_label.configure(anchor='center')
         self.arrow_color_combo = ttk.Combobox(self.arrow_frame,
-                                                values=my_colors[self.plot_fig_color],
-                                                justify=tk.CENTER,
-                                                width=8
-                                                )
+                                              values=my_colors[self.plot_fig_color],
+                                              justify=tk.CENTER,
+                                              width=8
+                                              )
         self.arrow_color_combo.set(my_colors[self.plot_fig_color][1])
         self.arrow_color_combo.grid(row=2, column=1)
         # Binding the callback to self.arrow_color_combo is not necessary si 'apply all' will get the color value.
         # Width of arrow
         line_width_label = ttk.Label(self.arrow_frame, text='Line width'
-                )
+                                     )
         line_width_label.grid(row=2, column=2)
         # line_width_label.configure(anchor='center')
         self.arrow_width = tk.StringVar()
         self.arrow_width.set('0.5')
         ttk.Entry(self.arrow_frame, textvariable=self.arrow_width, width=8,
-                 justify=tk.CENTER).grid(row=2, column=3)
+                  justify=tk.CENTER).grid(row=2, column=3)
         # Show arrow.
         self.arrow_state = tk.IntVar()
         self.arrow_state.set(0)
         # No callback since 'Apply all' redraw the plot with or without the annotation.
         ttk.Checkbutton(self.arrow_frame, variable=self.arrow_state,
                         text='Show the arrow connected to the annotation'
-                       ).grid(row=5, column=0, columnspan=4)
+                        ).grid(row=5, column=0, columnspan=4)
 
         # APPLY BUTTON
         # Padding for apply needs to be the same for containers for layout consistency
         ttk.Button(self.annot_tab, text='Apply annotation and arrow properties',
-                  command=self.plot_curves, style='w6.TButton').grid(row=4, column=0)
+                   command=self.plot_curves, style='w6.TButton').grid(row=4, column=0)
 
         # APPLY PADDING AND STICKINESS ON WIDGETS CHILDREN AFTER THEY ARE CREATED
         # For self.annot_tab
@@ -1386,16 +1385,16 @@ class Application(tk.Tk):
             frame.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S,
                                  padx=self.CONTAINER_PADX, 
                                  pady=self.CONTAINER_PADY
-                                )
+                                 )
         # For all frames
         union_list = (set(self.text_frame.winfo_children()) |
                       set(self.arrow_frame.winfo_children())
-                     )
+                      )
         for widget in union_list:
             widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
                                   padx=self.WIDGET_PADX, 
                                   pady=self.WIDGET_PADY
-                                 )
+                                  )
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.annot_tab, text='Annotation')
@@ -1420,10 +1419,10 @@ class Application(tk.Tk):
         select_curve_label2.grid(row=1, column=0)
         # select_curve_label2.configure(anchor='center')
         self.active_curve_combo2 = ttk.Combobox(self.extrema_tab,
-                                               values=list(Curve.curve_instances.keys()),
-                                               justify=tk.CENTER,
-                                               width=4,
-                                               )
+                                                values=list(Curve.curve_instances.keys()),
+                                                justify=tk.CENTER,
+                                                width=4,
+                                                )
         self.active_curve_combo2.grid(row=1, column=1)
         self.active_curve_combo2.bind('<<ComboboxSelected>>', self.get_extrema)
         # Label
@@ -1434,7 +1433,7 @@ class Application(tk.Tk):
         self.selected_curve_name = tk.StringVar()
         self.selected_curve_name.set(' ')
         ttk.Entry(self.extrema_tab, textvariable=self.selected_curve_name, width=20,
-                 justify=tk.CENTER).grid(row=1, column=3)
+                  justify=tk.CENTER).grid(row=1, column=3)
         # Xmin
         self.extrema_x_min = tk.StringVar()
         self.extrema_x_min.set('X min')
@@ -1458,12 +1457,12 @@ class Application(tk.Tk):
 
         # For all frames
         union_list = (set(self.extrema_tab.winfo_children()) 
-                     )
+                      )
         for widget in union_list:
             widget.grid_configure(sticky=tk.E+tk.W+tk.N+tk.S, 
                                   padx=self.WIDGET_PADX, 
                                   pady=self.WIDGET_PADY
-                                 )
+                                  )
 
         # Add this tab to the notebook.
         self.tool_notebook.add(self.extrema_tab, text='Extrema')
@@ -1482,10 +1481,10 @@ class Application(tk.Tk):
             self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
 
     def update_plot_bg_color(self):
-    	if self.fig_color_flag.get() == 0:
-    		self.plot_fig_color = 'white_bg'
-    	elif self.fig_color_flag.get() == 1:
-    		self.plot_fig_color = 'black_bg'
+        if self.fig_color_flag.get() == 0:
+            self.plot_fig_color = 'white_bg'
+        elif self.fig_color_flag.get() == 1:
+            self.plot_fig_color = 'black_bg'
 
 
 if __name__ == '__main__':
