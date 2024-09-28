@@ -6,7 +6,7 @@
     Author        : Fabrice Pépin 
     Licence       : GNU GPL-3.0
     
-    PEP-8 recommended lien width of 80 is not respected.
+    PEP-8 recommended line width of 80 is not respected.
 """
 
 
@@ -76,7 +76,7 @@ class Curve:
     # TODO: add fig, ax, canvas, work_dir etc. in docstring
     count = 0
     # Dictionary of curve instances.
-    dic = OrderedDict()
+    curve_instances = OrderedDict()
 
     def __init__(self, path):
         """ Create a Curve instance based on CSV file path.
@@ -449,18 +449,18 @@ class Application(tk.Tk):
                                 }
             # Curve data
             for i in range(1, Curve.count+1):
-                config[i] = {'name': Curve.dic[str(i)].name,
-                             'CSV file path': Curve.dic[str(i)].path,
-                             'X data': Curve.dic[str(i)].data_type['x_type'],
-                             'Y data': Curve.dic[str(i)].data_type['y_type'],
-                             'visibility': Curve.dic[str(i)].visibility,
-                             'line color': Curve.dic[str(i)].color,
-                             'line width': Curve.dic[str(i)].width,
-                             'line style': Curve.dic[str(i)].style,
-                             'offset in X': Curve.dic[str(i)].offset_x_y['x'],
-                             'offset in Y': Curve.dic[str(i)].offset_x_y['y'],
-                             'scale in X': Curve.dic[str(i)].scale_x_y['x'],
-                             'scale in Y': Curve.dic[str(i)].scale_x_y['y']
+                config[i] = {'name': Curve.curve_instances[str(i)].name,
+                             'CSV file path': Curve.curve_instances[str(i)].path,
+                             'X data': Curve.curve_instances[str(i)].data_type['x_type'],
+                             'Y data': Curve.curve_instances[str(i)].data_type['y_type'],
+                             'visibility': Curve.curve_instances[str(i)].visibility,
+                             'line color': Curve.curve_instances[str(i)].color,
+                             'line width': Curve.curve_instances[str(i)].width,
+                             'line style': Curve.curve_instances[str(i)].style,
+                             'offset in X': Curve.curve_instances[str(i)].offset_x_y['x'],
+                             'offset in Y': Curve.curve_instances[str(i)].offset_x_y['y'],
+                             'scale in X': Curve.curve_instances[str(i)].scale_x_y['x'],
+                             'scale in Y': Curve.curve_instances[str(i)].scale_x_y['y']
                             }
             # Write the file and erase existing file.
             with open(session_file, 'w') as file:
@@ -526,26 +526,26 @@ class Application(tk.Tk):
             # Process Curve data
             for i in range(1, Curve.count+1):
                 if config.get(str(i), 'csv file path'):
-                    Curve.dic[str(i)] = Curve(config.get(str(i), 'csv file path'))
+                    Curve.curve_instances[str(i)] = Curve(config.get(str(i), 'csv file path'))
                     # Since Curve.count is incremented after curve creation, it needs to be decremented.
                     Curve.count -= 1
-                    Curve.dic[str(i)].name = config.get(str(i), 'name')
-                    Curve.dic[str(i)].data_type['x_type'] = config.get(str(i), 'x data')
-                    Curve.dic[str(i)].data_type['y_type'] = config.get(str(i), 'y data')
-                    Curve.dic[str(i)].visibility = config.get(str(i), 'visibility')
-                    Curve.dic[str(i)].color = config.get(str(i), 'line color')
-                    Curve.dic[str(i)].width = config.get(str(i), 'line width')
-                    Curve.dic[str(i)].style = config.get(str(i), 'line style')
-                    Curve.dic[str(i)].offset_x_y['x'] = config.getfloat(str(i), 'offset in X')
-                    Curve.dic[str(i)].offset_x_y['y'] = config.getfloat(str(i), 'offset in Y')
-                    Curve.dic[str(i)].scale_x_y['x'] = config.getfloat(str(i), 'scale in X')
-                    Curve.dic[str(i)].scale_x_y['y'] = config.getfloat(str(i), 'scale in Y')
+                    Curve.curve_instances[str(i)].name = config.get(str(i), 'name')
+                    Curve.curve_instances[str(i)].data_type['x_type'] = config.get(str(i), 'x data')
+                    Curve.curve_instances[str(i)].data_type['y_type'] = config.get(str(i), 'y data')
+                    Curve.curve_instances[str(i)].visibility = config.get(str(i), 'visibility')
+                    Curve.curve_instances[str(i)].color = config.get(str(i), 'line color')
+                    Curve.curve_instances[str(i)].width = config.get(str(i), 'line width')
+                    Curve.curve_instances[str(i)].style = config.get(str(i), 'line style')
+                    Curve.curve_instances[str(i)].offset_x_y['x'] = config.getfloat(str(i), 'offset in X')
+                    Curve.curve_instances[str(i)].offset_x_y['y'] = config.getfloat(str(i), 'offset in Y')
+                    Curve.curve_instances[str(i)].scale_x_y['x'] = config.getfloat(str(i), 'scale in X')
+                    Curve.curve_instances[str(i)].scale_x_y['y'] = config.getfloat(str(i), 'scale in Y')
                 else:
                     msg.showerror('Error', 'No CSV file were selected for curve'+str(i))
             # Update curve ID list to be able to continue working on curves.
-            self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
+            self.active_curve_combo['values'] = tuple(list(Curve.curve_instances.keys()))
             # Update curve list for Extrema
-            self.active_curve_combo2['values'] = tuple(list(Curve.dic.keys()))
+            self.active_curve_combo2['values'] = tuple(list(Curve.curve_instances.keys()))
             # Update background color for plot
             self.update_plot_bg_color()
             self.set_status('Data in session file "PV_session.ini" are read.')
@@ -610,7 +610,7 @@ class Application(tk.Tk):
         select_curve_label = ttk.Label(self.curve_prop_frame, text='Select curve')
         select_curve_label.grid(row=0, column=0)
         self.active_curve_combo = ttk.Combobox(self.curve_prop_frame,
-                                               values=list(Curve.dic.keys()),
+                                               values=list(Curve.curve_instances.keys()),
                                                justify=tk.CENTER,
                                                width=4,
                                                )
@@ -789,18 +789,18 @@ class Application(tk.Tk):
 
             First, check that the selected file exists. If not show an error message.
             Second, check that curve label is not empty. If not show an error message.
-            The curve is added in the Curve.dic. Index is Curve.count.
+            The curve is added in the Curve.curve_instances. Index is Curve.count.
         """
         if self.work_file:
             if len(self.curve_label.get()) != 0:
                 # Since instance is not yet created self.id does not exist. So 'count' is used.
-                Curve.dic[str(Curve.count)] = (Curve(self.work_file))
+                Curve.curve_instances[str(Curve.count)] = (Curve(self.work_file))
                 # FIXME: si le CSV est mauvais il faut sortir de cette fonction.
                 # Show the name of the created curve in 'curve_label'
-                Curve.dic[str(Curve.count)].name = self.curve_label.get()
+                Curve.curve_instances[str(Curve.count)].name = self.curve_label.get()
                 # Update the list of curve for future modifications.
-                self.active_curve_combo['values'] = tuple(list(Curve.dic.keys()))
-                self.active_curve_combo2['values'] = tuple(list(Curve.dic.keys()))
+                self.active_curve_combo['values'] = tuple(list(Curve.curve_instances.keys()))
+                self.active_curve_combo2['values'] = tuple(list(Curve.curve_instances.keys()))
                 self.plot_curves()
             else:
                 msg.showerror('Error', 'The name of the curve is required.')
@@ -813,16 +813,16 @@ class Application(tk.Tk):
         if self.selected_curve == None:
             msg.showerror('Error', 'The name of the curve is required.')
         else:
-            Curve.dic[str(self.selected_curve)].name = self.active_curve_name.get()
+            Curve.curve_instances[str(self.selected_curve)].name = self.active_curve_name.get()
             # Update curve data types
-            self.active_curve_x_data.set(Curve.dic[str(self.selected_curve)].data_type['x_type'])
-            self.active_curve_y_data.set(Curve.dic[str(self.selected_curve)].data_type['y_type'])
+            self.active_curve_x_data.set(Curve.curve_instances[str(self.selected_curve)].data_type['x_type'])
+            self.active_curve_y_data.set(Curve.curve_instances[str(self.selected_curve)].data_type['y_type'])
             # Update curve visibility
-            Curve.dic[str(self.selected_curve)].visibility = self.show_state.get()
+            Curve.curve_instances[str(self.selected_curve)].visibility = self.show_state.get()
             # Update curve width
             try:
                 if float(self.curve_width.get()) != 0:
-                    Curve.dic[str(self.selected_curve)].width = float(self.curve_width.get())
+                    Curve.curve_instances[str(self.selected_curve)].width = float(self.curve_width.get())
                 else:
                     # status message will be replaced by the one from 'plot_curves'.
                     msg.showerror('Error', 'The width of curve line cannot be 0.')
@@ -831,16 +831,16 @@ class Application(tk.Tk):
             # Update scale and offset values for curve
             try:
                 if float(self.curve_x_scale.get()) != 0:
-                    Curve.dic[str(self.selected_curve)].scale_x_y['x'] = float(self.curve_x_scale.get())
-                    Curve.dic[str(self.selected_curve)].offset_x_y['x'] = float(self.curve_x_offset.get())
-                    Curve.dic[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.dic[str(self.selected_curve)].data.iloc[:, 0]* Curve.dic[str(self.selected_curve)].scale_x_y['x'] + Curve.dic[str(self.selected_curve)].offset_x_y['x']
+                    Curve.curve_instances[str(self.selected_curve)].scale_x_y['x'] = float(self.curve_x_scale.get())
+                    Curve.curve_instances[str(self.selected_curve)].offset_x_y['x'] = float(self.curve_x_offset.get())
+                    Curve.curve_instances[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.curve_instances[str(self.selected_curve)].data.iloc[:, 0]* Curve.curve_instances[str(self.selected_curve)].scale_x_y['x'] + Curve.curve_instances[str(self.selected_curve)].offset_x_y['x']
                 else:
                     # status message will be replaced by the one from 'plot_curves'.
                     msg.showerror('Error', 'The value of X scale cannot be 0.')
                 if float(self.curve_y_scale.get()) != 0:
-                    Curve.dic[str(self.selected_curve)].scale_x_y['y'] = float(self.curve_y_scale.get())
-                    Curve.dic[str(self.selected_curve)].offset_x_y['y'] = float(self.curve_y_offset.get())
-                    Curve.dic[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.dic[str(self.selected_curve)].data.iloc[:, 1]* Curve.dic[str(self.selected_curve)].scale_x_y['y'] + Curve.dic[str(self.selected_curve)].offset_x_y['y']
+                    Curve.curve_instances[str(self.selected_curve)].scale_x_y['y'] = float(self.curve_y_scale.get())
+                    Curve.curve_instances[str(self.selected_curve)].offset_x_y['y'] = float(self.curve_y_offset.get())
+                    Curve.curve_instances[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.curve_instances[str(self.selected_curve)].data.iloc[:, 1]* Curve.curve_instances[str(self.selected_curve)].scale_x_y['y'] + Curve.curve_instances[str(self.selected_curve)].offset_x_y['y']
                 else:
                     # status message will be replaced by the one from 'plot_curves'.
                     msg.showerror('Error', 'The value of Y scale cannot be 0.')
@@ -872,21 +872,21 @@ class Application(tk.Tk):
     
         # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
-            # print('Visibility ', Curve.dic[str(i)].name, Curve.dic[str(i)].visibility)
-            #if Curve.dic[str(i)].data_out != None:
+            # print('Visibility ', Curve.curve_instances[str(i)].name, Curve.curve_instances[str(i)].visibility)
+            #if Curve.curve_instances[str(i)].data_out != None:
             # Curve data is computed again in case the curve are plot after reading a session file.
-            Curve.dic[str(i)].data_out.iloc[:, 0] = Curve.dic[str(i)].data.iloc[:, 0]* Curve.dic[str(i)].scale_x_y['x'] + Curve.dic[str(i)].offset_x_y['x']
-            Curve.dic[str(i)].data_out.iloc[:, 1] = Curve.dic[str(i)].data.iloc[:, 1]* Curve.dic[str(i)].scale_x_y['y'] + Curve.dic[str(i)].offset_x_y['y']
-            if Curve.dic[str(i)].visibility:
-                self.ax.plot(Curve.dic[str(i)].data_out.iloc[:, 0],
-                             Curve.dic[str(i)].data_out.iloc[:, 1],
-                             label=Curve.dic[str(i)].name,
-                             color=Curve.dic[str(i)].color,
-                             lw=Curve.dic[str(i)].width,
-                             ls=Curve.dic[str(i)].style,
+            Curve.curve_instances[str(i)].data_out.iloc[:, 0] = Curve.curve_instances[str(i)].data.iloc[:, 0]* Curve.curve_instances[str(i)].scale_x_y['x'] + Curve.curve_instances[str(i)].offset_x_y['x']
+            Curve.curve_instances[str(i)].data_out.iloc[:, 1] = Curve.curve_instances[str(i)].data.iloc[:, 1]* Curve.curve_instances[str(i)].scale_x_y['y'] + Curve.curve_instances[str(i)].offset_x_y['y']
+            if Curve.curve_instances[str(i)].visibility:
+                self.ax.plot(Curve.curve_instances[str(i)].data_out.iloc[:, 0],
+                             Curve.curve_instances[str(i)].data_out.iloc[:, 1],
+                             label=Curve.curve_instances[str(i)].name,
+                             color=Curve.curve_instances[str(i)].color,
+                             lw=Curve.curve_instances[str(i)].width,
+                             ls=Curve.curve_instances[str(i)].style,
                              )
                 # This message is not visible unless the plotting takes a long time.
-                self.set_status(Curve.dic[str(i)].name+' is plotted.')
+                self.set_status(Curve.curve_instances[str(i)].name+' is plotted.')
 
         # Draw the annotation and the arrow
         try:
@@ -957,21 +957,21 @@ class Application(tk.Tk):
         # Get the curve ID through event.
         self.selected_curve = event.widget.get()
         # check for input error on curve ID
-        if self.selected_curve in Curve.dic.keys():
+        if self.selected_curve in Curve.curve_instances.keys():
             # Update the active curve attributes.
-            self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
-            self.show_state.set(Curve.dic[str(self.selected_curve)].visibility)
-            self.active_curve_name.set(Curve.dic[str(self.selected_curve)].name)
-            self.active_curve_x_data.set(Curve.dic[str(self.selected_curve)].data_type['x_type'])
-            self.active_curve_y_data.set(Curve.dic[str(self.selected_curve)].data_type['y_type'])
-            self.curve_color_combo.set(Curve.dic[str(self.selected_curve)].color)
-            self.curve_width.set(Curve.dic[str(self.selected_curve)].width)
-            self.curve_style_combo.set(Curve.dic[str(self.selected_curve)].style)
-            self.curve_x_scale.set(Curve.dic[str(self.selected_curve)].scale_x_y['x'])
-            self.curve_y_scale.set(Curve.dic[str(self.selected_curve)].scale_x_y['y'])
-            self.curve_x_offset.set(Curve.dic[str(self.selected_curve)].offset_x_y['x'])
-            self.curve_y_offset.set(Curve.dic[str(self.selected_curve)].offset_x_y['y'])
-            self.set_status('Selected curve: '+Curve.dic[str(self.selected_curve)].name)
+            self.active_curve_name.set(Curve.curve_instances[str(self.selected_curve)].name)
+            self.show_state.set(Curve.curve_instances[str(self.selected_curve)].visibility)
+            self.active_curve_name.set(Curve.curve_instances[str(self.selected_curve)].name)
+            self.active_curve_x_data.set(Curve.curve_instances[str(self.selected_curve)].data_type['x_type'])
+            self.active_curve_y_data.set(Curve.curve_instances[str(self.selected_curve)].data_type['y_type'])
+            self.curve_color_combo.set(Curve.curve_instances[str(self.selected_curve)].color)
+            self.curve_width.set(Curve.curve_instances[str(self.selected_curve)].width)
+            self.curve_style_combo.set(Curve.curve_instances[str(self.selected_curve)].style)
+            self.curve_x_scale.set(Curve.curve_instances[str(self.selected_curve)].scale_x_y['x'])
+            self.curve_y_scale.set(Curve.curve_instances[str(self.selected_curve)].scale_x_y['y'])
+            self.curve_x_offset.set(Curve.curve_instances[str(self.selected_curve)].offset_x_y['x'])
+            self.curve_y_offset.set(Curve.curve_instances[str(self.selected_curve)].offset_x_y['y'])
+            self.set_status('Selected curve: '+Curve.curve_instances[str(self.selected_curve)].name)
         else:
             print('ERROR - Curve ID not found. Please select again a curve ID.')
             self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
@@ -979,7 +979,7 @@ class Application(tk.Tk):
     def show_check_update(self):
         """ Process the 'show' check toggle for curve visibility."""
         try:
-            Curve.dic[self.selected_curve].visibility = self.show_state.get()
+            Curve.curve_instances[self.selected_curve].visibility = self.show_state.get()
             # 'plot_curves' should not be in try so that it is not launched in case of Exception.
             # This allows to have the warning message persistent in status bar.
         except AttributeError:
@@ -988,9 +988,9 @@ class Application(tk.Tk):
     def change_curve_color(self, event):
         """ Update the curve attribute with the selected color from combobox through event."""
         try:
-            Curve.dic[str(self.selected_curve)].color = event.widget.get()
+            Curve.curve_instances[str(self.selected_curve)].color = event.widget.get()
             self.set_status('Color of curve ' +
-                            Curve.dic[str(self.selected_curve)].name +
+                            Curve.curve_instances[str(self.selected_curve)].name +
                             ' is updated.'
                             )
         except AttributeError:
@@ -999,9 +999,9 @@ class Application(tk.Tk):
     def change_curve_style(self, event):
         """ Update the curve attribute with the selected line style from combobox through event."""
         try:
-            Curve.dic[str(self.selected_curve)].style = event.widget.get()
+            Curve.curve_instances[str(self.selected_curve)].style = event.widget.get()
             self.set_status('Style of curve ' +
-                            Curve.dic[str(self.selected_curve)].name +
+                            Curve.curve_instances[str(self.selected_curve)].name +
                             ' is updated.'
                             )
         except AttributeError:
@@ -1420,7 +1420,7 @@ class Application(tk.Tk):
         select_curve_label2.grid(row=1, column=0)
         # select_curve_label2.configure(anchor='center')
         self.active_curve_combo2 = ttk.Combobox(self.extrema_tab,
-                                               values=list(Curve.dic.keys()),
+                                               values=list(Curve.curve_instances.keys()),
                                                justify=tk.CENTER,
                                                width=4,
                                                )
@@ -1472,11 +1472,11 @@ class Application(tk.Tk):
         # Get the curve ID through event.
         selected_curve2 = event.widget.get()
         # check for input error on curve ID
-        if selected_curve2 in Curve.dic.keys():
+        if selected_curve2 in Curve.curve_instances.keys():
             # show the curve name after selection of curve ID
-            self.selected_curve_name.set(Curve.dic[str(selected_curve2)].name)
-            Curve.dic[str(selected_curve2)].find_extrema()
-            self.set_status('Extrema values computed for curve: ' + Curve.dic[str(selected_curve2)].name)
+            self.selected_curve_name.set(Curve.curve_instances[str(selected_curve2)].name)
+            Curve.curve_instances[str(selected_curve2)].find_extrema()
+            self.set_status('Extrema values computed for curve: ' + Curve.curve_instances[str(selected_curve2)].name)
         else:
             print('ERROR - Curve ID not found. Please select again a curve ID.')
             self.set_status('ERROR - Curve ID not found. Please select again a curve ID.')
