@@ -58,8 +58,8 @@ class Curve:
             - name: string -> user-defined name. Can be changed in the PV session
             - path: string -> path to CSV file
             - data: dataframe -> contains (X,Y) points as read in the CSV file
-            - data_type: dictionary -> contains X header and Y header of CSV file
-            - data_out: dataframe -> input_data with offset and scale values to be plotted
+            - data_types: dictionary -> contains X header and Y header of CSV file
+            - data: dataframe -> input_data with offset and scale values to be plotted
             - visibility: boolean -> flag to show the curve in the plot or not
             - color: string -> color of the curve line
             - width: float -> width of the curve line
@@ -85,8 +85,7 @@ class Curve:
         self.name = 'Name'
         self.path = path
         self.data = self.read_curve_file(self.path)
-        self.data_type = self.get_data_type_from_file()
-        self.data_out = self.create_data_out(self.data)
+        self.data_types = self.get_data_types_from_file()
         self.visibility = True
         self.color = my_colors[app.plot_fig_color][1]
         self.width = 1.0
@@ -120,17 +119,12 @@ class Curve:
             Application.choose_file(app)
         # TODO: handle following exceptions: no column, more than 2 columns, strings, missing values, etc.
 
-    def get_data_type_from_file(self):
+    def get_data_types_from_file(self):
         """Retrieve data type as written in the header of CSV file."""
-        data_type = {}
-        data_type['x_type'] = self.data.columns[0]
-        data_type['y_type'] = self.data.columns[1]
-        return data_type
-
-    def create_data_out(self, df):  # TODO: useful? If not processing will be done on data.
-        """Create a copy of data dataframe to keep read data unchanged."""
-        temp = df.copy()
-        return temp
+        data_types = {}
+        data_types['x_type'] = self.data.columns[0]
+        data_types['y_type'] = self.data.columns[1]
+        return data_types
 
     def find_extrema(self): # TODO: refactor with the type of extremum to find in parameter
         """ all values are round to 10 -> use a variable and update first label in extrema plot (number of digits)
@@ -141,37 +135,37 @@ class Curve:
         print('Extrema values for curve', self.name, 'without rounding:')
 
         # X min
-        extremum_x_min = self.data_out.iloc[:, 0].min()
+        extremum_x_min = self.data.iloc[:, 0].min()
         self.extremum_x_min['x'] = round(extremum_x_min, app.ROUNDING_DECIMALS)
         # Find Y for X min
-        extremum_x_min_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmin(), 1]
+        extremum_x_min_y = self.data.iloc[self.data.iloc[:, 0].idxmin(), 1]
         self.extremum_x_min['y'] = round(extremum_x_min_y, app.ROUNDING_DECIMALS)
         print('X min:', extremum_x_min, ' @ Y:', extremum_x_min_y)
         app.extrema_x_min.set('X min ' + str(self.extremum_x_min['x']) + ' @ Y ' + str(self.extremum_x_min['y']))
 
         # X max
-        extremum_x_max = self.data_out.iloc[:, 0].max()
+        extremum_x_max = self.data.iloc[:, 0].max()
         self.extremum_x_max['x']= round(extremum_x_max, app.ROUNDING_DECIMALS)
         # Find Y for X max
-        extremum_x_max_y = self.data_out.iloc[self.data_out.iloc[:, 0].idxmax(), 1]
+        extremum_x_max_y = self.data.iloc[self.data.iloc[:, 0].idxmax(), 1]
         self.extremum_x_max['y']= round(extremum_x_max_y, app.ROUNDING_DECIMALS)
         print('X max:', extremum_x_max, ' @ Y:', extremum_x_max_y)
         app.extrema_x_max.set('X max ' + str(self.extremum_x_max['x']) + ' @ Y ' + str(self.extremum_x_max['y']))
 
         # Y min
-        extremum_y_min = self.data_out.iloc[:, 1].min()
+        extremum_y_min = self.data.iloc[:, 1].min()
         self.extremum_y_min['y'] = round(extremum_y_min, app.ROUNDING_DECIMALS)
         # Find X for Y min
-        extremum_y_min_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmin(), 0]
+        extremum_y_min_x = self.data.iloc[self.data.iloc[:, 1].idxmin(), 0]
         self.extremum_y_min['x'] = round(extremum_y_min_x, app.ROUNDING_DECIMALS)
         print('Y min:', extremum_y_min, '@ X:', extremum_y_min_x)
         app.extrema_y_min.set('Y min ' + str(self.extremum_y_min['y']) + ' @ X ' + str(self.extremum_y_min['x']))
 
         # Y max
-        extremum_y_max = self.data_out.iloc[:, 1].max()
+        extremum_y_max = self.data.iloc[:, 1].max()
         self.extremum_y_max['y'] = round(extremum_y_max, app.ROUNDING_DECIMALS)
         # Find X for Y max
-        extremum_y_max_x = self.data_out.iloc[self.data_out.iloc[:, 1].idxmax(), 0]
+        extremum_y_max_x = self.data.iloc[self.data.iloc[:, 1].idxmax(), 0]
         self.extremum_y_max['x'] = round(extremum_y_max_x, app.ROUNDING_DECIMALS)
         print('Y max:', extremum_y_max, '@ X:', extremum_y_max_x)
         app.extrema_y_max.set('Y max ' + str(self.extremum_y_max['y']) + ' @ X ' + str(self.extremum_y_max['x']))
@@ -450,8 +444,8 @@ class Application(tk.Tk):
             for i in range(1, Curve.count+1):
                 config[i] = {'name': Curve.curve_instances[str(i)].name,
                              'CSV file path': Curve.curve_instances[str(i)].path,
-                             'X data': Curve.curve_instances[str(i)].data_type['x_type'],
-                             'Y data': Curve.curve_instances[str(i)].data_type['y_type'],
+                             'X data': Curve.curve_instances[str(i)].data_types['x_type'],
+                             'Y data': Curve.curve_instances[str(i)].data_types['y_type'],
                              'visibility': Curve.curve_instances[str(i)].visibility,
                              'line color': Curve.curve_instances[str(i)].color,
                              'line width': Curve.curve_instances[str(i)].width,
@@ -529,8 +523,8 @@ class Application(tk.Tk):
                     # Since Curve.count is incremented after curve creation, it needs to be decremented.
                     Curve.count -= 1
                     Curve.curve_instances[str(i)].name = config.get(str(i), 'name')
-                    Curve.curve_instances[str(i)].data_type['x_type'] = config.get(str(i), 'x data')
-                    Curve.curve_instances[str(i)].data_type['y_type'] = config.get(str(i), 'y data')
+                    Curve.curve_instances[str(i)].data_types['x_type'] = config.get(str(i), 'x data')
+                    Curve.curve_instances[str(i)].data_types['y_type'] = config.get(str(i), 'y data')
                     Curve.curve_instances[str(i)].visibility = config.get(str(i), 'visibility')
                     Curve.curve_instances[str(i)].color = config.get(str(i), 'line color')
                     Curve.curve_instances[str(i)].width = config.get(str(i), 'line width')
@@ -814,8 +808,8 @@ class Application(tk.Tk):
         else:
             Curve.curve_instances[str(self.selected_curve)].name = self.active_curve_name.get()
             # Update curve data types
-            self.active_curve_x_data.set(Curve.curve_instances[str(self.selected_curve)].data_type['x_type'])
-            self.active_curve_y_data.set(Curve.curve_instances[str(self.selected_curve)].data_type['y_type'])
+            self.active_curve_x_data.set(Curve.curve_instances[str(self.selected_curve)].data_types['x_type'])
+            self.active_curve_y_data.set(Curve.curve_instances[str(self.selected_curve)].data_types['y_type'])
             # Update curve visibility
             Curve.curve_instances[str(self.selected_curve)].visibility = self.show_state.get()
             # Update curve width
@@ -832,14 +826,14 @@ class Application(tk.Tk):
                 if float(self.curve_x_scale.get()) != 0:
                     Curve.curve_instances[str(self.selected_curve)].scale_x_y['x'] = float(self.curve_x_scale.get())
                     Curve.curve_instances[str(self.selected_curve)].offset_x_y['x'] = float(self.curve_x_offset.get())
-                    Curve.curve_instances[str(self.selected_curve)].data_out.iloc[:, 0] = Curve.curve_instances[str(self.selected_curve)].data.iloc[:, 0]* Curve.curve_instances[str(self.selected_curve)].scale_x_y['x'] + Curve.curve_instances[str(self.selected_curve)].offset_x_y['x']
+                    Curve.curve_instances[str(self.selected_curve)].data.iloc[:, 0] = Curve.curve_instances[str(self.selected_curve)].data.iloc[:, 0]* Curve.curve_instances[str(self.selected_curve)].scale_x_y['x'] + Curve.curve_instances[str(self.selected_curve)].offset_x_y['x']
                 else:
                     # status message will be replaced by the one from 'plot_curves'.
                     msg.showerror('Error', 'The value of X scale cannot be 0.')
                 if float(self.curve_y_scale.get()) != 0:
                     Curve.curve_instances[str(self.selected_curve)].scale_x_y['y'] = float(self.curve_y_scale.get())
                     Curve.curve_instances[str(self.selected_curve)].offset_x_y['y'] = float(self.curve_y_offset.get())
-                    Curve.curve_instances[str(self.selected_curve)].data_out.iloc[:, 1] = Curve.curve_instances[str(self.selected_curve)].data.iloc[:, 1]* Curve.curve_instances[str(self.selected_curve)].scale_x_y['y'] + Curve.curve_instances[str(self.selected_curve)].offset_x_y['y']
+                    Curve.curve_instances[str(self.selected_curve)].data.iloc[:, 1] = Curve.curve_instances[str(self.selected_curve)].data.iloc[:, 1]* Curve.curve_instances[str(self.selected_curve)].scale_x_y['y'] + Curve.curve_instances[str(self.selected_curve)].offset_x_y['y']
                 else:
                     # status message will be replaced by the one from 'plot_curves'.
                     msg.showerror('Error', 'The value of Y scale cannot be 0.')
@@ -872,13 +866,13 @@ class Application(tk.Tk):
         # Update curve parameters for all curves.
         for i in range(1, Curve.count+1):
             # print('Visibility ', Curve.curve_instances[str(i)].name, Curve.curve_instances[str(i)].visibility)
-            #if Curve.curve_instances[str(i)].data_out != None:
+            #if Curve.curve_instances[str(i)].data != None:
             # Curve data is computed again in case the curve are plot after reading a session file.
-            Curve.curve_instances[str(i)].data_out.iloc[:, 0] = Curve.curve_instances[str(i)].data.iloc[:, 0]* Curve.curve_instances[str(i)].scale_x_y['x'] + Curve.curve_instances[str(i)].offset_x_y['x']
-            Curve.curve_instances[str(i)].data_out.iloc[:, 1] = Curve.curve_instances[str(i)].data.iloc[:, 1]* Curve.curve_instances[str(i)].scale_x_y['y'] + Curve.curve_instances[str(i)].offset_x_y['y']
+            Curve.curve_instances[str(i)].data.iloc[:, 0] = Curve.curve_instances[str(i)].data.iloc[:, 0]* Curve.curve_instances[str(i)].scale_x_y['x'] + Curve.curve_instances[str(i)].offset_x_y['x']
+            Curve.curve_instances[str(i)].data.iloc[:, 1] = Curve.curve_instances[str(i)].data.iloc[:, 1]* Curve.curve_instances[str(i)].scale_x_y['y'] + Curve.curve_instances[str(i)].offset_x_y['y']
             if Curve.curve_instances[str(i)].visibility:
-                self.ax.plot(Curve.curve_instances[str(i)].data_out.iloc[:, 0],
-                             Curve.curve_instances[str(i)].data_out.iloc[:, 1],
+                self.ax.plot(Curve.curve_instances[str(i)].data.iloc[:, 0],
+                             Curve.curve_instances[str(i)].data.iloc[:, 1],
                              label=Curve.curve_instances[str(i)].name,
                              color=Curve.curve_instances[str(i)].color,
                              lw=Curve.curve_instances[str(i)].width,
@@ -961,8 +955,8 @@ class Application(tk.Tk):
             self.active_curve_name.set(Curve.curve_instances[str(self.selected_curve)].name)
             self.show_state.set(Curve.curve_instances[str(self.selected_curve)].visibility)
             self.active_curve_name.set(Curve.curve_instances[str(self.selected_curve)].name)
-            self.active_curve_x_data.set(Curve.curve_instances[str(self.selected_curve)].data_type['x_type'])
-            self.active_curve_y_data.set(Curve.curve_instances[str(self.selected_curve)].data_type['y_type'])
+            self.active_curve_x_data.set(Curve.curve_instances[str(self.selected_curve)].data_types['x_type'])
+            self.active_curve_y_data.set(Curve.curve_instances[str(self.selected_curve)].data_types['y_type'])
             self.curve_color_combo.set(Curve.curve_instances[str(self.selected_curve)].color)
             self.curve_width.set(Curve.curve_instances[str(self.selected_curve)].width)
             self.curve_style_combo.set(Curve.curve_instances[str(self.selected_curve)].style)
